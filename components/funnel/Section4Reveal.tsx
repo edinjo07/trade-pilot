@@ -70,6 +70,9 @@ export default function Section4Reveal({ painChoice, onContinue }: Props) {
   const [done, setDone] = useState(false);
   const [testimonial] = useState(() => rand(TESTIMONIALS));
 
+  // Fit score varies by pain choice so it feels hyper-personalised
+  const fitScore = painChoice === "NO_TIME" ? 94 : painChoice === "TRIED" ? 91 : 88;
+
   useEffect(() => {
     let i = 0;
     const id = setInterval(() => {
@@ -132,7 +135,7 @@ export default function Section4Reveal({ painChoice, onContinue }: Props) {
                 className="text-6xl font-black text-emerald-400 glow-emerald animate-scale-in"
                 style={{ textShadow: "0 0 30px rgba(52,211,153,0.5)" }}
               >
-                91<span className="text-3xl">%</span>
+                {fitScore}<span className="text-3xl">%</span>
               </p>
               <p className="mt-2 text-sm text-gray-600">{t.s4_fit_sub}</p>
             </div>

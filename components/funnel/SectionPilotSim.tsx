@@ -206,7 +206,7 @@ function buildLogSchedule(
     { score: "0.81", label: "BULLISH", headline: "ETF inflows at weekly high · institutional buying detected" },
     { score: "0.74", label:"BULLISH", headline: "Fed signals steady rates · risk-on environment confirmed" },
     { score: "0.68", label: "BULLISH", headline: "Strong PMI data · macro tailwind aligned with signal" },
-    { score: "0.23", label: "BEARISH", headline: "Negative macro headline  signal suppressed by AI filter" },
+    { score: "0.23", label: "BEARISH", headline: "Negative macro headline signal suppressed by AI filter" },
     { score: "0.77", label: "BULLISH", headline: "Whale accumulation detected · momentum confirmed by AI" },
   ];
   let aiIdx = 0;
@@ -265,11 +265,11 @@ const LOG_COLORS: Record<LogEntry["level"], string> = {
 };
 
 const LOG_PREFIXES: Record<LogEntry["level"], string> = {
-  INFO:   "[INFO]  ",
+  INFO:   "[INFO] ",
   SIGNAL: "[SIGNAL]",
   TRADE:  "[TRADE] ",
-  RISK:   "[RISK]  ",
-  AI:     "[AI]    ",
+  RISK:   "[RISK] ",
+  AI:     "[AI] ",
 };
 
 // ── Main component ────────────────────────────────────────────────────────────

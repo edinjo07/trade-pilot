@@ -146,8 +146,11 @@ export default function FunnelShell() {
         {/* Global ticker - shown after bot gate */}
         {step !== "BOT_GATE" && <SocialProofTicker />}
 
-        {/* Exit-intent modal  manages its own open/close state internally */}
-        <ExitIntentModal onStay={() => {}} onLeave={() => {}} />
+        {/* Exit-intent modal: clicking "finish last step" jumps directly to lead form */}
+        <ExitIntentModal
+          onStay={() => { if (step !== "S6_LEAD" && step !== "DONE") advance("S6_LEAD"); }}
+          onLeave={() => {}}
+        />
 
         {/* Centered content card  max-w-xl for comfortable tablet view */}
         <div className="mx-auto max-w-xl px-4 sm:px-6 py-5 sm:py-8 md:py-12">
@@ -240,7 +243,7 @@ export default function FunnelShell() {
       <Shell>
         <Section4Reveal
           painChoice={painChoice}
-          onContinue={() => advance("S6_LEAD")}
+          onContinue={() => advance("S5_SCARCITY")}
         />
       </Shell>
     );

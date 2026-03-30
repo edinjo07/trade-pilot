@@ -265,6 +265,13 @@ export default function Section1Hook({ onContinue }: Props) {
             <p className="text-xs font-semibold text-gray-700">
               {t.s1_mind_nothing_footer}
             </p>
+            <button
+              onClick={onContinue}
+              className="mt-1 w-full rounded-xl px-4 py-3 text-sm font-bold text-black transition-all duration-150 active:scale-[0.98]"
+              style={{ background: "linear-gradient(135deg,#f0a500,#d4840a)", boxShadow: "0 2px 14px rgba(240,165,0,0.35)" }}
+            >
+              See Trading Pilot in action →
+            </button>
           </div>
         ) : (
           <div
@@ -277,6 +284,13 @@ export default function Section1Hook({ onContinue }: Props) {
             <p className="text-xs text-gray-500 leading-relaxed">
               {t.s1_mind_works_body}
             </p>
+            <button
+              onClick={onContinue}
+              className="mt-1 w-full rounded-xl px-4 py-3 text-sm font-bold text-black transition-all duration-150 active:scale-[0.98]"
+              style={{ background: "linear-gradient(135deg,#f0a500,#d4840a)", boxShadow: "0 2px 14px rgba(240,165,0,0.35)" }}
+            >
+              Take me to the live demo →
+            </button>
           </div>
         )}
       </div>

@@ -62,20 +62,25 @@ export default function Section3CuriousQuiz({ onDone }: Props) {
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
+  const [selectedAid, setSelectedAid] = useState<string | null>(null);
 
   const q = QUESTIONS[step];
   const progress = PROGRESS_STEPS[step] ?? 100;
 
   function choose(aid: string) {
+    if (selectedAid) return; // prevent double-tap
+    setSelectedAid(aid);
     const updated = [...answers, { qid: q.qid, aid }];
     setAnswers(updated);
 
-    if (step < QUESTIONS.length - 1) {
-      setStep((s) => s + 1);
-    } else {
-      // brief delay then complete
-      window.setTimeout(() => onDone(updated), 600);
-    }
+    window.setTimeout(() => {
+      setSelectedAid(null);
+      if (step < QUESTIONS.length - 1) {
+        setStep((s) => s + 1);
+      } else {
+        window.setTimeout(() => onDone(updated), 400);
+      }
+    }, 320);
   }
 
   return (
@@ -125,41 +130,52 @@ export default function Section3CuriousQuiz({ onDone }: Props) {
       </div>
 
       <div className="grid gap-3">
-        {q.answers.map((a) => (
-          <button
-            key={a.aid}
-            onClick={() => choose(a.aid)}
-            className="
-              w-full rounded-xl px-5 py-4 text-left text-sm font-medium
-              text-gray-700 active:scale-[0.99]
-              transition-all duration-150
-            "
-            style={{
-              background: "#ffffff",
-              border: "1px solid rgba(0,0,0,0.09)",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,211,153,0.5)";
-              (e.currentTarget as HTMLElement).style.color = "#111827";
-              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 14px rgba(52,211,153,0.10)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,0,0,0.09)";
-              (e.currentTarget as HTMLElement).style.color = "";
-              (e.currentTarget as HTMLElement).style.boxShadow = "none";
-            }}
-          >
-            <span className="flex items-center gap-3">
-              <span
-                className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold"
-                style={{ background: "rgba(52,211,153,0.12)", color: "#34d399" }}
-              >
-                {String.fromCharCode(65 + q.answers.indexOf(a))}
+        {q.answers.map((a) => {
+          const isSelected = selectedAid === a.aid;
+          return (
+            <button
+              key={a.aid}
+              onClick={() => choose(a.aid)}
+              disabled={!!selectedAid}
+              className="
+                w-full rounded-xl px-5 py-4 text-left text-sm font-medium
+                text-gray-700 active:scale-[0.99]
+                transition-all duration-150
+              "
+              style={{
+                background: isSelected ? "rgba(52,211,153,0.10)" : "#ffffff",
+                border: `1px solid ${isSelected ? "rgba(52,211,153,0.65)" : "rgba(0,0,0,0.09)"}`,
+                boxShadow: isSelected ? "0 0 16px rgba(52,211,153,0.18)" : "none",
+                transform: isSelected ? "scale(1.01)" : undefined,
+              }}
+              onMouseEnter={(e) => {
+                if (selectedAid) return;
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,211,153,0.5)";
+                (e.currentTarget as HTMLElement).style.color = "#111827";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 0 14px rgba(52,211,153,0.10)";
+              }}
+              onMouseLeave={(e) => {
+                if (selectedAid) return;
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(0,0,0,0.09)";
+                (e.currentTarget as HTMLElement).style.color = "";
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
+              }}
+            >
+              <span className="flex items-center gap-3">
+                <span
+                  className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold transition-all duration-200"
+                  style={{
+                    background: isSelected ? "rgba(52,211,153,0.25)" : "rgba(52,211,153,0.12)",
+                    color: "#34d399",
+                  }}
+                >
+                  {isSelected ? "✓" : String.fromCharCode(65 + q.answers.indexOf(a))}
+                </span>
+                {a.label}
               </span>
-              {a.label}
-            </span>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
 
       <p className="text-center text-xs text-gray-400">
