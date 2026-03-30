@@ -20,13 +20,13 @@ export async function GET() {
     };
     return NextResponse.json(payload, {
       headers: {
-        "Cache-Control": "public, max-age=60, stale-while-revalidate=120",
+        "Cache-Control": "no-store",
       },
     });
   } catch {
     // On DB error, fail open (allow all) to avoid blocking real users
     return NextResponse.json({ mode: "all", countries: [] }, {
-      headers: { "Cache-Control": "public, max-age=10" },
+      headers: { "Cache-Control": "no-store" },
     });
   }
 }

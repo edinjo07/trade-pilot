@@ -87,15 +87,19 @@ async function getGeoConfig(origin: string): Promise<GeoConfigData> {
   const now = Date.now();
   if (_geoCache && now < _geoCache.expiresAt) return _geoCache.data;
   try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
     const res = await fetch(`${origin}/api/internal/geo-config`, {
-      next: { revalidate: 60 },
+      cache: "no-store",
+      signal: controller.signal,
     });
+    clearTimeout(timer);
     if (res.ok) {
       const data = await res.json() as GeoConfigData;
       _geoCache = { data, expiresAt: now + 60_000 };
       return data;
     }
-  } catch { /* network error — fail open */ }
+  } catch { /* network error or timeout — fail open */ }
   return { mode: "all", countries: [] };
 }
 
