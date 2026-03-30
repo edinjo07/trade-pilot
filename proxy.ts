@@ -166,18 +166,17 @@ export function proxy(req: NextRequest) {
     const adminCookieVal = req.cookies.get(ADMIN_COOKIE)?.value ?? "";
     const isAdminSession = !!(adminToken && safeEqual(adminCookieVal, adminToken));
     const hasVerifiedCookie = req.cookies.get("_ad_verified")?.value === "1";
+    const sp = req.nextUrl.searchParams;
+    const utmToken = process.env.UTM_SOURCE_TOKEN;
+    const hasAdParams =
+      sp.has("fbclid") ||
+      sp.has("gclid") ||
+      sp.has("ttclid") ||
+      sp.has("twclid") ||
+      (utmToken ? sp.get("utm_source") === utmToken : false);
 
     if (path === "/") {
-      const sp = req.nextUrl.searchParams;
-      const utmToken = process.env.UTM_SOURCE_TOKEN;
-      const hasAdToken =
-        sp.has("fbclid") ||
-        sp.has("gclid") ||
-        sp.has("ttclid") ||
-        sp.has("twclid") ||
-        (utmToken ? sp.get("utm_source") === utmToken : false) ||
-        hasVerifiedCookie ||
-        isAdminSession;
+      const hasAdToken = hasAdParams || hasVerifiedCookie || isAdminSession;
 
       if (!hasAdToken) {
         const url = req.nextUrl.clone();
@@ -207,9 +206,16 @@ export function proxy(req: NextRequest) {
       });
       return res;
     } else {
-      // All other funnel pages require the cookie set at entry.
-      // Without it the visitor skipped the ad-click gate entirely.
+      // Non-root funnel pages:
+      // If ad params are present but cookie isn't stamped yet (e.g. ad URL
+      // points to a non-root page), redirect to / with the same params so
+      // the entry-point logic can stamp the cookie correctly.
       if (!hasVerifiedCookie && !isAdminSession) {
+        if (hasAdParams) {
+          const url = req.nextUrl.clone();
+          url.pathname = "/";
+          return NextResponse.redirect(url, { status: 302 });
+        }
         const url = req.nextUrl.clone();
         url.pathname = EDUCATION_PATH;
         return NextResponse.rewrite(url);
