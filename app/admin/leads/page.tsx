@@ -78,13 +78,14 @@ export default async function AdminLeadsPage({
     prisma.lead.findMany({
       where,
       orderBy: { createdAt: "desc" },
-      take: 100,
+      take: 500,
       select: {
         id: true,
         createdAt: true,
         fullName: true,
         email: true,
         phone: true,
+        country: true,
         qualityScore: true,
         qualityTier: true,
         session: {
@@ -128,7 +129,10 @@ export default async function AdminLeadsPage({
         />
       </div>
 
-      <FiltersBar q={sp.q || ""} filter={sp.filter || "all"} start={sp.start || ""} end={sp.end || ""} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <FiltersBar q={sp.q || ""} filter={sp.filter || "all"} start={sp.start || ""} end={sp.end || ""} />
+        <DownloadButton q={sp.q} filter={sp.filter} start={sp.start} end={sp.end} />
+      </div>
 
       <div
         className="overflow-hidden rounded-2xl"
@@ -139,6 +143,7 @@ export default async function AdminLeadsPage({
             <tr>
               <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-widest" style={{ color: "#6b7280" }}>Lead</th>
               <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-widest" style={{ color: "#6b7280" }}>Contact</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-widest" style={{ color: "#6b7280" }}>Country</th>
               <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-widest" style={{ color: "#6b7280" }}>Status</th>
               <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-widest" style={{ color: "#6b7280" }}>Score</th>
               <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-widest" style={{ color: "#6b7280" }}>Created</th>
@@ -172,6 +177,9 @@ export default async function AdminLeadsPage({
                     <div style={{ color: "#111827" }}>{l.email || "-"}</div>
                     <div className="text-xs mt-0.5" style={{ color: "#6b7280" }}>{l.phone || "-"}</div>
                   </td>
+                  <td className="px-4 py-3.5 text-sm" style={{ color: "#374151" }}>
+                    {l.country || "—"}
+                  </td>
                   <td className="px-4 py-3.5">
                     <Pill kind={status === "converted" ? "good" : status === "continued" ? "mid" : "low"}>
                       {status}
@@ -202,7 +210,7 @@ export default async function AdminLeadsPage({
             })}
             {!leads.length ? (
               <tr>
-                <td className="px-4 py-12 text-center text-sm" style={{ color: "#9ca3af" }} colSpan={6}>
+                <td className="px-4 py-12 text-center text-sm" style={{ color: "#9ca3af" }} colSpan={7}>
                   No leads found.
                 </td>
               </tr>
@@ -213,10 +221,28 @@ export default async function AdminLeadsPage({
 
       <div className="text-xs" style={{ color: "#9ca3af" }}>
         Showing latest{" "}
-        <span className="font-semibold" style={{ color: "#6b7280" }}>100</span>{" "}
-        results.
+        <span className="font-semibold" style={{ color: "#6b7280" }}>500</span>{" "}
+        results. Use <strong>Download CSV</strong> to export all filtered leads.
       </div>
     </div>
+  );
+}
+
+function DownloadButton({ q, filter, start, end }: { q?: string; filter?: string; start?: string; end?: string }) {
+  const params = new URLSearchParams();
+  if (q)      params.set("q",      q);
+  if (filter) params.set("filter", filter);
+  if (start)  params.set("start",  start);
+  if (end)    params.set("end",    end);
+  const href = `/api/admin/leads/export?${params.toString()}`;
+  return (
+    <a
+      href={href}
+      className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shrink-0"
+      style={{ background: "linear-gradient(135deg,#0f172a,#1e3a5f)", textDecoration: "none" }}
+    >
+      ⬇ Download CSV
+    </a>
   );
 }
 
