@@ -176,6 +176,25 @@ export function proxy(req: NextRequest) {
     // Real ad campaigns always have utm_source set; this still blocks cold direct traffic.
     const utmSource = sp.get("utm_source")?.trim() ?? "";
     const utmMedium = sp.get("utm_medium")?.trim().toLowerCase() ?? "";
+    // Safari ITP and Firefox ETP strip click IDs but NOT the Referer header.
+    // Check Referer for known paid-social / ad-network domains as a fallback.
+    // Deliberately exclude generic google.com / bing.com to avoid matching
+    // organic-search referrers. Only use ad-specific subdomains for those.
+    const referer = req.headers.get("referer") ?? "";
+    const hasAdReferer =
+      referer.includes("facebook.com") ||
+      referer.includes("instagram.com") ||
+      referer.includes("l.facebook.com") ||
+      referer.includes("tiktok.com") ||
+      referer.includes("twitter.com") ||
+      referer.includes("t.co/") ||
+      referer.includes("snapchat.com") ||
+      referer.includes("linkedin.com") ||
+      referer.includes("youtube.com") ||
+      referer.includes("pinterest.com") ||
+      referer.includes("googleadservices.com") ||
+      referer.includes("doubleclick.net") ||
+      referer.includes("ads.google.com");
     const hasAdParams =
       sp.has("fbclid") ||
       sp.has("gclid") ||
@@ -185,7 +204,8 @@ export function proxy(req: NextRequest) {
       sp.has("ref") ||
       utmSource !== "" ||
       ["cpc", "paid", "paidsocial", "ppc", "display", "cpm", "social_paid"].includes(utmMedium) ||
-      (utmToken ? sp.get("utm_source") === utmToken : false);
+      (utmToken ? sp.get("utm_source") === utmToken : false) ||
+      hasAdReferer;
 
     if (path === "/") {
       const hasAdToken = hasAdParams || hasVerifiedCookie || isAdminSession;
