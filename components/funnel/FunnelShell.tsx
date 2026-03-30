@@ -57,7 +57,7 @@ function fresh(): FunnelSessionClient {
 
 // ── Scroll-to-top on every step transition ───────────────────────────────────
 function scrollTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
 }
 
 export default function FunnelShell() {
@@ -159,6 +159,9 @@ export default function FunnelShell() {
     }).catch(() => {/* non-fatal */});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
+
+  // Scroll to top before AND after render so autoFocus on new step can't pull the page down
+  useEffect(() => { scrollTop(); }, [step]);
 
   const advance = useCallback((next: AgStep) => {
     scrollTop();

@@ -328,7 +328,6 @@ export default function Section6LeadCapture({ sessionId, clickId, subId, quizAns
               id="ag-email-s1"
               type="email"
               autoComplete="email"
-              autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") handleEmailContinue(); }}
@@ -371,8 +370,6 @@ export default function Section6LeadCapture({ sessionId, clickId, subId, quizAns
                 id="ag-fname"
                 type="text"
                 autoComplete="given-name"
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder={t.s6_fname_placeholder}
