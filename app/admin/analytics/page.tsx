@@ -7,12 +7,14 @@ interface Meta {
   totalVisitors: number;
   todayVisitors: number;
   weekVisitors:  number;
+  monthVisitors: number;
   activeVisitors: number;
   conversions:   number;
   conversionRate: string;
 }
 
 interface LabelCount { label: string; count: number }
+interface PeriodPoint { date?: string; week?: string; month?: string; label: string; count: number }
 
 interface RecentVisitor {
   id:          string;
@@ -34,14 +36,18 @@ interface RecentVisitor {
 }
 
 interface StatsData {
-  meta:      Meta;
-  byCountry: LabelCount[];
-  byDevice:  LabelCount[];
-  byBrowser: LabelCount[];
-  byStep:    LabelCount[];
-  bySource:  LabelCount[];
-  hourly:    number[];
-  recent:    RecentVisitor[];
+  meta:         Meta;
+  byCountry:    LabelCount[];
+  byCountryAll: LabelCount[];
+  byDevice:     LabelCount[];
+  byBrowser:    LabelCount[];
+  byStep:       LabelCount[];
+  bySource:     LabelCount[];
+  hourly:       number[];
+  daily:        PeriodPoint[];
+  weekly:       PeriodPoint[];
+  monthly:      PeriodPoint[];
+  recent:       RecentVisitor[];
 }
 
 /* ─── Helpers ────────────────────────────────────────────── */
@@ -117,6 +123,46 @@ function BreakdownBar({ items, total }: { items: LabelCount[]; total: number }) 
   );
 }
 
+/* ─── Country flag emoji ────────────────────────────────── */
+function countryFlag(code: string) {
+  if (!code || code.length !== 2) return "🌍";
+  const cp = [...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0));
+  return String.fromCodePoint(...cp);
+}
+
+/* ─── Period bar chart ───────────────────────────────────── */
+function PeriodChart({ data, color }: { data: PeriodPoint[]; color: string }) {
+  const max = Math.max(...data.map((d) => d.count), 1);
+  return (
+    <div className="space-y-2">
+      <div className="flex items-end gap-0.5" style={{ height: 80 }}>
+        {data.map((pt, i) => {
+          const pct = Math.round((pt.count / max) * 100);
+          return (
+            <div
+              key={i}
+              className="flex-1 rounded-t relative group"
+              style={{
+                height: `${Math.max(pct, 2)}%`,
+                background: pt.count === 0 ? "#e2e8f0" : color,
+                transition: "height 0.5s ease",
+                cursor: "default",
+              }}
+              title={`${pt.label}: ${pt.count} visitors`}
+            />
+          );
+        })}
+      </div>
+      {/* x-axis: first, middle, last labels */}
+      <div className="flex justify-between" style={{ fontSize: 10, color: "#94a3b8" }}>
+        <span>{data[0]?.label ?? ""}</span>
+        <span>{data[Math.floor(data.length / 2)]?.label ?? ""}</span>
+        <span>{data[data.length - 1]?.label ?? ""}</span>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Hourly sparkline ───────────────────────────────────── */
 function HourlyChart({ data }: { data: number[] }) {
   const max = Math.max(...data, 1);
@@ -185,10 +231,13 @@ function FunnelChart({ byStep }: { byStep: LabelCount[] }) {
 
 /* ─── Main page ──────────────────────────────────────────── */
 export default function AnalyticsPage() {
-  const [data, setData]       = useState<StatsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData]         = useState<StatsData | null>(null);
+  const [loading, setLoading]   = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
-  const [err, setErr]         = useState<string | null>(null);
+  const [err, setErr]           = useState<string | null>(null);
+  const [showStats, setShowStats] = useState(false);
+  const [period, setPeriod]     = useState<"daily" | "weekly" | "monthly">("daily");
+  const [showAllCountries, setShowAllCountries] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -237,7 +286,7 @@ export default function AnalyticsPage() {
     );
   }
 
-  const { meta, byCountry, byDevice, byBrowser, byStep, bySource, hourly, recent } = data;
+  const { meta, byCountry, byCountryAll, byDevice, byBrowser, byStep, bySource, hourly, daily, weekly, monthly, recent } = data;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -275,11 +324,12 @@ export default function AnalyticsPage() {
         }}
       >
         {[
-          { label: "Live Now",        value: meta.activeVisitors, accent: "#10b981", sub: "last 5 min" },
-          { label: "Today",           value: meta.todayVisitors,  accent: "#3b82f6", sub: "last 24 h"  },
-          { label: "This Week",       value: meta.weekVisitors,   accent: "#8b5cf6", sub: "last 7 days" },
-          { label: "All Time",        value: meta.totalVisitors,  accent: "#f59e0b", sub: "unique IPs"  },
-          { label: "Conversions",     value: meta.conversions,    accent: "#ef4444", sub: "lead forms"  },
+          { label: "Live Now",        value: meta.activeVisitors,  accent: "#10b981", sub: "last 5 min" },
+          { label: "Today",           value: meta.todayVisitors,   accent: "#3b82f6", sub: "last 24 h"  },
+          { label: "This Week",       value: meta.weekVisitors,    accent: "#8b5cf6", sub: "last 7 days" },
+          { label: "This Month",      value: meta.monthVisitors,   accent: "#f97316", sub: "last 30 days" },
+          { label: "All Time",        value: meta.totalVisitors,   accent: "#f59e0b", sub: "unique IPs"  },
+          { label: "Conversions",     value: meta.conversions,     accent: "#ef4444", sub: "lead forms"  },
           { label: "Conversion Rate", value: `${meta.conversionRate}%`, accent: "#0ea5e9", sub: "total" },
         ].map((s) => (
           <div key={s.label} style={card}>
@@ -293,6 +343,153 @@ export default function AnalyticsPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Watch Statistics button ── */}
+      <div>
+        <button
+          onClick={() => setShowStats((v) => !v)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            background: showStats
+              ? "linear-gradient(135deg,#1e40af,#3b82f6)"
+              : "linear-gradient(135deg,#0f172a,#1e293b)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            padding: "10px 20px",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            letterSpacing: "0.02em",
+          }}
+        >
+          <span style={{ fontSize: 16 }}>{showStats ? "📊" : "👁"}</span>
+          {showStats ? "Hide Statistics" : "Watch Statistics"}
+        </button>
+      </div>
+
+      {/* ── Expanded Statistics Panel ── */}
+      {showStats && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+          {/* Period chart with tab switcher */}
+          <div style={card}>
+            <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 16 }}>
+              <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>Visitors Over Time</h2>
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["daily", "weekly", "monthly"] as const).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPeriod(p)}
+                    style={{
+                      padding: "4px 12px",
+                      borderRadius: 20,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      border: "1px solid #e2e8f0",
+                      background: period === p ? "#0f172a" : "#f8fafc",
+                      color: period === p ? "#fff" : "#475569",
+                    }}
+                  >
+                    {p === "daily" ? "Daily (30d)" : p === "weekly" ? "Weekly (13w)" : "Monthly (12m)"}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <PeriodChart
+              data={period === "daily" ? daily : period === "weekly" ? weekly : monthly}
+              color={
+                period === "daily"
+                  ? "linear-gradient(180deg,#6366f1,#4f46e5)"
+                  : period === "weekly"
+                  ? "linear-gradient(180deg,#10b981,#059669)"
+                  : "linear-gradient(180deg,#f59e0b,#d97706)"
+              }
+            />
+            <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+              {[
+                { label: "Peak (period)", value: Math.max(...(period === "daily" ? daily : period === "weekly" ? weekly : monthly).map(p => p.count)), accent: "#6366f1" },
+                { label: "Average / period", value: Math.round((period === "daily" ? daily : period === "weekly" ? weekly : monthly).reduce((a, p) => a + p.count, 0) / Math.max((period === "daily" ? daily : period === "weekly" ? weekly : monthly).length, 1)), accent: "#10b981" },
+                { label: "Total in range", value: (period === "daily" ? daily : period === "weekly" ? weekly : monthly).reduce((a, p) => a + p.count, 0), accent: "#f59e0b" },
+              ].map((s) => (
+                <div key={s.label} style={{ textAlign: "center", padding: 10, background: "#f8fafc", borderRadius: 8 }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: s.accent }}>{s.value}</div>
+                  <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 2 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Top Countries table */}
+          <div style={{ ...card, padding: 0, overflow: "hidden" }}>
+            <div style={{ padding: "16px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>
+                Visitors by Country
+                <span style={{ marginLeft: 8, fontSize: 11, color: "#94a3b8", fontWeight: 400 }}>
+                  ({byCountryAll.length} countries)
+                </span>
+              </h2>
+              {byCountryAll.length > 10 && (
+                <button
+                  onClick={() => setShowAllCountries((v) => !v)}
+                  style={{ fontSize: 11, color: "#3b82f6", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}
+                >
+                  {showAllCountries ? "Show top 10" : `Show all ${byCountryAll.length}`}
+                </button>
+              )}
+            </div>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                    {["#", "Country", "Visitors", "Share", ""].map((h) => (
+                      <th key={h} style={{ padding: "8px 16px", textAlign: "left", fontWeight: 600, color: "#64748b", whiteSpace: "nowrap", fontSize: 11 }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {(showAllCountries ? byCountryAll : byCountryAll.slice(0, 10)).map((c, i) => {
+                    const pct = meta.totalVisitors > 0 ? ((c.count / meta.totalVisitors) * 100).toFixed(1) : "0.0";
+                    return (
+                      <tr key={c.label} style={{ borderBottom: "1px solid #f1f5f9", background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
+                        <td style={{ padding: "8px 16px", color: "#94a3b8", fontWeight: 700, width: 40 }}>{i + 1}</td>
+                        <td style={{ padding: "8px 16px", whiteSpace: "nowrap" }}>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{countryFlag(c.label)}</span>
+                          <span style={{ fontWeight: 600, color: "#0f172a" }}>{c.label || "Unknown"}</span>
+                        </td>
+                        <td style={{ padding: "8px 16px", fontWeight: 700, color: "#1e293b" }}>{c.count.toLocaleString()}</td>
+                        <td style={{ padding: "8px 16px", minWidth: 120 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ flex: 1, background: "#e2e8f0", borderRadius: 4, height: 6 }}>
+                              <div style={{
+                                width: `${pct}%`,
+                                background: "linear-gradient(90deg,#3b82f6,#1d4ed8)",
+                                borderRadius: 4, height: 6,
+                                transition: "width 0.6s ease",
+                              }} />
+                            </div>
+                            <span style={{ fontSize: 11, color: "#64748b", minWidth: 36 }}>{pct}%</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: "8px 16px" }}>
+                          {i === 0 && <span style={{ background: "#fef3c7", color: "#92400e", borderRadius: 20, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>TOP</span>}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {byCountryAll.length === 0 && (
+                    <tr><td colSpan={5} style={{ padding: 24, textAlign: "center", color: "#94a3b8" }}>No country data yet</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      )}
 
       {/* ── Hourly chart + Funnel drop-off ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
