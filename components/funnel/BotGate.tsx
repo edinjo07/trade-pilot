@@ -144,9 +144,20 @@ export default function BotGate({ onPass }: Props) {
     return () => window.clearTimeout(id);
   }, [showGate]);
 
-  // ── Safe one-shot pass helper ─────────────────────────────────────────
-  const tryPass = useCallback(() => {
+  // ── Safe one-shot pass helper — geo-checks before revealing funnel ────
+  const tryPass = useCallback(async () => {
     if (passCalledRef.current || blocked) return;
+    // Geo restriction: checked server-side after human verification passes
+    try {
+      const res = await fetch("/api/geo-check", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json() as { allowed: boolean };
+        if (!data.allowed) {
+          window.location.replace("/restricted");
+          return;
+        }
+      }
+    } catch { /* network error — fail open */ }
     passCalledRef.current = true;
     setPassed(true);
     onPass();

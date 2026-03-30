@@ -79,30 +79,6 @@ const EXEMPT_PREFIXES = [
   "/public/",
 ];
 
-// ── Geo config — module-level cache (per edge worker instance, 60 s TTL) ─────
-type GeoConfigData = { mode: string; countries: string[] };
-let _geoCache: { data: GeoConfigData; expiresAt: number } | null = null;
-
-async function getGeoConfig(origin: string): Promise<GeoConfigData> {
-  const now = Date.now();
-  if (_geoCache && now < _geoCache.expiresAt) return _geoCache.data;
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`${origin}/api/internal/geo-config`, {
-      cache: "no-store",
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
-    if (res.ok) {
-      const data = await res.json() as GeoConfigData;
-      _geoCache = { data, expiresAt: now + 60_000 };
-      return data;
-    }
-  } catch { /* network error or timeout — fail open */ }
-  return { mode: "all", countries: [] };
-}
-
 function getClientIp(req: NextRequest) {
   const header = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip");
   const raw = header?.split(",")[0]?.trim() || "";
@@ -142,7 +118,7 @@ function shouldShowEducation(ip: string | null) {
   return ranges.some((range) => isIpInRange(ip, range));
 }
 
-export async function proxy(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   // ── Admin auth ────────────────────────────────────────────────────────────
@@ -172,28 +148,6 @@ export async function proxy(req: NextRequest) {
       url.pathname = "/platform";
       url.searchParams.set("b", match.label);
       return NextResponse.redirect(url, { status: 302 });
-    }
-
-    // ── Geo restriction check ─────────────────────────────────────────────
-    const geoConfig = await getGeoConfig(req.nextUrl.origin);
-    if (geoConfig.mode !== "all" && geoConfig.countries.length > 0) {
-      const country = (
-        req.headers.get("x-vercel-ip-country") ||
-        req.headers.get("cf-ipcountry") ||
-        ""
-      ).toUpperCase().trim();
-      if (country) {
-        const inList = geoConfig.countries.includes(country);
-        const blocked =
-          (geoConfig.mode === "whitelist" && !inList) ||
-          (geoConfig.mode === "blacklist" && inList);
-        if (blocked) {
-          const url = req.nextUrl.clone();
-          url.pathname = "/restricted";
-          url.search = "";
-          return NextResponse.redirect(url, { status: 302 });
-        }
-      }
     }
 
     // ── IP-based education routing ────────────────────────────────────────
