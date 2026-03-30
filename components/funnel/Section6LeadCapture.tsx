@@ -445,8 +445,23 @@ export default function Section6LeadCapture({ sessionId, clickId, subId, quizAns
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border border-gray-400 cursor-pointer accent-amber-500"
+          className="sr-only"
         />
+        {/* Custom checkbox box */}
+        <span
+          className="mt-0.5 h-4 w-4 shrink-0 rounded flex items-center justify-center transition-colors duration-150"
+          style={{
+            border: consent ? "1.5px solid #f0a500" : "1.5px solid #9ca3af",
+            background: consent ? "#f0a500" : "transparent",
+          }}
+          aria-hidden="true"
+        >
+          {consent && (
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+              <path d="M1 4L3.5 6.5L9 1" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+        </span>
         <span className="text-xs text-gray-500 leading-relaxed">
           {t.s6_consent_text}
         </span>
