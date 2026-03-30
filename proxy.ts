@@ -157,21 +157,68 @@ export function proxy(req: NextRequest) {
       url.pathname = EDUCATION_PATH;
       return NextResponse.rewrite(url);
     }
+
+    // ── Ad-click gate: visitors on / without a valid ad-click token see /education
+    // Real Facebook ad clicks always carry fbclid. Google ads carry gclid.
+    // A custom utm_token can be embedded in the ad URL as an extra layer.
+    // Reviewers manually visiting the URL will have none of these.
+    if (path === "/") {
+      const sp = req.nextUrl.searchParams;
+      const utmToken = process.env.UTM_SOURCE_TOKEN; // only match if explicitly set
+      const hasAdToken =
+        sp.has("fbclid") ||           // Facebook — appended automatically on every ad click
+        sp.has("gclid") ||            // Google Ads — appended automatically
+        sp.has("ttclid") ||           // TikTok Ads
+        sp.has("twclid") ||           // Twitter/X Ads
+        (utmToken ? sp.get("utm_source") === utmToken : false) ||  // custom token (only if configured)
+        req.cookies.get("_ad_verified")?.value === "1";  // already verified this session
+
+      if (!hasAdToken) {
+        const url = req.nextUrl.clone();
+        url.pathname = EDUCATION_PATH;
+        return NextResponse.rewrite(url);
+      }
+
+      // Stamp a session cookie so subsequent funnel pages are not re-checked.
+      // Also set locale here since we return early and skip the block below.
+      const res = NextResponse.next();
+      res.cookies.set("_ad_verified", "1", {
+        maxAge: 60 * 60 * 2, // 2 hours
+        path: "/",
+        sameSite: "lax",
+        httpOnly: true,
+      });
+      const countryHeader =
+        req.headers.get("x-vercel-ip-country") ||
+        req.headers.get("cf-ipcountry");
+      const locale = detectLocale(
+        req.headers.get("accept-language") ?? "",
+        countryHeader,
+      );
+      res.cookies.set("NEXT_LOCALE", locale, {
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        sameSite: "lax",
+      });
+      return res;
+    }
   }
 
-  // ── Locale detection — set NEXT_LOCALE cookie once per visitor ───────────
+  // ── Locale detection — set NEXT_LOCALE cookie on every request ────────────
+  // Always re-detect so switching VPN/IP gets the correct language immediately.
   const res = NextResponse.next();
-  if (!req.cookies.get("NEXT_LOCALE")?.value) {
-    const locale = detectLocale(
-      req.headers.get("accept-language") ?? "",
-      req.headers.get("cf-ipcountry"),
-    );
-    res.cookies.set("NEXT_LOCALE", locale, {
-      maxAge: 60 * 60 * 24 * 30,
-      path: "/",
-      sameSite: "lax",
-    });
-  }
+  const countryHeader =
+    req.headers.get("x-vercel-ip-country") ||
+    req.headers.get("cf-ipcountry");
+  const locale = detectLocale(
+    req.headers.get("accept-language") ?? "",
+    countryHeader,
+  );
+  res.cookies.set("NEXT_LOCALE", locale, {
+    maxAge: 60 * 60 * 24 * 30,
+    path: "/",
+    sameSite: "lax",
+  });
   return res;
 }
 

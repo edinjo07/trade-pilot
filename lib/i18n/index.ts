@@ -12,6 +12,8 @@ export function detectLocale(acceptLang: string, cfCountry?: string | null): Loc
       DE: "de", AT: "de", // Austria → German
       CH: "de",           // Switzerland → German (primary)
       FR: "fr",
+      BE: "fr",           // Belgium → French
+      LU: "fr",           // Luxembourg → French
       ES: "es",
     };
     const mapped = countryMap[cfCountry.toUpperCase()];
