@@ -445,7 +445,7 @@ export default function Section6LeadCapture({ sessionId, clickId, subId, quizAns
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-600 bg-neutral-900 accent-amber-500 cursor-pointer"
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border border-gray-400 cursor-pointer accent-amber-500"
         />
         <span className="text-xs text-gray-500 leading-relaxed">
           {t.s6_consent_text}
