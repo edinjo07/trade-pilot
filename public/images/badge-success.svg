@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Outer ring glow -->
+  <circle cx="100" cy="100" r="95" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.3"/>
+  <circle cx="100" cy="100" r="88" stroke="#10b981" stroke-width="1"   stroke-opacity="0.15"/>
+
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="80" fill="#0d1f18"/>
+
+  <!-- Radial gradient fill -->
+  <radialGradient id="badgeGrad" cx="50%" cy="40%" r="55%">
+    <stop offset="0%"  stop-color="#10b981" stop-opacity="0.25"/>
+    <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="100" cy="100" r="80" fill="url(#badgeGrad)"/>
+
+  <!-- Ring accent segments -->
+  <circle cx="100" cy="100" r="80" stroke="#10b981" stroke-width="3"
+    stroke-dasharray="90 10 90 10 90 10 90 10"
+    stroke-dashoffset="5"
+    stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Checkmark -->
+  <path d="M62 102 L84 124 L138 76" stroke="#10b981" stroke-width="8"
+    stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Stars decorative -->
+  <circle cx="48"  cy="52"  r="2" fill="#10b981" opacity="0.5"/>
+  <circle cx="152" cy="148" r="2" fill="#10b981" opacity="0.5"/>
+  <circle cx="148" cy="52"  r="1.5" fill="#34d399" opacity="0.4"/>
+  <circle cx="52"  cy="148" r="1.5" fill="#34d399" opacity="0.4"/>
+</svg>

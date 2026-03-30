@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="bars" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#b07500"/>
+      <stop offset="60%" stop-color="#f0a500"/>
+      <stop offset="100%" stop-color="#f5b523"/>
+    </linearGradient>
+  </defs>
+
+  <!-- dark navy background -->
+  <rect width="32" height="32" rx="7" fill="#07090f"/>
+
+  <!-- subtle inner glow -->
+  <rect width="32" height="32" rx="7" fill="url(#glow)" opacity="0.4"/>
+
+  <!-- chart bars — all share baseline y=29 -->
+  <rect x="3"  y="22" width="4" height="7"  rx="1" fill="url(#bars)" opacity="0.55"/>
+  <rect x="9"  y="16" width="4" height="13" rx="1" fill="url(#bars)" opacity="0.72"/>
+  <rect x="15" y="19" width="4" height="10" rx="1" fill="url(#bars)" opacity="0.88"/>
+  <rect x="21" y="9"  width="4" height="20" rx="1" fill="url(#bars)"/>
+
+  <!-- trend line connecting bar tops -->
+  <polyline
+    points="5,22 11,16 17,19 23,9"
+    fill="none"
+    stroke="#fbbf24"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- connector from last bar to arrowhead -->
+  <line x1="23" y1="9" x2="27.5" y2="4.5" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- pilot arrowhead — small filled triangle pointing up-right -->
+  <polygon points="29.5,3 25,6.5 27.5,10" fill="#fbbf24"/>
+</svg>

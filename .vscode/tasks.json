@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Next.js Dev Server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Next.js dev :4000",
+			"type": "shell",
+			"command": "npx next dev --turbopack -p 4000",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

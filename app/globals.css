@@ -1,26 +1,611 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
+/* ════════════════════════════════════════════════════════════════════
+   IC MARKETS-INSPIRED DESIGN TOKENS
+   Deep navy · Gold primary · Clean professional typography
+   ════════════════════════════════════════════════════════════════════ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* Navy palette (kept for component overrides) */
+  --navy-950: #04060d;
+  --navy-900: #07090f;
+  --navy-800: #0d1220;
+  --navy-700: #131c30;
+  --navy-600: #1a2540;
+  --navy-500: #243050;
+  --navy-400: #2e3d63;
+  --navy-300: #3d5080;
+
+  /* Gold accent */
+  --gold-500:  #f0a500;
+  --gold-400:  #f5b523;
+  --gold-300:  #d08b00;
+  --gold-600:  #b07500;
+  --gold-700:  #8a5d00;
+
+  /* Emerald (data / success) */
+  --emerald-400: #059669;
+  --emerald-500: #047857;
+  --emerald-600: #065f46;
+
+  /* Text - dark on white */
+  --text-primary:   #111827;
+  --text-secondary: #4b5563;
+  --text-muted:     #9ca3af;
+
+  /* Glow helpers */
+  --gold-glow:     rgba(240,165,0,0.18);
+  --emerald-glow:  rgba(5,150,105,0.14);
+  --red-glow:      rgba(220,38,38,0.12);
+
+  /* Card / border */
+  --card-bg:        rgba(255,255,255,0.97);
+  --border-subtle:  rgba(0,0,0,0.08);
+  --border-gold:    rgba(240,165,0,0.35);
+  --border-emerald: rgba(5,150,105,0.25);
+
+  /* Legacy compat */
+  --accent: #f0a500;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ════════════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════════════ */
+*,*::before,*::after { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  color: var(--text-primary);
+  font-feature-settings: "ss01" 1,"ss02" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
+
+html,body { width:100%; min-height:100%; }
+
+::selection { background:rgba(240,165,0,0.28); color:#fff8e8; }
+
+/* ════════════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ════════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar             { width:5px; }
+::-webkit-scrollbar-track       { background:#f3f4f6; }
+::-webkit-scrollbar-thumb       { background:#d1d5db; border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:#9ca3af; }
+
+/* ════════════════════════════════════════════════════════════════════
+   AMBIENT BACKGROUND  white + subtle gold top bloom
+   ════════════════════════════════════════════════════════════════════ */
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background-image:
+    radial-gradient(ellipse 70% 35% at 50% 0%, rgba(240,165,0,0.07) 0%, transparent 55%);
+  pointer-events:none;
+  animation:ambientShift 20s ease-in-out infinite alternate;
+}
+
+body::after {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background:radial-gradient(ellipse 80% 40% at 50% 100%, rgba(240,165,0,0.04) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+@keyframes ambientShift {
+  0%   { opacity:.7;  transform:scale(1);     }
+  50%  { opacity:1;   transform:scale(1.015); }
+  100% { opacity:.7;  transform:scale(1);     }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ════════════════════════════════════════════════════════════════════ */
+@keyframes fadeInUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+@keyframes slideInLeft  { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideInRight { from{opacity:0;transform:translateX(20px)}  to{opacity:1;transform:translateX(0)} }
+@keyframes scaleIn    { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+@keyframes shimmer    { 0%{background-position:-200% center} 100%{background-position:200% center} }
+@keyframes shimmerGold{ 0%{background-position:-200% center} 100%{background-position:200% center} }
+@keyframes glowPulse  { 0%,100%{box-shadow:0 0 12px 2px rgba(52,211,153,0.15)} 50%{box-shadow:0 0 28px 6px rgba(52,211,153,0.32)} }
+@keyframes glowPulseGold  { 0%,100%{box-shadow:0 0 14px 2px rgba(240,165,0,0.18)} 50%{box-shadow:0 0 32px 8px rgba(240,165,0,0.36)} }
+@keyframes glowPulseAmber { 0%,100%{box-shadow:0 0 12px 2px rgba(251,191,36,0.12)} 50%{box-shadow:0 0 28px 6px rgba(251,191,36,0.28)} }
+@keyframes glowPulseRed   { 0%,100%{box-shadow:0 0 10px 2px rgba(248,113,113,0.10)} 50%{box-shadow:0 0 24px 5px rgba(248,113,113,0.25)} }
+@keyframes tickerFloat { 0%{transform:translateY(10px);opacity:0} 15%{transform:translateY(0);opacity:1} 80%{transform:translateY(0);opacity:1} 100%{transform:translateY(-8px);opacity:0} }
+@keyframes countUp    { from{transform:translateY(6px) scale(0.95);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
+@keyframes progressFill { from{width:0} }
+@keyframes dotPing    { 0%{transform:scale(1);opacity:1} 75%{transform:scale(2.2);opacity:0} 100%{transform:scale(2.2);opacity:0} }
+@keyframes spinSlow   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes float      { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-6px)} }
+@keyframes slideDown  { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes scanLine   { 0%{top:0} 100%{top:100%} }
+@keyframes barChart   { from{transform:scaleY(0)} to{transform:scaleY(1)} }
+@keyframes goldShine  { 0%{left:-100%} 100%{left:200%} }
+
+/* ════════════════════════════════════════════════════════════════════
+   ANIMATION UTILITIES
+   ════════════════════════════════════════════════════════════════════ */
+.animate-fade-in-up  { animation:fadeInUp     0.55s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-fade-in     { animation:fadeIn       0.5s  ease both; }
+.animate-scale-in    { animation:scaleIn      0.4s  cubic-bezier(0.22,1,0.36,1) both; }
+.animate-slide-left  { animation:slideInLeft  0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-slide-right { animation:slideInRight 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-float       { animation:float      4s ease-in-out infinite; }
+.animate-spin-slow   { animation:spinSlow   3s linear infinite; }
+.animate-count-up    { animation:countUp    0.4s cubic-bezier(0.22,1,0.36,1) both; }
+
+.delay-100 { animation-delay:0.10s; }
+.delay-200 { animation-delay:0.20s; }
+.delay-300 { animation-delay:0.30s; }
+.delay-400 { animation-delay:0.40s; }
+.delay-500 { animation-delay:0.50s; }
+.delay-700 { animation-delay:0.70s; }
+.delay-900 { animation-delay:0.90s; }
+
+/* ════════════════════════════════════════════════════════════════════
+   GLOW UTILITIES
+   ════════════════════════════════════════════════════════════════════ */
+.glow-gold    { animation:glowPulseGold  3s ease-in-out infinite; }
+.glow-emerald { animation:glowPulse      3s ease-in-out infinite; }
+.glow-amber   { animation:glowPulseAmber 3s ease-in-out infinite; }
+.glow-red     { animation:glowPulseRed   3s ease-in-out infinite; }
+
+/* ════════════════════════════════════════════════════════════════════
+   SHIMMER TEXT
+   ════════════════════════════════════════════════════════════════════ */
+.text-shimmer-gold {
+  background:linear-gradient(120deg,#f0a500 0%,#fad060 30%,#f0a500 50%,#fff0b0 70%,#f0a500 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shimmerGold 2.8s linear infinite;
+}
+.text-shimmer {
+  background:linear-gradient(120deg,#34d399 0%,#6ee7b7 30%,#34d399 50%,#a7f3d0 70%,#34d399 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite;
+}
+.text-shimmer-amber {
+  background:linear-gradient(120deg,#f59e0b 0%,#fde68a 35%,#f59e0b 55%,#fbbf24 75%,#f59e0b 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shimmer 2.8s linear infinite;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   GRADIENT BORDERS
+   ════════════════════════════════════════════════════════════════════ */
+.border-gradient-gold { position:relative; border:none !important; }
+.border-gradient-gold::before {
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background:linear-gradient(135deg,rgba(240,165,0,0.6) 0%,rgba(240,165,0,0.1) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+.border-gradient-emerald { position:relative; border:none !important; }
+.border-gradient-emerald::before {
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background:linear-gradient(135deg,rgba(52,211,153,0.5) 0%,rgba(52,211,153,0.1) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   CARD SYSTEM  IC Markets deep navy language
+   ════════════════════════════════════════════════════════════════════ */
+.card-dark {
+  background:linear-gradient(145deg,rgba(13,18,32,0.92) 0%,rgba(7,9,15,0.97) 100%);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.07);
+}
+.card-navy {
+  background:linear-gradient(145deg,rgba(13,21,44,0.9) 0%,rgba(7,11,22,0.96) 100%);
+  border:1px solid rgba(255,255,255,0.07);
+  backdrop-filter:blur(12px);
+}
+.card-glow-gold {
+  background:linear-gradient(145deg,rgba(24,18,6,0.9) 0%,rgba(15,10,3,0.97) 100%);
+  border:1px solid rgba(240,165,0,0.2);
+  backdrop-filter:blur(12px);
+}
+.card-glow-emerald {
+  background:linear-gradient(145deg,rgba(10,22,18,0.9) 0%,rgba(5,11,9,0.97) 100%);
+  border:1px solid rgba(52,211,153,0.18);
+  backdrop-filter:blur(12px);
+}
+.card-glow-amber {
+  background:linear-gradient(145deg,rgba(28,24,12,0.88) 0%,rgba(18,14,6,0.95) 100%);
+  border:1px solid rgba(251,191,36,0.18);
+  backdrop-filter:blur(12px);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   BUTTON SYSTEM
+   ════════════════════════════════════════════════════════════════════ */
+/* Gold primary CTA */
+.btn-gold-gradient {
+  background:linear-gradient(135deg,#f0a500 0%,#d4840a 50%,#b87008 100%);
+  box-shadow:0 4px 22px rgba(240,165,0,0.32),0 1px 0 rgba(255,255,255,0.18) inset;
+  transition:all 0.18s ease;
+  position:relative; overflow:hidden;
+  color:#07090f; font-weight:700;
+}
+.btn-gold-gradient::before {
+  content:""; position:absolute; top:0; left:-100%;
+  width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+  transition:none;
+}
+.btn-gold-gradient:hover {
+  background:linear-gradient(135deg,#f5b523 0%,#e89110 50%,#c87a0e 100%);
+  box-shadow:0 6px 32px rgba(240,165,0,0.48),0 1px 0 rgba(255,255,255,0.22) inset;
+  transform:translateY(-1px);
+}
+.btn-gold-gradient:hover::before { animation:goldShine 0.55s ease forwards; }
+.btn-gold-gradient:active { transform:scale(0.98) translateY(0); box-shadow:0 2px 12px rgba(240,165,0,0.28); }
+
+/* Emerald secondary CTA */
+.btn-emerald-gradient {
+  background:linear-gradient(135deg,#10b981 0%,#059669 50%,#047857 100%);
+  box-shadow:0 4px 20px rgba(16,185,129,0.30),0 1px 0 rgba(255,255,255,0.13) inset;
+  transition:all 0.18s ease;
+  position:relative; overflow:hidden;
+}
+.btn-emerald-gradient::after {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 60%);
+  pointer-events:none;
+}
+.btn-emerald-gradient:hover {
+  background:linear-gradient(135deg,#34d399 0%,#10b981 50%,#059669 100%);
+  box-shadow:0 6px 28px rgba(52,211,153,0.42),0 1px 0 rgba(255,255,255,0.18) inset;
+  transform:translateY(-1px);
+}
+.btn-emerald-gradient:active { transform:scale(0.98) translateY(0); box-shadow:0 2px 10px rgba(16,185,129,0.28); }
+
+/* Navy ghost */
+.btn-navy-ghost {
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.12);
+  color:var(--text-secondary);
+  transition:all 0.18s ease;
+}
+.btn-navy-ghost:hover { border-color:rgba(240,165,0,0.35); color:var(--gold-400); background:rgba(240,165,0,0.05); }
+
+/* ════════════════════════════════════════════════════════════════════
+   MISC UTILITIES
+   ════════════════════════════════════════════════════════════════════ */
+.progress-bar-animated { animation:progressFill 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+
+.live-dot::after {
+  content:""; position:absolute; inset:0; border-radius:50%;
+  background:currentColor; animation:dotPing 1.4s cubic-bezier(0,0,0.2,1) infinite;
+}
+
+.stat-number { font-variant-numeric:tabular-nums; letter-spacing:-0.02em; }
+
+.ticker-notification { animation:tickerFloat 6s ease forwards; }
+
+.scan-overlay::after {
+  content:""; position:absolute; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(240,165,0,0.35) 50%,transparent 100%);
+  animation:scanLine 3s linear infinite; pointer-events:none;
+}
+
+.glass {
+  background:rgba(255,255,255,0.025);
+  backdrop-filter:blur(16px) saturate(150%);
+  border:1px solid rgba(255,255,255,0.07);
+}
+
+.neon-underline { text-decoration:none; position:relative; }
+.neon-underline::after {
+  content:""; position:absolute; left:0; right:0; bottom:-2px;
+  height:2px; background:linear-gradient(90deg,#f0a500,#fbbf24);
+  border-radius:1px; box-shadow:0 0 6px rgba(240,165,0,0.55);
+}
+
+.chart-bar { transform-origin:bottom; animation:barChart 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+
+.profit-counter { font-variant-numeric:tabular-nums; transition:all 0.2s ease; }
+
+input:focus, textarea:focus, select:focus { outline:none; }
+
+/* Gold-ring input */
+.input-ic {
+  background:rgba(13,18,32,0.9);
+  border:1px solid rgba(255,255,255,0.1);
+  color:var(--text-primary);
+  transition:border-color 0.18s ease,box-shadow 0.18s ease;
+}
+.input-ic:focus { border-color:rgba(240,165,0,0.6); box-shadow:0 0 0 3px rgba(240,165,0,0.1); }
+.input-ic::placeholder { color:var(--text-muted); }
+
+.page-enter { animation:fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+
+.headline-gradient {
+  background:linear-gradient(135deg,#ffffff 0%,#c8d4f0 50%,#ffffff 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.img-overlay-dark { position:relative; }
+.img-overlay-dark::after {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(7,9,15,0.92) 0%,rgba(7,9,15,0.3) 50%,transparent 100%);
+  pointer-events:none;
+}
+
+/* IC Markets stat block */
+.ic-stat { display:flex; flex-direction:column; align-items:center; gap:2px; }
+.ic-stat-number {
+  font-size:clamp(1.6rem,4vw,2.4rem); font-weight:900; letter-spacing:-0.03em;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(135deg,#f0a500,#fad060);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.ic-stat-label { font-size:0.65rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); }
+
+/* Ticker bar */
+.ic-ticker-bar {
+  background:rgba(13,18,32,0.95);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  backdrop-filter:blur(8px);
+  overflow:hidden;
+}
+
+/* Trust badge */
+.trust-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  border-radius:6px; padding:4px 10px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  font-size:0.7rem; color:var(--text-secondary); font-weight:500;
+}
+
+/* IC divider */
+.ic-divider { width:100%; height:1px; background:linear-gradient(90deg,transparent 0%,rgba(240,165,0,0.25) 50%,transparent 100%); }
+
+/* Step circle */
+.step-circle {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.8rem; font-weight:800; flex-shrink:0;
+  background:linear-gradient(135deg,rgba(240,165,0,0.2) 0%,rgba(240,165,0,0.08) 100%);
+  border:1px solid rgba(240,165,0,0.35); color:#f0a500;
+}
+
+/* Funnel container */
+.funnel-container {
+  width:100%; max-width:600px;
+  margin-inline:auto;
+  padding-inline:clamp(16px,4vw,32px);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   RESPONSIVE / MOBILE UTILITIES
+   ════════════════════════════════════════════════════════════════════ */
+.touch-target { min-height:44px; min-width:44px; display:inline-flex; align-items:center; justify-content:center; }
+
+.safe-bottom { padding-bottom:env(safe-area-inset-bottom,16px); }
+.safe-top    { padding-top:env(safe-area-inset-top,0px); }
+
+@media (max-width:479px) {
+  .stack-mobile { flex-direction:column !important; align-items:stretch !important; }
+  .stack-mobile > * { width:100%; }
+  button, a[role="button"], [type="submit"] { min-height:44px; }
+  .card-dark, .card-navy, .card-glow-gold, .card-glow-emerald { border-radius:12px !important; }
+}
+
+@media (min-width:640px) and (max-width:1023px) {
+  .funnel-container { max-width:680px; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   iOS / ANDROID SMOOTH SCROLL & OVERSCROLL
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Momentum scrolling on iOS Safari */
+html {
+  -webkit-overflow-scrolling: touch;
+  /* Prevent pull-to-refresh jank on Android Chrome */
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent horizontal bounce */
+body {
+  overscroll-behavior-x: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   iOS INPUT ZOOM PREVENTION
+   Inputs with font-size < 16px trigger auto-zoom in iOS Safari.
+   Force all inputs/selects/textareas to 16px so the page never zooms.
+   ════════════════════════════════════════════════════════════════════ */
+input,
+select,
+textarea {
+  font-size: 16px !important; /* prevents iOS auto-zoom */
+  /* Remove iOS default styling */
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0; /* iOS rounds inputs by default */
+}
+
+/* Re-apply sensible border-radius for our styled inputs */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+select {
+  border-radius: 12px;
+}
+
+/* Prevent iOS blue auto-link styling on phone numbers / dates */
+a[href^="tel"],
+a[x-apple-data-detectors] {
+  color: inherit !important;
+  text-decoration: none !important;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   TOUCH FEEDBACK
+   Faster, more satisfying tap response on mobile
+   ════════════════════════════════════════════════════════════════════ */
+button,
+[role="button"],
+a,
+label[for] {
+  /* Remove the 300ms click delay on mobile browsers */
+  touch-action: manipulation;
+  /* No blue highlight flash on Android */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Active state for touch: slightly scale down like a native app button */
+button:active,
+[role="button"]:active {
+  transform: scale(0.97);
+  transition: transform 0.08s ease;
+}
+
+/* Gold CTA overrides active scale (already handled inline) */
+.btn-gold-gradient:active,
+.btn-emerald-gradient:active {
+  transform: scale(0.97) translateY(0);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   CARD TAP STATES (mobile only)
+   ════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  /* Touch devices: disable hover effects that look broken on mobile */
+  .btn-gold-gradient:hover,
+  .btn-emerald-gradient:hover {
+    transform: none;
+    box-shadow: 0 4px 22px rgba(240,165,0,0.32), 0 1px 0 rgba(255,255,255,0.18) inset;
+  }
+
+  /* Cards that look clickable should have an active press state */
+  [class*="rounded-xl"][class*="cursor-pointer"]:active,
+  [class*="rounded-2xl"][class*="cursor-pointer"]:active {
+    opacity: 0.88;
+    transform: scale(0.99);
+    transition: all 0.08s ease;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FLUID TYPOGRAPHY  scales smoothly from 320px to 768px
+   ════════════════════════════════════════════════════════════════════ */
+h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+h2 { font-size: clamp(1.25rem, 4.5vw, 1.875rem); }
+h3 { font-size: clamp(1.1rem, 3.5vw, 1.5rem); }
+
+/* ════════════════════════════════════════════════════════════════════
+   SVG CHART RESPONSIVENESS (SectionLiveProof / SectionPilotSim)
+   ════════════════════════════════════════════════════════════════════ */
+svg[aria-label] {
+  /* SVGs with aria-label are charts — make them always fill their container */
+  width: 100%;
+  height: auto;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PHONE-SPECIFIC TWEAKS  max-width: 479px
+   ════════════════════════════════════════════════════════════════════ */
+@media (max-width: 479px) {
+  /* Tighten vertical rhythm on very small screens */
+  .space-y-8 > * + * { margin-top: 1.25rem !important; }
+  .space-y-7 > * + * { margin-top: 1.1rem !important; }
+  .space-y-6 > * + * { margin-top: 1rem !important; }
+
+  /* Slightly reduce padding on cards */
+  .rounded-2xl { padding-inline: clamp(12px, 4vw, 20px); }
+
+  /* Progress bar pills — full-width on tiny screens */
+  .grid-cols-3 { gap: 0.5rem !important; }
+
+  /* Chart height on small phones */
+  svg[style*="height: 220px"] { height: 170px !important; }
+  svg[style*="height: 160px"] { height: 130px !important; }
+
+  /* Push the bottom CTA above iOS home indicator */
+  .space-y-3:last-child {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   TABLET  640px to 1023px
+   ════════════════════════════════════════════════════════════════════ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Slightly larger tap targets on tablet */
+  button, [role="button"] { min-height: 48px; }
+
+  /* Two-column grid for pain point cards on tablet */
+  .pain-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   KEYBOARD AVOIDANCE
+   When virtual keyboard is open on Android/iOS, scroll the focused
+   field into view and ensure the CTA button isn't hidden.
+   ════════════════════════════════════════════════════════════════════ */
+@supports (height: 100dvh) {
+  .min-h-screen { min-height: 100dvh; }
+}
+
+/* Make the funnel container use dynamic viewport height on mobile */
+.relative.min-h-screen {
+  min-height: 100dvh;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   STICKY BOTTOM CTA (mobile)
+   The final submit button in the lead form should never be hidden
+   behind the keyboard or home indicator.
+   ════════════════════════════════════════════════════════════════════ */
+@media (max-width: 639px) {
+  /* Ensure the submit button row has bottom safe-area padding */
+  form .btn-gold-gradient:last-of-type,
+  .space-y-7 > button:last-child {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SCROLLBAR  hide on touch devices (they have native overlay scrollbars)
+   ════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  ::-webkit-scrollbar { display: none; }
+  * { scrollbar-width: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FOCUS VISIBLE  large, accessible focus ring for keyboard / switch users
+   ════════════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid #f0a500;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) { outline: none; }

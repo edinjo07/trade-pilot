@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" fill="none">
+  <!-- BG -->
+  <rect width="800" height="320" fill="#070b09"/>
+
+  <!-- Side glow -->
+  <radialGradient id="dashGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"  stop-color="#10b981" stop-opacity="0.09"/>
+    <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="800" height="320" fill="url(#dashGlow)"/>
+
+  <!-- Header bar -->
+  <rect width="800" height="44" fill="#0f1a14"/>
+  <circle cx="22" cy="22" r="7" fill="#1f2937"/>
+  <circle cx="40" cy="22" r="7" fill="#1f2937"/>
+  <circle cx="58" cy="22" r="7" fill="#1f2937"/>
+  <rect x="80" y="14" width="140" height="16" rx="4" fill="#1a2e1f"/>
+  <rect x="600" y="14" width="80"  height="16" rx="4" fill="#1a2e1f"/>
+  <rect x="690" y="14" width="90"  height="16" rx="4" fill="#10b981" opacity="0.7"/>
+
+  <!-- KPI cards row -->
+  <!-- Card 1 -->
+  <rect x="16" y="58" width="175" height="80" rx="10" fill="#111e16" stroke="#1e3a28" stroke-width="1"/>
+  <text x="28" y="80" font-family="sans-serif" font-size="10" fill="#6b7280">Total P&amp;L</text>
+  <text x="28" y="108" font-family="monospace" font-size="22" fill="#10b981" font-weight="bold">+$8,426</text>
+  <rect x="28" y="115" width="60" height="8" rx="4" fill="#10b981" opacity="0.2"/>
+  <rect x="28" y="115" width="46" height="8" rx="4" fill="#10b981" opacity="0.5"/>
+  <text x="122" y="80" font-family="sans-serif" font-size="9" fill="#10b981">↑ 14.3%</text>
+
+  <!-- Card 2 -->
+  <rect x="200" y="58" width="175" height="80" rx="10" fill="#111e16" stroke="#1e3a28" stroke-width="1"/>
+  <text x="212" y="80" font-family="sans-serif" font-size="10" fill="#6b7280">Win Rate</text>
+  <text x="212" y="108" font-family="monospace" font-size="22" fill="#34d399" font-weight="bold">73.4%</text>
+  <rect x="212" y="115" width="60" height="8" rx="4" fill="#34d399" opacity="0.15"/>
+  <rect x="212" y="115" width="44" height="8" rx="4" fill="#34d399" opacity="0.4"/>
+
+  <!-- Card 3 -->
+  <rect x="384" y="58" width="175" height="80" rx="10" fill="#111e16" stroke="#1e3a28" stroke-width="1"/>
+  <text x="396" y="80" font-family="sans-serif" font-size="10" fill="#6b7280">Open Trades</text>
+  <text x="396" y="108" font-family="monospace" font-size="22" fill="#f59e0b" font-weight="bold">3</text>
+  <text x="430" y="108" font-family="sans-serif" font-size="10" fill="#6b7280"> active</text>
+
+  <!-- Card 4 -->
+  <rect x="568" y="58" width="216" height="80" rx="10" fill="#111e16" stroke="#1e3a28" stroke-width="1"/>
+  <text x="580" y="80" font-family="sans-serif" font-size="10" fill="#6b7280">Today</text>
+  <text x="580" y="108" font-family="monospace" font-size="22" fill="#10b981" font-weight="bold">+$342</text>
+  <text x="652" y="80" font-family="sans-serif" font-size="9" fill="#10b981">↑ Live</text>
+  <!-- pulsing dot -->
+  <circle cx="668" cy="76" r="4" fill="#10b981" opacity="0.7"/>
+
+  <!-- Mini chart panel -->
+  <rect x="16" y="152" width="495" height="148" rx="10" fill="#0d1710" stroke="#1e3a28" stroke-width="1"/>
+  <text x="28" y="173" font-family="sans-serif" font-size="10" fill="#6b7280">Portfolio performance — 30 days</text>
+
+  <!-- Chart area fill -->
+  <defs>
+    <linearGradient id="miniArea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#10b981" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/>
+    </linearGradient>
+    <clipPath id="chartClip">
+      <rect x="22" y="182" width="480" height="105"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#chartClip)">
+    <path d="M22,265 L62,252 L102,245 L142,238 L182,228 L222,215 L262,208 L302,200 L342,188 L382,182 L422,185 L462,176 L502,168 L502,287 L22,287 Z" fill="url(#miniArea)"/>
+    <polyline points="22,265 62,252 102,245 142,238 182,228 222,215 262,208 302,200 342,188 382,182 422,185 462,176 502,168"
+      stroke="#10b981" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- Data points -->
+    <circle cx="382" cy="182" r="4" fill="#10b981"/>
+    <circle cx="462" cy="176" r="3" fill="#10b981" opacity="0.7"/>
+    <circle cx="502" cy="168" r="4" fill="#34d399" stroke="#0d1710" stroke-width="2"/>
+  </g>
+  <!-- horizontal guide lines -->
+  <line x1="22" y1="210" x2="502" y2="210" stroke="#1a2e1f" stroke-width="1" stroke-dasharray="3,4"/>
+  <line x1="22" y1="240" x2="502" y2="240" stroke="#1a2e1f" stroke-width="1" stroke-dasharray="3,4"/>
+  <line x1="22" y1="270" x2="502" y2="270" stroke="#1a2e1f" stroke-width="1" stroke-dasharray="3,4"/>
+
+  <!-- Trades list panel -->
+  <rect x="520" y="152" width="264" height="148" rx="10" fill="#0d1710" stroke="#1e3a28" stroke-width="1"/>
+  <text x="532" y="173" font-family="sans-serif" font-size="10" fill="#6b7280">Recent trades</text>
+  <line x1="520" y1="180" x2="784" y2="180" stroke="#1a2e1f" stroke-width="1"/>
+
+  <!-- Trade rows -->
+  <!-- Row 1 -->
+  <rect x="532" y="184" width="28" height="14" rx="3" fill="#10b981" opacity="0.15"/>
+  <text x="536" y="195" font-family="monospace" font-size="8" fill="#10b981">BUY</text>
+  <text x="568" y="195" font-family="monospace" font-size="9" fill="#d1d5db">EUR/USD</text>
+  <text x="716" y="195" font-family="monospace" font-size="9" fill="#10b981">+$124</text>
+
+  <!-- Row 2 -->
+  <rect x="532" y="204" width="28" height="14" rx="3" fill="#dc2626" opacity="0.15"/>
+  <text x="534" y="215" font-family="monospace" font-size="8" fill="#dc2626">SELL</text>
+  <text x="568" y="215" font-family="monospace" font-size="9" fill="#d1d5db">GBP/JPY</text>
+  <text x="716" y="215" font-family="monospace" font-size="9" fill="#dc2626">-$38</text>
+
+  <!-- Row 3 -->
+  <rect x="532" y="224" width="28" height="14" rx="3" fill="#10b981" opacity="0.15"/>
+  <text x="536" y="235" font-family="monospace" font-size="8" fill="#10b981">BUY</text>
+  <text x="568" y="235" font-family="monospace" font-size="9" fill="#d1d5db">XAU/USD</text>
+  <text x="716" y="235" font-family="monospace" font-size="9" fill="#10b981">+$286</text>
+
+  <!-- Row 4 -->
+  <rect x="532" y="244" width="28" height="14" rx="3" fill="#10b981" opacity="0.15"/>
+  <text x="536" y="255" font-family="monospace" font-size="8" fill="#10b981">BUY</text>
+  <text x="568" y="255" font-family="monospace" font-size="9" fill="#d1d5db">USD/CAD</text>
+  <text x="716" y="255" font-family="monospace" font-size="9" fill="#10b981">+$91</text>
+
+  <!-- Row 5 -->
+  <rect x="532" y="264" width="28" height="14" rx="3" fill="#dc2626" opacity="0.15"/>
+  <text x="534" y="275" font-family="monospace" font-size="8" fill="#dc2626">SELL</text>
+  <text x="568" y="275" font-family="monospace" font-size="9" fill="#d1d5db">BTC/USD</text>
+  <text x="716" y="275" font-family="monospace" font-size="9" fill="#dc2626">-$22</text>
+
+  <!-- Bottom fade -->
+  <linearGradient id="btmFade" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%"  stop-color="#070b09" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#070b09" stop-opacity="0.7"/>
+  </linearGradient>
+  <rect x="0" y="270" width="800" height="50" fill="url(#btmFade)"/>
+</svg>

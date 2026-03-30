@@ -1,5 +1,5 @@
 {
-  "name": "before_trading_funnel_next",
+  "name": "tradepilot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,17 +9,21 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "16.1.6",
+    "framer-motion": "^11.3.6",
+    "libphonenumber-js": "^1.12.39",
+    "next": "16.1.7",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@prisma/client": "^5.22.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.1.7",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

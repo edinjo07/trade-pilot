@@ -1,0 +1,17 @@
+User-agent: *
+
+# Block admin and API routes from all crawlers
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api
+Disallow: /api/
+Disallow: /continue
+Disallow: /go
+
+# Allow public pages only
+Allow: /
+Allow: /privacy
+Allow: /terms
+Allow: /education
+
+# No sitemap — this is a private lead-capture funnel

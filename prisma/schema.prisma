@@ -1,0 +1,272 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model FunnelSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  country   String   @default("CA")
+  userAgent String?
+  ipHash    String?
+
+  entryChoice         String?
+  mirrorCount         Int      @default(0)
+  frameChoice         String?
+  simAction           String?
+  simTimeTakenMs      Int?
+  quizQuestionsCount  Int      @default(0)
+  avoidanceType       String?
+  responsibilityScore Int?
+
+  lead   Lead?
+  events FunnelEvent[]
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  firstName String   @default("")
+  lastName  String   @default("")
+  fullName  String
+  email     String
+  phone     String
+  country   String   @default("CA")
+
+  sessionId String   @unique
+  session   FunnelSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  disposableEmail Boolean @default(false)
+  phoneCountryOk  Boolean @default(true)
+  notes           String?
+
+  qualityScore Int    @default(0)
+  qualityTier  String @default("unknown")
+  qualityMeta  String? // JSON string
+
+  clicks Click[]
+  outboundJobs OutboundCrmJob[]
+  leadEvents   LeadEvent[]
+}
+
+model FunnelEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  sessionId String
+  session   FunnelSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  name      String
+  payload   String?
+}
+
+model LeadEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  type      String   // LEAD_CREATED | CONTINUE_CLICKED | POSTBACK_RECEIVED | CONVERTED | REJECTED
+  payload   String?  // JSON string
+
+  @@index([leadId, createdAt])
+  @@index([type])
+}
+
+model Click {
+  id       String   @id @default(uuid())
+  clickId  String   @unique
+  leadId   String
+  lead     Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  sub1     String?
+  sub2     String?
+  sub3     String?
+  sub4     String?
+
+  offerKey String?
+  createdAt DateTime @default(now())
+
+  conversions Conversion[]
+}
+
+model Conversion {
+  id         String   @id @default(uuid())
+  clickId    String
+  click      Click    @relation(fields: [clickId], references: [clickId], onDelete: Cascade)
+
+  status     String
+  payout     Float?
+  currency   String?
+  txid       String?
+  conversionKey String @unique
+  raw        String? // JSON string
+  receivedAt DateTime @default(now())
+}
+
+model ApiHit {
+  id        String   @id @default(uuid())
+  ip        String
+  route     String
+  createdAt DateTime @default(now())
+
+  @@index([ip, route, createdAt])
+}
+
+model RateLimit {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  count       Int      @default(0)
+  windowStart DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ── CRM Integration Hub ──────────────────────────────────────────────────────
+
+model CrmIntegration {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String               // e.g. "GoHighLevel Production"
+  platform    String               // webhook | gohighlevel | hubspot | salesforce | activecampaign | custom
+  active      Boolean  @default(true)
+
+  // ── Outbound (push leads TO them) ───────────────────────────────────────────
+  method      String   @default("POST")   // GET | POST
+  endpoint    String                       // full URL (may contain {{variables}})
+
+  // Auth
+  authType    String   @default("bearer") // bearer | apikey | basic | none | hmac
+  authHeader  String   @default("Authorization")
+  authValue   String   @default("")
+
+  // "Our" IP we send FROM (informational — shown in UI for their whitelist)
+  // Extra request headers as JSON: [{"key":"X-Foo","value":"bar"}, ...]
+  extraHeaders  String?
+
+  // Field mapping as JSON: {"first_name":"{{firstName}}","email":"{{email}}", ...}
+  // For GET: appended as query params. For POST: becomes request body JSON.
+  fieldMapping  String?
+
+  // Optional raw body template override (JSON string) — if set, fieldMapping is ignored
+  bodyTemplate  String?
+
+  // IP whitelist for THEIR side (our allowed source IPs shown to them)
+  // JSON string array: ["1.2.3.4", "5.6.7.8"]
+  outboundIpNote String?  // note field for "the IP we use to call you"
+
+  // ── Inbound (receive leads FROM them) ────────────────────────────────────────
+  inboundEnabled    Boolean  @default(false)
+  inboundSlug       String?  @unique      // /api/webhook/inbound/{slug}
+  inboundSecretKey  String?               // optional HMAC/token verification
+  // JSON array: ["1.2.3.4", "1.2.3.0/24"] — allowed source IPs for inbound
+  inboundIpWhitelist String?
+  // JSON map: {"their_email_field": "email", "their_name": "fullName", ...}
+  inboundFieldMapping String?
+  // HTTP method expected: GET | POST | BOTH
+  inboundMethod     String   @default("POST")
+
+  deliveries    CrmDelivery[]
+  inboundLeads  InboundLead[]
+
+  @@index([active])
+  @@index([inboundSlug])
+}
+
+model CrmDelivery {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+
+  integrationId String
+  integration   CrmIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  leadId        String
+
+  status        String   // PENDING | SENT | FAILED | RETRYING
+
+  requestUrl    String
+  requestMethod String
+  requestHeaders String?  // JSON
+  requestBody   String?   // sent body
+
+  responseStatus Int?
+  responseBody   String?
+  durationMs     Int?
+
+  attempts      Int      @default(1)
+  lastError     String?
+
+  @@index([integrationId, createdAt])
+  @@index([leadId])
+  @@index([status])
+}
+
+// ── Inbound Lead (received FROM another CRM) ───────────────────────────────────
+model InboundLead {
+  id            String   @id @default(cuid())
+  receivedAt    DateTime @default(now())
+
+  integrationId String?
+  integration   CrmIntegration? @relation(fields: [integrationId], references: [id], onDelete: SetNull)
+
+  sourceIp      String?
+
+  // Raw exactly-as-received payload (JSON string)
+  rawPayload    String
+  // After field-mapping (JSON string)
+  mappedData    String?
+
+  // If we created a Lead record from it
+  createdLeadId String?
+
+  status       String   @default("RECEIVED") // RECEIVED | PROCESSED | SKIPPED | ERROR
+  error        String?
+
+  @@index([receivedAt])
+  @@index([integrationId])
+  @@index([status])
+}
+
+// ── Global IP Whitelist (for inbound webhooks / postbacks) ──────────────────
+model IpWhitelistEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  ip        String   // IPv4 or IPv6 or CIDR, e.g. "1.2.3.4" or "1.2.3.0/24"
+  label     String?  // human label, e.g. "GoHighLevel US"
+  note      String?
+  active    Boolean  @default(true)
+
+  @@unique([ip])
+  @@index([active])
+}
+
+model OutboundCrmJob {
+  id            String         @id @default(cuid())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  leadId        String
+  lead          Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  status        String         @default("PENDING") // PENDING, SENT, FAILED
+  attempts      Int            @default(0)
+  lastError     String?
+  lastAttemptAt DateTime?
+  sentAt        DateTime?
+
+  // idempotency key so "same lead" isn't sent twice
+  idempotencyKey String        @unique
+
+  // snapshot payload we intended to send (useful for audits/debug)
+  payload       String? // JSON string
+}
