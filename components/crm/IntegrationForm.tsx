@@ -3,6 +3,23 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
+const MAKE_ZONES = [
+  { label: "EU1 (Europe)", value: "https://eu1.make.com" },
+  { label: "EU2 (Europe)", value: "https://eu2.make.com" },
+  { label: "US1 (United States)", value: "https://us1.make.com" },
+  { label: "US2 (United States)", value: "https://us2.make.com" },
+  { label: "eu1.make.celonis.com", value: "https://eu1.make.celonis.com" },
+  { label: "us1.make.celonis.com", value: "https://us1.make.celonis.com" },
+];
+
+interface MakeHook {
+  id: number;
+  name: string;
+  url: string;
+  enabled: boolean;
+  type: string;
+}
+
 interface IntegrationFormProps {
   initial?: Partial<{
     id: string;
@@ -122,6 +139,33 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
   const [testResult, setTestResult] = useState<any>(null);
   const [testing, setTesting] = useState(false);
   const [activeTab, setActiveTab] = useState<"outbound" | "inbound" | "advanced">("outbound");
+
+  // Make.com API connector state (not saved to DB — used only to fetch hooks)
+  const [makeToken, setMakeToken] = useState("");
+  const [makeZone, setMakeZone] = useState("https://eu1.make.com");
+  const [makeHooks, setMakeHooks] = useState<MakeHook[]>([]);
+  const [makeFetching, setMakeFetching] = useState(false);
+  const [makeError, setMakeError] = useState("");
+
+  const fetchMakeHooks = async () => {
+    if (!makeToken.trim()) { setMakeError("Enter your Make.com API token first"); return; }
+    setMakeFetching(true);
+    setMakeError("");
+    setMakeHooks([]);
+    try {
+      const res = await fetch(
+        `/api/admin/crm/make-hooks?token=${encodeURIComponent(makeToken.trim())}&zone=${encodeURIComponent(makeZone)}`
+      );
+      const data = await res.json();
+      if (!data.ok) { setMakeError(data.error || "Failed to fetch hooks"); return; }
+      setMakeHooks(data.hooks || []);
+      if ((data.hooks || []).length === 0) setMakeError("No webhooks found in this Make.com account.");
+    } catch (e: any) {
+      setMakeError(String(e?.message || e));
+    } finally {
+      setMakeFetching(false);
+    }
+  };
 
   const set = (key: keyof typeof form, value: any) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -258,27 +302,118 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
       {activeTab === "outbound" && (
         <Section title="Outbound - Push Leads to This CRM">
 
-          {/* Make.com setup guide */}
+          {/* Make.com setup guide + API connector */}
           {form.platform === "make" && (
-            <div
-              className="rounded-xl p-4 space-y-2"
-              style={{ background: "#fffbeb", border: "1px solid #fcd34d" }}
-            >
-              <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "#b45309" }}>
-                Make.com Setup Guide
-              </p>
-              <ol className="text-xs space-y-1.5" style={{ color: "#78350f" }}>
-                <li>1. In Make.com, create a new Scenario</li>
-                <li>2. Add a <strong>Webhooks &gt; Custom webhook</strong> module as the trigger</li>
-                <li>3. Click <strong>Add</strong>, give it a name, then click <strong>Save</strong></li>
-                <li>4. Copy the generated webhook URL (e.g. <code style={{fontFamily:"monospace"}}>https://hook.eu1.make.com/xxxx...</code>)</li>
-                <li>5. Paste that URL into the <strong>Endpoint URL</strong> field below</li>
-                <li>6. HTTP Method should be <strong>POST</strong>, Auth Type <strong>No Auth</strong> (URL is the secret)</li>
-                <li>7. Save this integration, then click <strong>Send Test Payload</strong> to verify</li>
-              </ol>
-              <p className="text-xs mt-2" style={{ color: "#92400e" }}>
-                Make.com will receive all lead fields as a JSON body. The scenario can then route the lead to any app (email, Slack, CRM, etc.).
-              </p>
+            <div className="space-y-4">
+
+              {/* Step-by-step guide */}
+              <div
+                className="rounded-xl p-4 space-y-2"
+                style={{ background: "#fffbeb", border: "1px solid #fcd34d" }}
+              >
+                <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "#b45309" }}>
+                  Make.com Setup Guide
+                </p>
+                <ol className="text-xs space-y-1.5" style={{ color: "#78350f" }}>
+                  <li>1. Go to <strong>Make.com → Scenarios → Create a new scenario</strong></li>
+                  <li>2. Add a <strong>Webhooks › Custom webhook</strong> module as the trigger</li>
+                  <li>3. Click <strong>Add</strong>, name it, then copy the generated <code style={{fontFamily:"monospace"}}>https://hook.eu1.make.com/xxxx</code> URL</li>
+                  <li>4. Paste it into <strong>Endpoint URL</strong> below — or use the connector to pick it automatically</li>
+                  <li>5. Method: <strong>POST</strong> · Auth: <strong>No Auth</strong> (the URL is the secret)</li>
+                  <li>6. Hit <strong>Send Test Payload</strong> to verify. Make.com responds with <code style={{fontFamily:"monospace"}}>{`{"accepted":true}`}</code></li>
+                </ol>
+              </div>
+
+              {/* Make.com API connector — fetch hooks automatically */}
+              <div
+                className="rounded-xl p-4 space-y-3"
+                style={{ background: "#f0fdf4", border: "1px solid #86efac" }}
+              >
+                <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "#166534" }}>
+                  Connect Make Account (auto-fetch hooks)
+                </p>
+                <p className="text-xs" style={{ color: "#15803d" }}>
+                  Enter your Make.com API token to pick a webhook URL from your account directly.
+                  Your token is <strong>never stored</strong> — it is used only for this one-time fetch.
+                  Get it at: <strong>Make.com → Profile → API keys</strong>
+                </p>
+                <div className="grid gap-2 md:grid-cols-3">
+                  <div className="md:col-span-2">
+                    <input
+                      type="password"
+                      value={makeToken}
+                      onChange={(e) => setMakeToken(e.target.value)}
+                      placeholder="Make.com API token (not stored)"
+                      {...inputProps}
+                    />
+                  </div>
+                  <div>
+                    <select
+                      value={makeZone}
+                      onChange={(e) => setMakeZone(e.target.value)}
+                      {...selectProps}
+                    >
+                      {MAKE_ZONES.map((z) => (
+                        <option key={z.value} value={z.value}>{z.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchMakeHooks}
+                  disabled={makeFetching}
+                  className="rounded-lg px-4 py-2 text-xs font-bold text-white disabled:opacity-50"
+                  style={{ background: "linear-gradient(135deg,#16a34a,#15803d)" }}
+                >
+                  {makeFetching ? "Fetching hooks…" : "Fetch My Webhooks from Make.com"}
+                </button>
+                {makeError && (
+                  <p className="text-xs" style={{ color: "#dc2626" }}>{makeError}</p>
+                )}
+                {makeHooks.length > 0 && (
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium" style={{ color: "#166534" }}>
+                      Select a webhook to auto-fill the endpoint URL:
+                    </p>
+                    <div className="max-h-48 overflow-y-auto space-y-1">
+                      {makeHooks.map((hook) => (
+                        <button
+                          key={hook.id}
+                          type="button"
+                          onClick={() => {
+                            set("endpoint", hook.url);
+                            set("method", "POST");
+                            set("authType", "none");
+                            setMakeHooks([]);
+                          }}
+                          className="w-full rounded-lg px-3 py-2 text-left text-xs"
+                          style={{
+                            background: "#fff",
+                            border: "1px solid #86efac",
+                            color: "#166534",
+                          }}
+                        >
+                          <span className="font-semibold">{hook.name}</span>
+                          <span
+                            className="ml-2 rounded px-1 py-0.5 text-xs"
+                            style={{
+                              background: hook.enabled ? "#dcfce7" : "#fee2e2",
+                              color: hook.enabled ? "#166534" : "#991b1b",
+                            }}
+                          >
+                            {hook.enabled ? "active" : "off"}
+                          </span>
+                          <br />
+                          <span className="opacity-60 font-mono" style={{ fontSize: 10 }}>
+                            {hook.url}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
