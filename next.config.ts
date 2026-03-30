@@ -28,7 +28,7 @@ const SECURITY_HEADERS = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",   // Next.js needs unsafe-eval in dev
       "style-src 'self' 'unsafe-inline'",                  // Tailwind inline styles
       "font-src 'self' data:",
-      "img-src 'self' data: blob:",
+      "img-src 'self' data: blob: https://randomuser.me",
       "connect-src 'self'",
       "frame-ancestors 'none'",                            // double-locks iframe embedding
       "base-uri 'self'",

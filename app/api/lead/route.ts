@@ -282,6 +282,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, leadId: lead.id, already: false });
   } catch (e) {
-    return NextResponse.json({ ok: false, code: "SERVER_ERROR" }, { status: 500 });
+    console.error("[/api/lead] POST error:", e);
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, code: "SERVER_ERROR", detail: msg }, { status: 500 });
   }
 }
