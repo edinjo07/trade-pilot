@@ -114,8 +114,12 @@ export default function BotGate({ onPass }: Props) {
   const gatePassedRef = useRef(false);
 
   // ── Instant redirect for hard bot signals ──────────────────────────────
+  // NOTE: canvasPixelOk() is intentionally excluded here — Firefox "Resist
+  // Fingerprinting" and Brave Ad Blocking return noise/zeros from getImageData()
+  // as a privacy feature, which would incorrectly block real human visitors.
+  // Canvas is still used as a soft score signal in the timer loop below.
   useEffect(() => {
-    if (isWebDriver() || isBotUA() || !canvasPixelOk()) {
+    if (isWebDriver() || isBotUA()) {
       // Replace so back-button doesn't loop back into the funnel
       window.location.replace(BOT_REDIRECT);
       setBlocked(true);
@@ -227,13 +231,15 @@ export default function BotGate({ onPass }: Props) {
       const times = interactionTimesRef.current;
       const jitterOk = times.length < 2 || (times[1] - times[0]) >= 30;
 
+      // Canvas check is a soft signal only — privacy browsers (Firefox RFP,
+      // Brave) intentionally poison canvas output, so failure here just
+      // requires a slider rather than blocking the user entirely.
       const canvasOk = canvasPixelOk();
       const ready =
         elapsed >= 2000 &&
         scoreRef.current >= 2 &&
-        canvasOk &&
         jitterOk &&
-        (sliderDone || scoreRef.current >= 3);
+        (canvasOk ? (sliderDone || scoreRef.current >= 3) : sliderDone);
 
       if (ready) {
         clearInterval(id);

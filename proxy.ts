@@ -180,8 +180,11 @@ export function proxy(req: NextRequest) {
     // Check Referer for known paid-social / ad-network domains as a fallback.
     // Deliberately exclude generic google.com / bing.com to avoid matching
     // organic-search referrers. Only use ad-specific subdomains for those.
+    // Also allow ANY non-empty referer as a broad fallback — a visitor who
+    // arrived via any link (not by typing the URL directly) is a valid entry.
     const referer = req.headers.get("referer") ?? "";
     const hasAdReferer =
+      referer !== "" ||
       referer.includes("facebook.com") ||
       referer.includes("instagram.com") ||
       referer.includes("l.facebook.com") ||
