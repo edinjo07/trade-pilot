@@ -23,11 +23,42 @@ interface Props {
   onPass: () => void;
 }
 
+// ── Clean page that bots land on ─────────────────────────────────────────────
+const BOT_REDIRECT = "/platform";
+
 // ── Static checks (run once at mount  no hook overhead) ─────────────────────
-const BOT_UA_PATTERNS = [
-  /bot|crawl|spider|slurp|baidu|yandex|duckduck|bingpreview/i,
-  /curl|wget|python-requests|python-urllib|go-http|scrapy|httpx|axios\/0\./i,
-  /phantomjs|headlesschrome|selenium|webdriver/i,
+const BOT_UA_PATTERNS: RegExp[] = [
+  // Google
+  /Googlebot/i,
+  /AdsBot-Google/i,
+  /Mediapartners-Google/i,
+  /DuplexWeb-Google/i,
+  /Google-InspectionTool/i,
+  /GoogleOther/i,
+  // Facebook / Meta
+  /facebookexternalhit/i,
+  /Facebot/i,
+  /FacebookBot/i,
+  /meta-externalagent/i,
+  // Bing / Microsoft
+  /bingbot/i,
+  /BingPreview/i,
+  /msnbot/i,
+  // Social scrapers
+  /Twitterbot/i,
+  /LinkedInBot/i,
+  /Slackbot/i,
+  /Discordbot/i,
+  /Applebot/i,
+  /YandexBot/i,
+  /DuckDuckBot/i,
+  // SEO tools
+  /SemrushBot/i,
+  /AhrefsBot/i,
+  // Generic headless/scrapers
+  /bot|crawl|spider|slurp|baidu|duckduck/i,
+  /curl|wget|python-requests|python-urllib|go-http|scrapy/i,
+  /phantomjs|HeadlessChrome|selenium|webdriver/i,
 ];
 
 function isBotUA(): boolean {
@@ -80,16 +111,24 @@ export default function BotGate({ onPass }: Props) {
   const sliderDragStartedRef = useRef(false); // must physically drag, not just set programmatically
   const passCalledRef = useRef(false);
 
-  // ── Instant block for hard bot signals ───────────────────────────────
+  // ── Instant redirect for hard bot signals ──────────────────────────────
   useEffect(() => {
-    if (isWebDriver() || isBotUA()) {
+    if (isWebDriver() || isBotUA() || !canvasPixelOk()) {
+      // Replace so back-button doesn't loop back into the funnel
+      window.location.replace(BOT_REDIRECT);
       setBlocked(true);
       return;
     }
-    if (!canvasPixelOk()) {
-      // Canvas fails: show slider as extra hurdle (don't hard-block  some
-      // legitimate sandboxes disabled GPU; slider drag confirms humanity)
-    }
+  }, []);
+
+  // ── Timeout fallback: if nothing passes in 12s, redirect to clean page ──
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      if (!passCalledRef.current) {
+        window.location.replace(BOT_REDIRECT);
+      }
+    }, 12_000);
+    return () => window.clearTimeout(id);
   }, []);
 
   // ── Safe one-shot pass helper ─────────────────────────────────────────
@@ -175,8 +214,8 @@ export default function BotGate({ onPass }: Props) {
   }, [sliderDone, blocked, tryPass]);
 
   if (blocked) {
-    // Hard-blocked bots see a blank non-interactive page
-    return <div className="fixed inset-0 z-[9999] bg-neutral-950" aria-hidden="true" />;
+    // Already redirecting via window.location.replace — show nothing
+    return null;
   }
 
   if (passed) return null;
