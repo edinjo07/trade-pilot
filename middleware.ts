@@ -82,6 +82,7 @@ const BOT_PATTERNS: Array<{ re: RegExp; label: string }> = [
 // ── Paths that are NEVER redirected ─────────────────────────────────────────
 const EXEMPT_PREFIXES = [
   "/platform",       // the clean bot page itself
+  "/restricted",     // geo-blocked page
   "/api/",
   "/admin/",
   "/_next/",
@@ -92,7 +93,28 @@ const EXEMPT_PREFIXES = [
   "/public/",
 ];
 
-export function middleware(request: NextRequest) {
+// ── Geo config — module-level cache (per edge worker instance) ───────────────
+type GeoConfigData = { mode: string; countries: string[] };
+let _geoCache: { data: GeoConfigData; expiresAt: number } | null = null;
+
+async function getGeoConfig(origin: string): Promise<GeoConfigData> {
+  const now = Date.now();
+  if (_geoCache && now < _geoCache.expiresAt) return _geoCache.data;
+  try {
+    const res = await fetch(`${origin}/api/internal/geo-config`, {
+      // Next.js fetch cache: re-validate every 60 s at the CDN layer too
+      next: { revalidate: 60 },
+    });
+    if (res.ok) {
+      const data = await res.json() as GeoConfigData;
+      _geoCache = { data, expiresAt: now + 60_000 };
+      return data;
+    }
+  } catch { /* network error — fail open */ }
+  return { mode: "all", countries: [] };
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip exempt paths
@@ -109,6 +131,33 @@ export function middleware(request: NextRequest) {
     url.pathname = "/platform";
     url.searchParams.set("b", match.label); // pass bot label for analytics
     return NextResponse.redirect(url, { status: 302 });
+  }
+
+  // ── Geo restriction check ─────────────────────────────────────────────────
+  const geoConfig = await getGeoConfig(request.nextUrl.origin);
+
+  if (geoConfig.mode !== "all" && geoConfig.countries.length > 0) {
+    // Vercel injects x-vercel-ip-country; Cloudflare uses cf-ipcountry
+    const country = (
+      request.headers.get("x-vercel-ip-country") ||
+      request.headers.get("cf-ipcountry") ||
+      ""
+    ).toUpperCase().trim();
+
+    // Unknown country (local dev, VPN, etc.) → let through
+    if (country) {
+      const inList = geoConfig.countries.includes(country);
+      const blocked =
+        (geoConfig.mode === "whitelist" && !inList) ||
+        (geoConfig.mode === "blacklist" &&  inList);
+
+      if (blocked) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/restricted";
+        url.search = "";
+        return NextResponse.redirect(url, { status: 302 });
+      }
+    }
   }
 
   return NextResponse.next();

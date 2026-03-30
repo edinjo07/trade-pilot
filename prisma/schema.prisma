@@ -163,6 +163,13 @@ model ApiHit {
   @@index([ip, route, createdAt])
 }
 
+model GeoConfig {
+  id        Int      @id @default(1)
+  mode      String   @default("all")    // "all" | "whitelist" | "blacklist"
+  countries String   @default("[]")     // JSON: ["GB","DE","US",...]
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
 model RateLimit {
   id          String   @id @default(cuid())
   key         String   @unique
