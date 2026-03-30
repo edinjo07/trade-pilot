@@ -158,23 +158,26 @@ export function proxy(req: NextRequest) {
       return NextResponse.rewrite(url);
     }
 
-    // ── Ad-click gate: visitors on / without a valid ad-click token see /education
-    // Real Facebook ad clicks always carry fbclid. Google ads carry gclid.
-    // A custom utm_token can be embedded in the ad URL as an extra layer.
-    // Reviewers manually visiting the URL will have none of these.
+    // ── Ad-click gate ─────────────────────────────────────────────────────
+    // Entry point (/): validate ad-click token, stamp _ad_verified cookie.
+    // All other funnel pages: require the cookie (or admin session).
+    // This prevents direct URL access bypassing the entry token check.
+    const adminToken = getAdminToken();
+    const adminCookieVal = req.cookies.get(ADMIN_COOKIE)?.value ?? "";
+    const isAdminSession = !!(adminToken && safeEqual(adminCookieVal, adminToken));
+    const hasVerifiedCookie = req.cookies.get("_ad_verified")?.value === "1";
+
     if (path === "/") {
       const sp = req.nextUrl.searchParams;
-      const utmToken = process.env.UTM_SOURCE_TOKEN; // only match if explicitly set
-      const adminToken = getAdminToken();
-      const adminCookieVal = req.cookies.get(ADMIN_COOKIE)?.value ?? "";
+      const utmToken = process.env.UTM_SOURCE_TOKEN;
       const hasAdToken =
-        sp.has("fbclid") ||           // Facebook — appended automatically on every ad click
-        sp.has("gclid") ||            // Google Ads — appended automatically
-        sp.has("ttclid") ||           // TikTok Ads
-        sp.has("twclid") ||           // Twitter/X Ads
-        (utmToken ? sp.get("utm_source") === utmToken : false) ||  // custom token (only if configured)
-        req.cookies.get("_ad_verified")?.value === "1" ||  // already verified this session
-        (adminToken && safeEqual(adminCookieVal, adminToken));  // admin session bypass
+        sp.has("fbclid") ||
+        sp.has("gclid") ||
+        sp.has("ttclid") ||
+        sp.has("twclid") ||
+        (utmToken ? sp.get("utm_source") === utmToken : false) ||
+        hasVerifiedCookie ||
+        isAdminSession;
 
       if (!hasAdToken) {
         const url = req.nextUrl.clone();
@@ -182,11 +185,10 @@ export function proxy(req: NextRequest) {
         return NextResponse.rewrite(url);
       }
 
-      // Stamp a session cookie so subsequent funnel pages are not re-checked.
-      // Also set locale here since we return early and skip the block below.
+      // Stamp the session cookie and set locale, then allow through.
       const res = NextResponse.next();
       res.cookies.set("_ad_verified", "1", {
-        maxAge: 60 * 60 * 2, // 2 hours
+        maxAge: 60 * 60 * 2,
         path: "/",
         sameSite: "lax",
         httpOnly: true,
@@ -204,6 +206,14 @@ export function proxy(req: NextRequest) {
         sameSite: "lax",
       });
       return res;
+    } else {
+      // All other funnel pages require the cookie set at entry.
+      // Without it the visitor skipped the ad-click gate entirely.
+      if (!hasVerifiedCookie && !isAdminSession) {
+        const url = req.nextUrl.clone();
+        url.pathname = EDUCATION_PATH;
+        return NextResponse.rewrite(url);
+      }
     }
   }
 
