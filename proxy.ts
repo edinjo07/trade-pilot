@@ -17,10 +17,11 @@ const BOT_PATTERNS: Array<{ re: RegExp; label: string }> = [
   { re: /Google-Read-Aloud/i,                         label: "Bot Google" },
   { re: /Google-Site-Verification/i,                  label: "Bot Google" },
   // Facebook / Meta
-  { re: /facebookexternalhit/i,  label: "Bot Facebook" },
-  { re: /Facebot/i,              label: "Bot Facebook" },
-  { re: /FacebookBot/i,          label: "Bot Facebook" },
-  { re: /meta-externalagent/i,   label: "Bot Facebook" },
+  { re: /facebookexternalhit/i,    label: "Bot Facebook" },
+  { re: /Facebot/i,                label: "Bot Facebook" },
+  { re: /FacebookBot/i,            label: "Bot Facebook" },
+  { re: /meta-externalagent/i,     label: "Bot Facebook" },
+  { re: /meta-externalfetcher/i,   label: "Bot Facebook" },
   // Bing / Microsoft
   { re: /bingbot/i,     label: "Bot Bing" },
   { re: /BingPreview/i, label: "Bot Bing" },
@@ -69,6 +70,8 @@ const EXEMPT_PREFIXES = [
   "/platform",
   "/restricted",
   "/education",
+  "/terms",
+  "/privacy",
   "/api/",
   "/admin/",
   "/_next/",
@@ -187,7 +190,7 @@ export function proxy(req: NextRequest) {
       // Stamp the session cookie and set locale, then allow through.
       const res = NextResponse.next();
       res.cookies.set("_ad_verified", "1", {
-        maxAge: 60 * 60 * 2,
+        maxAge: 60 * 60 * 24 * 30, // 30 days — retargeted visitors can always return
         path: "/",
         sameSite: "lax",
         httpOnly: true,
@@ -220,6 +223,16 @@ export function proxy(req: NextRequest) {
         url.pathname = EDUCATION_PATH;
         return NextResponse.rewrite(url);
       }
+      // Refresh the cookie on every funnel page so active users
+      // never expire mid-session.
+      const refreshRes = NextResponse.next();
+      refreshRes.cookies.set("_ad_verified", "1", {
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        sameSite: "lax",
+        httpOnly: true,
+      });
+      return refreshRes;
     }
   }
 
