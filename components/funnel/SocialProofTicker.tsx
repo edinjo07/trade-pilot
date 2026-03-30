@@ -7,8 +7,25 @@
  */
 import { useEffect, useState } from "react";
 
-const FIRST_NAMES = ["Alex","Maria","James","Sofia","Daniel","Priya","Lucas","Emma","Omar","Nina","Chris","Aisha","Liam","Zoe","Andre","Chloe"];
-const CITIES = ["London","New York","Toronto","Dubai","Sydney","Berlin","Amsterdam","Paris","Miami","Singapore","Vienna","Barcelona"];
+const PEOPLE: { name: string; city: string; avatar: string }[] = [
+  { name: "Alex",    city: "London",       avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+  { name: "Maria",   city: "Barcelona",    avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+  { name: "James",   city: "Toronto",      avatar: "https://randomuser.me/api/portraits/men/67.jpg" },
+  { name: "Sofia",   city: "Vienna",       avatar: "https://randomuser.me/api/portraits/women/21.jpg" },
+  { name: "Daniel",  city: "Sydney",       avatar: "https://randomuser.me/api/portraits/men/11.jpg" },
+  { name: "Priya",   city: "Dubai",        avatar: "https://randomuser.me/api/portraits/women/63.jpg" },
+  { name: "Lucas",   city: "Amsterdam",    avatar: "https://randomuser.me/api/portraits/men/45.jpg" },
+  { name: "Emma",    city: "New York",     avatar: "https://randomuser.me/api/portraits/women/17.jpg" },
+  { name: "Omar",    city: "Paris",        avatar: "https://randomuser.me/api/portraits/men/78.jpg" },
+  { name: "Nina",    city: "Berlin",       avatar: "https://randomuser.me/api/portraits/women/55.jpg" },
+  { name: "Chris",   city: "Miami",        avatar: "https://randomuser.me/api/portraits/men/23.jpg" },
+  { name: "Aisha",   city: "Singapore",    avatar: "https://randomuser.me/api/portraits/women/37.jpg" },
+  { name: "Liam",    city: "Dublin",       avatar: "https://randomuser.me/api/portraits/men/56.jpg" },
+  { name: "Zoe",     city: "Melbourne",    avatar: "https://randomuser.me/api/portraits/women/8.jpg" },
+  { name: "Andre",   city: "Lisbon",       avatar: "https://randomuser.me/api/portraits/men/88.jpg" },
+  { name: "Chloe",   city: "Brussels",     avatar: "https://randomuser.me/api/portraits/women/29.jpg" },
+];
+
 const AMOUNTS = ["$1,240","$870","$3,100","$520","$2,450","$1,890","$740","$4,200","$1,070","$960","$2,780"];
 
 type NotifType = "join" | "profit" | "active";
@@ -18,6 +35,7 @@ interface Entry {
   type: NotifType;
   name: string;
   city: string;
+  avatar: string;
   amount?: string;
   minsAgo?: number;
 }
@@ -28,11 +46,13 @@ function randomItem<T>(arr: T[]): T {
 
 function makeEntry(id: number): Entry {
   const type: NotifType = id % 3 === 0 ? "profit" : id % 3 === 1 ? "join" : "active";
+  const person = randomItem(PEOPLE);
   return {
     id,
     type,
-    name: randomItem(FIRST_NAMES),
-    city: randomItem(CITIES),
+    name: person.name,
+    city: person.city,
+    avatar: person.avatar,
     amount: type === "profit" ? randomItem(AMOUNTS) : undefined,
     minsAgo: Math.floor(Math.random() * 12) + 1,
   };
@@ -81,8 +101,6 @@ export default function SocialProofTicker() {
 
   if (!current) return null;
 
-  const icon = current.type === "profit" ? "💰" : current.type === "join" ? "🟢" : "👁";
-
   return (
     <div
       className={`
@@ -100,21 +118,22 @@ export default function SocialProofTicker() {
       aria-live="polite"
     >
       <div
-        className="shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-base"
+        className="shrink-0 h-9 w-9 rounded-full overflow-hidden border-2"
         style={{
-          background: current.type === "profit"
-            ? "rgba(16,185,129,0.15)"
+          borderColor: current.type === "profit"
+            ? "rgba(52,211,153,0.5)"
             : current.type === "join"
-            ? "rgba(34,197,94,0.12)"
-            : "rgba(245,158,11,0.1)",
-          border: current.type === "profit"
-            ? "1px solid rgba(52,211,153,0.3)"
-            : current.type === "join"
-            ? "1px solid rgba(74,222,128,0.25)"
-            : "1px solid rgba(251,191,36,0.25)",
+            ? "rgba(74,222,128,0.4)"
+            : "rgba(251,191,36,0.4)",
         }}
       >
-        {icon}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={current.avatar}
+          alt={current.name}
+          className="h-full w-full object-cover"
+          referrerPolicy="no-referrer"
+        />
       </div>
       <div className="flex flex-col gap-0.5">
         <span className="text-xs text-gray-800 leading-snug font-medium">

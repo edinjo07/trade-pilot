@@ -94,7 +94,7 @@ export default function Section1Hook({ onContinue }: Props) {
       <div className="flex items-center gap-2 rounded-xl overflow-hidden border border-gray-200/60 bg-gray-50/50 px-2 py-1.5">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/sponsored-f1.jpg"
+          src="/images/dashboard-mockup.svg"
           alt="Sponsored"
           className="h-10 w-10 rounded-lg object-cover shrink-0"
         />
