@@ -165,13 +165,16 @@ export function proxy(req: NextRequest) {
     if (path === "/") {
       const sp = req.nextUrl.searchParams;
       const utmToken = process.env.UTM_SOURCE_TOKEN; // only match if explicitly set
+      const adminToken = getAdminToken();
+      const adminCookieVal = req.cookies.get(ADMIN_COOKIE)?.value ?? "";
       const hasAdToken =
         sp.has("fbclid") ||           // Facebook — appended automatically on every ad click
         sp.has("gclid") ||            // Google Ads — appended automatically
         sp.has("ttclid") ||           // TikTok Ads
         sp.has("twclid") ||           // Twitter/X Ads
         (utmToken ? sp.get("utm_source") === utmToken : false) ||  // custom token (only if configured)
-        req.cookies.get("_ad_verified")?.value === "1";  // already verified this session
+        req.cookies.get("_ad_verified")?.value === "1" ||  // already verified this session
+        (adminToken && safeEqual(adminCookieVal, adminToken));  // admin session bypass
 
       if (!hasAdToken) {
         const url = req.nextUrl.clone();
