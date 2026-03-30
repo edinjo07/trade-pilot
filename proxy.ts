@@ -154,7 +154,7 @@ export function proxy(req: NextRequest) {
     }
   }
 
-  // ── Locale detection — set NEXT_LOCALE cookie once per visitor ───────────
+  // ── Locale detection  set NEXT_LOCALE cookie once per visitor ───────────
   const res = NextResponse.next();
   if (!req.cookies.get("NEXT_LOCALE")?.value) {
     const locale = detectLocale(

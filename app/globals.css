@@ -524,7 +524,7 @@ h3 { font-size: clamp(1.1rem, 3.5vw, 1.5rem); }
    SVG CHART RESPONSIVENESS (SectionLiveProof / SectionPilotSim)
    ════════════════════════════════════════════════════════════════════ */
 svg[aria-label] {
-  /* SVGs with aria-label are charts — make them always fill their container */
+  /* SVGs with aria-label are charts  make them always fill their container */
   width: 100%;
   height: auto;
 }
@@ -541,7 +541,7 @@ svg[aria-label] {
   /* Slightly reduce padding on cards */
   .rounded-2xl { padding-inline: clamp(12px, 4vw, 20px); }
 
-  /* Progress bar pills — full-width on tiny screens */
+  /* Progress bar pills  full-width on tiny screens */
   .grid-cols-3 { gap: 0.5rem !important; }
 
   /* Chart height on small phones */

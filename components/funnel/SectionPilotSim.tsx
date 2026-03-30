@@ -206,7 +206,7 @@ function buildLogSchedule(
     { score: "0.81", label: "BULLISH", headline: "ETF inflows at weekly high · institutional buying detected" },
     { score: "0.74", label:"BULLISH", headline: "Fed signals steady rates · risk-on environment confirmed" },
     { score: "0.68", label: "BULLISH", headline: "Strong PMI data · macro tailwind aligned with signal" },
-    { score: "0.23", label: "BEARISH", headline: "Negative macro headline — signal suppressed by AI filter" },
+    { score: "0.23", label: "BEARISH", headline: "Negative macro headline  signal suppressed by AI filter" },
     { score: "0.77", label: "BULLISH", headline: "Whale accumulation detected · momentum confirmed by AI" },
   ];
   let aiIdx = 0;
@@ -372,7 +372,7 @@ export default function SectionPilotSim({
           Watch Trading Pilot Think in Real-Time
         </h2>
         <p className="text-gray-500 text-sm max-w-sm mx-auto">
-          Pick a strategy. See how the bot detects a signal, checks live news sentiment via Claude AI, then fires or suppresses the trade — automatically.
+          Pick a strategy. See how the bot detects a signal, checks live news sentiment via Claude AI, then fires or suppresses the trade  automatically.
         </p>
       </div>
 

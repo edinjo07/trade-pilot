@@ -7,7 +7,7 @@ const SECURITY_HEADERS = [
   { key: "X-Frame-Options", value: "DENY" },
   // Stop browsers from MIME-sniffing the content type
   { key: "X-Content-Type-Options", value: "nosniff" },
-  // Force HTTPS for 2 years (production only — ignored on HTTP localhost)
+  // Force HTTPS for 2 years (production only  ignored on HTTP localhost)
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   // Only send the origin, not full URL, in Referer header
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

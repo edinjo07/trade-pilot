@@ -180,7 +180,7 @@ export default function SectionPainIntro({
           The ultra-wealthy figured this out decades ago. They don't manage money
           manually. They deploy{" "}
           <span className="text-yellow-400">automated systems</span> that work
-          for them 24 hours a day — whether they're asleep, on holiday, or living
+          for them 24 hours a day  whether they're asleep, on holiday, or living
           their lives.
         </p>
         <p className="text-sm text-gray-400">
@@ -202,7 +202,7 @@ export default function SectionPainIntro({
           </h3>
           <p className="text-gray-500 text-sm">
             The first autonomous trading intelligence engine that fuses real-time
-            technical signals with Claude AI news sentiment — executing trades
+            technical signals with Claude AI news sentiment  executing trades
             24/7 with the discipline no human can sustain.
           </p>
         </div>
@@ -227,13 +227,13 @@ export default function SectionPainIntro({
               num: "01",
               heading: "It watches the market so you don't have to",
               detail:
-                "Trading Pilot scans every price tick, every minute, across 20+ instruments — 24/7 with zero hesitation and sub-millisecond signal execution. The market never sleeps, and neither does Pilot.",
+                "Trading Pilot scans every price tick, every minute, across 20+ instruments  24/7 with zero hesitation and sub-millisecond signal execution. The market never sleeps, and neither does Pilot.",
             },
             {
               num: "02",
               heading: "Four battle-tested strategies, not guesswork",
               detail:
-                "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Each engineered for a different market condition. You pick one — or run multiple pilots simultaneously across different assets.",
+                "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Each engineered for a different market condition. You pick one  or run multiple pilots simultaneously across different assets.",
             },
             {
               num: "03",
