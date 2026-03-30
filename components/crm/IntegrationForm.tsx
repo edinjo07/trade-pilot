@@ -48,6 +48,7 @@ interface IntegrationFormProps {
 const PLATFORMS = [
   { value: "custom", label: "Custom / Generic" },
   { value: "make", label: "Make.com (Webhooks)" },
+  { value: "googlesheets", label: "Google Sheets (Apps Script)" },
   { value: "webhook", label: "Generic Webhook" },
   { value: "gohighlevel", label: "GoHighLevel" },
   { value: "hubspot", label: "HubSpot" },
@@ -56,6 +57,25 @@ const PLATFORMS = [
   { value: "zoho", label: "Zoho CRM" },
   { value: "pipedrive", label: "Pipedrive" },
 ];
+
+// Google Sheets Apps Script — default field mapping
+const GSHEETS_FIELD_MAPPING = JSON.stringify(
+  {
+    created_at: "{{createdAt}}",
+    first_name: "{{firstName}}",
+    last_name: "{{lastName}}",
+    email: "{{email}}",
+    phone: "{{phone}}",
+    country: "{{country}}",
+    quality_score: "{{qualityScore}}",
+    quality_tier: "{{qualityTier}}",
+    click_id: "{{clickId}}",
+    sub1: "{{sub1}}",
+    lead_id: "{{id}}",
+  },
+  null,
+  2
+);
 
 // Make.com default field mapping
 const MAKE_FIELD_MAPPING = JSON.stringify(
@@ -103,13 +123,18 @@ const DEFAULT_FIELD_MAPPING = JSON.stringify(
 export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
   const router = useRouter();
 
-  // Auto-configure when platform changes to make.com
+  // Auto-configure when platform changes
   const handlePlatformChange = (platform: string) => {
     set("platform", platform);
     if (platform === "make") {
       set("method", "POST");
       set("authType", "none");
       set("fieldMapping", MAKE_FIELD_MAPPING);
+    }
+    if (platform === "googlesheets") {
+      set("method", "POST");
+      set("authType", "none");
+      set("fieldMapping", GSHEETS_FIELD_MAPPING);
     }
   };
 
@@ -301,6 +326,66 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
       {/* Outbound Tab */}
       {activeTab === "outbound" && (
         <Section title="Outbound - Push Leads to This CRM">
+
+          {/* Google Sheets Apps Script setup guide */}
+          {form.platform === "googlesheets" && (
+            <div
+              className="rounded-xl p-4 space-y-2"
+              style={{ background: "#f0fdf4", border: "1px solid #86efac" }}
+            >
+              <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "#166534" }}>
+                Google Sheets Setup Guide
+              </p>
+              <ol className="text-xs space-y-1.5" style={{ color: "#166534" }}>
+                <li>1. Open your Google Sheet → click <strong>Extensions → Apps Script</strong></li>
+                <li>2. Replace the default code with the script below and click <strong>Save</strong></li>
+                <li>3. Click <strong>Deploy → New deployment</strong> → Type: <strong>Web App</strong></li>
+                <li>4. Set <strong>Execute as: Me</strong> · <strong>Who has access: Anyone</strong> → click Deploy</li>
+                <li>5. Copy the generated Web App URL and paste it into <strong>Endpoint URL</strong> below</li>
+                <li>6. Method: <strong>POST</strong> · Auth: <strong>No Auth</strong> (the URL contains a secret token)</li>
+              </ol>
+              <div
+                className="rounded-lg p-3 text-xs font-mono overflow-auto max-h-56"
+                style={{ background: "#052e16", color: "#86efac", whiteSpace: "pre", userSelect: "all" }}
+              >{`function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    // First row = headers (only written once)
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        'Date','First Name','Last Name','Email','Phone',
+        'Country','Score','Tier','Click ID','Sub1','Lead ID'
+      ]);
+    }
+    sheet.appendRow([
+      data.created_at || '',
+      data.first_name || '',
+      data.last_name  || '',
+      data.email      || '',
+      data.phone      || '',
+      data.country    || '',
+      data.quality_score || '',
+      data.quality_tier  || '',
+      data.click_id   || '',
+      data.sub1       || '',
+      data.lead_id    || ''
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error',msg:String(err)}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`}
+              </div>
+              <p className="text-xs" style={{ color: "#15803d" }}>
+                ⚠ After re-deploying, always use <strong>Manage deployments → Edit</strong> and select <strong>New version</strong> — otherwise the URL changes.
+              </p>
+            </div>
+          )}
 
           {/* Make.com setup guide + API connector */}
           {form.platform === "make" && (

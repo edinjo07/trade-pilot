@@ -147,13 +147,69 @@ export async function GET(req: Request) {
     ]));
   }
 
-  const csv = lines.join("\r\n");
-  const filename = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  const dateStr = new Date().toISOString().slice(0, 10);
+
+  // ── Excel (SpreadsheetML XML — opens natively in Excel as .xls) ───────────
+  if (format === "excel") {
+    function xmlEsc(v: unknown): string {
+      return String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function xlCell(v: unknown): string {
+      const s = String(v ?? "");
+      const num = Number(s);
+      const isNum = s !== "" && !isNaN(num) && !/^0\d/.test(s) && !/^[+\-]?\d{10,}$/.test(s);
+      return isNum
+        ? `<Cell><Data ss:Type="Number">${xmlEsc(s)}</Data></Cell>`
+        : `<Cell><Data ss:Type="String">${xmlEsc(s)}</Data></Cell>`;
+    }
+    function xlRow(cells: unknown[]): string {
+      return `<Row>${cells.map(xlCell).join("")}</Row>`;
+    }
+
+    const dataRows = leads.map((l) => {
+      const click = l.clicks?.[0];
+      const conv  = click?.conversions?.[0];
+      const sess  = l.session;
+      return [
+        l.id, l.createdAt.toISOString(),
+        l.fullName, l.firstName, l.lastName, l.email, l.phone, l.country,
+        l.qualityScore, l.qualityTier,
+        sess?.entryChoice ?? "", sess?.frameChoice ?? "",
+        click?.clickId ?? "", click?.offerKey ?? "",
+        click?.sub1 ?? "", click?.sub2 ?? "", click?.sub3 ?? "", click?.sub4 ?? "",
+        conv?.status ?? "", conv?.payout ?? "", conv?.currency ?? "",
+        conv?.receivedAt?.toISOString() ?? "",
+      ];
+    });
+
+    const xml = [
+      `<?xml version="1.0" encoding="UTF-8"?>`,
+      `<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">`,
+      `<Worksheet ss:Name="Leads"><Table>`,
+      xlRow(headers),
+      ...dataRows.map(xlRow),
+      `</Table></Worksheet></Workbook>`,
+    ].join("\n");
+
+    return new Response(xml, {
+      headers: {
+        "Content-Type": "application/vnd.ms-excel; charset=utf-8",
+        "Content-Disposition": `attachment; filename="leads-${dateStr}.xls"`,
+      },
+    });
+  }
+
+  // ── CSV (default) ─────────────────────────────────────────────────────────
+  const csv = "\uFEFF" + lines.join("\r\n"); // BOM for correct UTF-8 in Excel
 
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `attachment; filename="leads-${dateStr}.csv"`,
     },
   });
 }

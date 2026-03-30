@@ -234,15 +234,27 @@ function DownloadButton({ q, filter, start, end }: { q?: string; filter?: string
   if (filter) params.set("filter", filter);
   if (start)  params.set("start",  start);
   if (end)    params.set("end",    end);
-  const href = `/api/admin/leads/export?${params.toString()}`;
+
+  const csvHref   = `/api/admin/leads/export?${params.toString()}`;
+  const excelHref = `/api/admin/leads/export?format=excel&${params.toString()}`;
+
   return (
-    <a
-      href={href}
-      className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shrink-0"
-      style={{ background: "linear-gradient(135deg,#0f172a,#1e3a5f)", textDecoration: "none" }}
-    >
-      ⬇ Download CSV
-    </a>
+    <div className="flex items-center gap-2 shrink-0">
+      <a
+        href={csvHref}
+        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white"
+        style={{ background: "linear-gradient(135deg,#0f172a,#1e3a5f)", textDecoration: "none" }}
+      >
+        ⬇ CSV
+      </a>
+      <a
+        href={excelHref}
+        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white"
+        style={{ background: "linear-gradient(135deg,#166534,#15803d)", textDecoration: "none" }}
+      >
+        ⬇ Excel
+      </a>
+    </div>
   );
 }
 
