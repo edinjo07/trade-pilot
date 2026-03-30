@@ -56,6 +56,20 @@ async function handle(
     return NextResponse.json({ ok: false, code: "INTEGRATION_DISABLED" }, { status: 403 });
   }
 
+  // ── Method enforcement ──────────────────────────────────────────────────────
+  const allowedMethod = (integration.inboundMethod || "POST").toUpperCase();
+  const requestMethod = req.method.toUpperCase();
+  if (
+    allowedMethod !== "BOTH" &&
+    allowedMethod !== "ANY" &&
+    allowedMethod !== requestMethod
+  ) {
+    return NextResponse.json(
+      { ok: false, code: "METHOD_NOT_ALLOWED" },
+      { status: 405 }
+    );
+  }
+
   // ── IP Whitelist check ──────────────────────────────────────────────────────
   const inboundListJson = integration.inboundIpWhitelist;
   const ipOk = await isIpAllowed(clientIp, inboundListJson);
@@ -140,6 +154,27 @@ export async function GET(
 }
 
 export async function POST(
+  req: Request,
+  ctx: { params: Promise<{ slug: string }> }
+) {
+  return handle(req, ctx);
+}
+
+export async function PUT(
+  req: Request,
+  ctx: { params: Promise<{ slug: string }> }
+) {
+  return handle(req, ctx);
+}
+
+export async function PATCH(
+  req: Request,
+  ctx: { params: Promise<{ slug: string }> }
+) {
+  return handle(req, ctx);
+}
+
+export async function DELETE(
   req: Request,
   ctx: { params: Promise<{ slug: string }> }
 ) {

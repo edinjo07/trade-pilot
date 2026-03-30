@@ -69,7 +69,7 @@ export async function POST(
   let bodyStr: string | undefined;
   let url = integration.endpoint;
 
-  if (method === "GET") {
+  if (method === "GET" || method === "DELETE") {
     const params = new URLSearchParams({
       first_name: "Test",
       last_name: "Lead",

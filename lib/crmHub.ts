@@ -211,7 +211,7 @@ async function deliverToIntegration(
   let requestBody: string | undefined;
   let contentTypeHeader: Record<string, string> = {};
 
-  if (method === "GET") {
+  if (method === "GET" || method === "DELETE") {
     const qs = new URLSearchParams(mapped).toString();
     url = qs ? `${url}?${qs}` : url;
   } else {

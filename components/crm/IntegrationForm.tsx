@@ -30,7 +30,8 @@ interface IntegrationFormProps {
 
 const PLATFORMS = [
   { value: "custom", label: "Custom / Generic" },
-  { value: "webhook", label: "Webhook" },
+  { value: "make", label: "Make.com (Webhooks)" },
+  { value: "webhook", label: "Generic Webhook" },
   { value: "gohighlevel", label: "GoHighLevel" },
   { value: "hubspot", label: "HubSpot" },
   { value: "salesforce", label: "Salesforce" },
@@ -38,6 +39,29 @@ const PLATFORMS = [
   { value: "zoho", label: "Zoho CRM" },
   { value: "pipedrive", label: "Pipedrive" },
 ];
+
+// Make.com default field mapping
+const MAKE_FIELD_MAPPING = JSON.stringify(
+  {
+    first_name: "{{firstName}}",
+    last_name: "{{lastName}}",
+    email: "{{email}}",
+    phone: "{{phone}}",
+    country: "{{country}}",
+    lead_id: "{{id}}",
+    quality_score: "{{qualityScore}}",
+    quality_tier: "{{qualityTier}}",
+    click_id: "{{clickId}}",
+    sub1: "{{sub1}}",
+    sub2: "{{sub2}}",
+  },
+  null,
+  2
+);
+
+// Make.com outbound IP ranges (for inbound whitelist if Make.com calls back)
+const MAKE_IP_RANGES =
+  '["91.228.170.0/24","91.228.171.0/24","188.116.36.0/24","54.184.0.0/15","34.102.0.0/15"]';
 
 const AUTH_TYPES = [
   { value: "bearer", label: "Bearer Token" },
@@ -61,6 +85,16 @@ const DEFAULT_FIELD_MAPPING = JSON.stringify(
 
 export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
   const router = useRouter();
+
+  // Auto-configure when platform changes to make.com
+  const handlePlatformChange = (platform: string) => {
+    set("platform", platform);
+    if (platform === "make") {
+      set("method", "POST");
+      set("authType", "none");
+      set("fieldMapping", MAKE_FIELD_MAPPING);
+    }
+  };
 
   const [form, setForm] = useState({
     name: initial?.name || "",
@@ -163,7 +197,7 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
           <Field label="Platform">
             <select
               value={form.platform}
-              onChange={(e) => set("platform", e.target.value)}
+              onChange={(e) => handlePlatformChange(e.target.value)}
               {...selectProps}
             >
               {PLATFORMS.map((p) => (
@@ -223,6 +257,31 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
       {/* Outbound Tab */}
       {activeTab === "outbound" && (
         <Section title="Outbound - Push Leads to This CRM">
+
+          {/* Make.com setup guide */}
+          {form.platform === "make" && (
+            <div
+              className="rounded-xl p-4 space-y-2"
+              style={{ background: "#fffbeb", border: "1px solid #fcd34d" }}
+            >
+              <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "#b45309" }}>
+                Make.com Setup Guide
+              </p>
+              <ol className="text-xs space-y-1.5" style={{ color: "#78350f" }}>
+                <li>1. In Make.com, create a new Scenario</li>
+                <li>2. Add a <strong>Webhooks &gt; Custom webhook</strong> module as the trigger</li>
+                <li>3. Click <strong>Add</strong>, give it a name, then click <strong>Save</strong></li>
+                <li>4. Copy the generated webhook URL (e.g. <code style={{fontFamily:"monospace"}}>https://hook.eu1.make.com/xxxx...</code>)</li>
+                <li>5. Paste that URL into the <strong>Endpoint URL</strong> field below</li>
+                <li>6. HTTP Method should be <strong>POST</strong>, Auth Type <strong>No Auth</strong> (URL is the secret)</li>
+                <li>7. Save this integration, then click <strong>Send Test Payload</strong> to verify</li>
+              </ol>
+              <p className="text-xs mt-2" style={{ color: "#92400e" }}>
+                Make.com will receive all lead fields as a JSON body. The scenario can then route the lead to any app (email, Slack, CRM, etc.).
+              </p>
+            </div>
+          )}
+
           <div className="grid gap-4 md:grid-cols-3">
             <Field label="HTTP Method">
               <select
@@ -233,6 +292,8 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
                 <option value="POST">POST</option>
                 <option value="GET">GET</option>
                 <option value="PUT">PUT</option>
+                <option value="PATCH">PATCH</option>
+                <option value="DELETE">DELETE</option>
               </select>
             </Field>
             <Field label="Endpoint URL *" className="md:col-span-2">
@@ -421,12 +482,41 @@ export function IntegrationForm({ initial, isEdit }: IntegrationFormProps) {
                   style={{ background: "#ede9fe", border: "1px solid #c4b5fd" }}
                 >
                   <p className="text-xs font-semibold" style={{ color: "#6d28d9" }}>
-                    Webhook URL - give this to the other CRM:
+                    Webhook URL — paste this into Make.com or your CRM:
                   </p>
-                  <code className="text-xs block" style={{ color: "#374151" }}>
+                  <code
+                    className="text-xs block break-all select-all cursor-text rounded px-2 py-1"
+                    style={{ color: "#374151", background: "#f5f3ff" }}
+                  >
                     {typeof window !== "undefined" ? window.location.origin : "https://yourdomain.com"}
                     /api/webhook/inbound/{form.inboundSlug}
                   </code>
+                  {form.platform === "make" && (
+                    <p className="text-xs" style={{ color: "#6d28d9" }}>
+                      In Make.com: use a <strong>Webhooks &gt; Custom webhook</strong> module to POST to this URL.
+                      Use <code style={{fontFamily:"monospace"}}>?create_lead=1</code> to auto-create leads.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {form.platform === "make" && (
+                <div
+                  className="rounded-xl p-3 text-xs"
+                  style={{ background: "#fffbeb", border: "1px solid #fcd34d", color: "#78350f" }}
+                >
+                  <strong>Make.com outbound IPs</strong> (add to IP Whitelist below if needed):
+                  <code className="block mt-1" style={{fontFamily:"monospace"}}>
+                    91.228.170.0/24, 91.228.171.0/24, 188.116.36.0/24
+                  </code>
+                  <button
+                    type="button"
+                    className="mt-2 rounded px-2 py-1 text-xs font-medium"
+                    style={{ background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d" }}
+                    onClick={() => set("inboundIpWhitelist", MAKE_IP_RANGES)}
+                  >
+                    Auto-fill Make.com IPs
+                  </button>
                 </div>
               )}
 
