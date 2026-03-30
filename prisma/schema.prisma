@@ -82,6 +82,42 @@ model LeadEvent {
   @@index([type])
 }
 
+model Visitor {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+
+  // Identity
+  ipHash      String
+  sessionId   String?  // links to FunnelSession if started
+
+  // Geo (from Cloudflare/Vercel headers)
+  country     String   @default("")
+  city        String   @default("")
+  region      String   @default("")
+
+  // Device
+  userAgent   String?
+  device      String   @default("desktop")   // desktop | mobile | tablet
+  os          String   @default("")
+  browser     String   @default("")
+
+  // Referrer
+  referrer    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+
+  // Journey
+  landingPath String   @default("/")
+  currentStep String   @default("S1_HOOK")
+  convertedAt DateTime?
+
+  @@index([createdAt])
+  @@index([country])
+  @@index([ipHash])
+}
+
 model Click {
   id       String   @id @default(uuid())
   clickId  String   @unique

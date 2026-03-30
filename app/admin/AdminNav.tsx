@@ -33,6 +33,7 @@ export function AdminNav() {
 
         <nav className="flex items-center gap-2 text-sm">
           <NavLink href="/admin/leads" label="Leads" pathname={pathname} />
+          <NavLink href="/admin/analytics" label="Analytics" pathname={pathname} />
           <NavLink href="/admin/crm" label="CRM Hub" pathname={pathname} />
           <NavLink href="/admin/ip-whitelist" label="IP Whitelist" pathname={pathname} />
           <a

@@ -134,6 +134,32 @@ export default function FunnelShell() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Analytics: track visitor on mount (fires once)
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    postJSON("/api/analytics/track", {
+      sessionId:   state.sessionId,
+      landingPath: window.location.pathname,
+      currentStep: "S1_HOOK",
+      referrer:    document.referrer || null,
+      utmSource:   p.get("utm_source")   || null,
+      utmMedium:   p.get("utm_medium")   || null,
+      utmCampaign: p.get("utm_campaign") || null,
+    }).catch(() => {/* non-fatal */});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Analytics: update step whenever it changes (skip initial BOT_GATE)
+  useEffect(() => {
+    if (step === "BOT_GATE") return;
+    postJSON("/api/analytics/track", {
+      sessionId:   state.sessionId,
+      currentStep: step,
+      converted:   step === "DONE",
+    }).catch(() => {/* non-fatal */});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
   const advance = useCallback((next: AgStep) => {
     scrollTop();
     setStep(next);
