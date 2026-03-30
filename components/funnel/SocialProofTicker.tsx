@@ -6,6 +6,7 @@
  * Entries are randomized at mount so every visitor sees a unique sequence.
  */
 import { useEffect, useState } from "react";
+import { useT } from "@/components/LocaleProvider";
 
 const PEOPLE: { name: string; city: string; avatar: string }[] = [
   { name: "Alex",    city: "London",       avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
@@ -58,13 +59,14 @@ function makeEntry(id: number): Entry {
   };
 }
 
-function entryText(e: Entry): string {
-  if (e.type === "join") return `${e.name} from ${e.city} just joined`;
-  if (e.type === "profit") return `${e.name} from ${e.city} just closed a ${e.amount} trade`;
-  return `${e.name} from ${e.city} is on this page right now`;
+function entryText(e: Entry, t: ReturnType<typeof useT>): string {
+  if (e.type === "join") return t.ticker_joined.replace("{name}", e.name).replace("{city}", e.city);
+  if (e.type === "profit") return t.ticker_trade.replace("{name}", e.name).replace("{city}", e.city).replace("{amount}", e.amount ?? "");
+  return t.ticker_on_page.replace("{name}", e.name).replace("{city}", e.city);
 }
 
 export default function SocialProofTicker() {
+  const t = useT();
   const [current, setCurrent] = useState<Entry | null>(null);
   const [visible, setVisible] = useState(false);
   const [counter, setCounter] = useState(0);
@@ -137,9 +139,9 @@ export default function SocialProofTicker() {
       </div>
       <div className="flex flex-col gap-0.5">
         <span className="text-xs text-gray-800 leading-snug font-medium">
-          {entryText(current)}
+          {entryText(current, t)}
         </span>
-        <span className="text-[10px] text-gray-400">{current.minsAgo}m ago</span>
+        <span className="text-[10px] text-gray-400">{t.ticker_mins_ago.replace("{n}", String(current.minsAgo))}</span>
       </div>
     </div>
   );

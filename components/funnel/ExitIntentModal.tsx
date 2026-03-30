@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useState, useRef } from "react";
+import { useT } from "@/components/LocaleProvider";
 
 interface Props {
   onStay: () => void;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function ExitIntentModal({ onStay, onLeave }: Props) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const firedRef = useRef(false);
   const [lostAmount, setLostAmount] = useState(0);
@@ -85,16 +87,15 @@ export default function ExitIntentModal({ onStay, onLeave }: Props) {
         {/* Pulsing red dot */}
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-red-600 px-4 py-1 text-xs font-bold text-white uppercase tracking-widest">
           <span className="inline-block h-2 w-2 animate-ping rounded-full bg-white" />
-          Warning
+          {t.exit_warning}
         </div>
 
         <h2 className="mt-3 text-center text-2xl font-extrabold text-white leading-tight">
-          Hold on  you were{" "}
-          <span className="text-red-400">so close</span>
+          {t.exit_headline}
         </h2>
 
         <p className="mt-3 text-center text-sm text-neutral-400">
-          In the time since you opened this page, people on the same platform made:
+          {t.exit_body_1}
         </p>
 
         <div
@@ -105,11 +106,11 @@ export default function ExitIntentModal({ onStay, onLeave }: Props) {
         </div>
 
         <p className="mt-1 text-center text-xs text-neutral-500">
-          That number is still climbing right now.
+          {t.exit_still_climbing}
         </p>
 
         <p className="mt-4 text-center text-sm text-neutral-300">
-          You don&apos;t have to commit to anything. Just finish the last step  it takes under 60 seconds and you can always decide later.
+          {t.exit_body_2}
         </p>
 
         <div className="mt-6 flex flex-col gap-3">
@@ -117,13 +118,13 @@ export default function ExitIntentModal({ onStay, onLeave }: Props) {
             onClick={() => { setOpen(false); onStay(); }}
             className="btn-emerald-gradient w-full rounded-xl py-3.5 text-sm font-bold text-white transition"
           >
-            OK, I&apos;ll finish the last step &rarr;
+            {t.exit_cta}
           </button>
 
           {/* Divider */}
           <div className="flex items-center gap-2">
             <div className="h-px flex-1 bg-neutral-800" />
-            <span className="text-xs text-neutral-600">or</span>
+            <span className="text-xs text-neutral-600">{t.exit_or}</span>
             <div className="h-px flex-1 bg-neutral-800" />
           </div>
 
@@ -131,7 +132,7 @@ export default function ExitIntentModal({ onStay, onLeave }: Props) {
           {!softEmailSent ? (
             <div className="space-y-2">
               <p className="text-xs text-neutral-400 text-center">
-                Not ready? Drop your email and we&apos;ll send you the free guide.
+                {t.exit_soft_prompt}
               </p>
               <div className="flex gap-2">
                 <input
@@ -139,7 +140,7 @@ export default function ExitIntentModal({ onStay, onLeave }: Props) {
                   value={softEmail}
                   onChange={(e) => setSoftEmail(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") handleSoftEmailSend(); }}
-                  placeholder="your@email.com"
+                  placeholder={t.exit_email_placeholder}
                   className="flex-1 rounded-xl bg-neutral-800 border border-neutral-700 px-3 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500/70"
                 />
                 <button
@@ -147,19 +148,19 @@ export default function ExitIntentModal({ onStay, onLeave }: Props) {
                   disabled={!softEmail.includes("@")}
                   className="rounded-xl border border-amber-500/40 bg-amber-500/15 px-4 py-2.5 text-xs font-bold text-amber-400 shrink-0 disabled:opacity-40"
                 >
-                  Send
+                  {t.exit_send_btn}
                 </button>
               </div>
             </div>
           ) : (
-            <p className="text-xs text-center text-emerald-400 py-1">✓ Got it! Check your inbox shortly.</p>
+            <p className="text-xs text-center text-emerald-400 py-1">{t.exit_sent}</p>
           )}
 
           <button
             onClick={() => { setOpen(false); onLeave(); }}
             className="text-center text-xs text-neutral-600 hover:text-neutral-400 underline"
           >
-            No thanks, I&apos;m not interested
+            {t.exit_no_thanks}
           </button>
         </div>
       </div>

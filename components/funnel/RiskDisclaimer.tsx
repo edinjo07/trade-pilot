@@ -5,6 +5,7 @@
  * Reusable compliance bar shown on every section that displays profit figures.
  * Includes regulatory authority badges and mandatory risk warning.
  */
+import { useT } from "@/components/LocaleProvider";
 
 interface Props {
   /** Compact single-line variant (default false = full two-line card) */
@@ -47,12 +48,13 @@ const REGULATORS = [
 ];
 
 export default function RiskDisclaimer({ compact = false }: Props) {
+  const t = useT();
   if (compact) {
     return (
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 py-2">
         <span className="flex items-center gap-1 text-[10px] text-amber-600 font-semibold">
           <span>⚠️</span>
-          <span>Capital at risk. Past performance is not indicative of future results.</span>
+          <span>{t.risk_compact}</span>
         </span>
         <span className="flex items-center gap-1.5">
           {REGULATORS.map((r) => (
@@ -81,18 +83,15 @@ export default function RiskDisclaimer({ compact = false }: Props) {
       <div className="flex items-start gap-2">
         <span className="text-amber-500 text-base shrink-0 mt-0.5">⚠️</span>
         <p className="text-xs leading-relaxed text-gray-500">
-          <span className="font-bold text-gray-700">Risk Warning: </span>
-          Trading involves risk. Past performance is not indicative of future results.
-          Capital at risk. The value of investments can go down as well as up.
-          You should only trade with money you can afford to lose. Simulated and historical
-          results do not guarantee future performance.
+          <span className="font-bold text-gray-700">{t.risk_label} </span>
+          {t.risk_body}
         </p>
       </div>
 
       {/* Regulator badges */}
       <div>
         <p className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mb-2">
-          Regulated by
+          {t.risk_regulated_by}
         </p>
         <div className="flex flex-wrap gap-2">
           {REGULATORS.map((r) => (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useT } from "@/components/LocaleProvider";
 import {
   PILOT_MODES,
   computeSimulation,
@@ -279,6 +280,7 @@ export default function SectionPilotSim({
 }: {
   onContinue: () => void;
 }) {
+  const t = useT();
   const [activeId, setActiveId] = useState<PilotMode["id"]>("MA_CROSS");
   const [result, setResult] = useState<SimResult>(() =>
     computeSimulation("MA_CROSS"),
@@ -366,13 +368,13 @@ export default function SectionPilotSim({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />
           </span>
-          Live Simulation · Claude AI Active
+          {t.s2c_badge}
         </div>
         <h2 className="text-2xl font-bold text-gray-900 leading-tight">
-          Watch Trading Pilot Think in Real-Time
+          {t.s2c_headline}
         </h2>
         <p className="text-gray-500 text-sm max-w-sm mx-auto">
-          Pick a strategy. See how the bot detects a signal, checks live news sentiment via Claude AI, then fires or suppresses the trade  automatically.
+          {t.s2c_subtext}
         </p>
       </div>
 
@@ -408,7 +410,7 @@ export default function SectionPilotSim({
                     active ? "bg-white/10 text-white" : "bg-gray-100 text-gray-600",
                   ].join(" ")}
                 >
-                  {m.winRate}% win rate
+                  {t.s2c_win_rate.replace("{n}", String(m.winRate))}
                 </span>
                 <span
                   className={active ? "text-gray-400" : "text-gray-400"}
@@ -434,7 +436,7 @@ export default function SectionPilotSim({
             <span className="text-xs text-gray-300 font-mono">
               TradePilot · {mode.name} ·{" "}
               <span style={{ color: mode.colorHex }}>
-                {running ? "SCANNING" : done ? "COMPLETE" : "IDLE"}
+                {running ? t.s2c_scanning : done ? t.s2c_complete : t.s2c_idle}
               </span>
             </span>
           </div>
@@ -474,11 +476,11 @@ export default function SectionPilotSim({
             </span>
             <span className="flex items-center gap-1.5">
               <span className="text-emerald-500">▲</span>
-              <span className="text-gray-500">BUY signal</span>
+              <span className="text-gray-500">{t.s2c_buy_signal}</span>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="text-red-500">▼</span>
-              <span className="text-gray-500">SELL signal</span>
+              <span className="text-gray-500">{t.s2c_sell_signal}</span>
             </span>
           </div>
         )}
@@ -510,7 +512,7 @@ export default function SectionPilotSim({
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-              How {mode.name} works
+              {t.s2c_how_works.replace("{name}", mode.name)}
             </div>
             <p className="text-sm text-gray-700 leading-relaxed">
               {mode.description}
@@ -535,14 +537,14 @@ export default function SectionPilotSim({
       {/* Risk controls callout */}
       <div className="rounded-xl bg-gray-900 text-white px-4 py-4 space-y-3">
         <div className="text-xs font-bold uppercase tracking-widest text-gray-400">
-          Built-in risk controls  every strategy
+          {t.s2c_risk_label}
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs">
           {[
-            ["🛑", "Stop-Loss", "Hard stop on every trade"],
-            ["🎯", "Take-Profit", "Auto-exits at your target"],
-            ["📉", "Daily loss cap", "Bot halts if limit hit"],
-            ["🔒", "Max daily trades", "No overtrading in noise"],
+            ["🛑", t.s2c_sl_title, t.s2c_sl_desc],
+            ["🎯", t.s2c_tp_title, t.s2c_tp_desc],
+            ["📉", t.s2c_dl_title, t.s2c_dl_desc],
+            ["🔒", t.s2c_mt_title, t.s2c_mt_desc],
           ].map(([icon, title, desc]) => (
             <div key={title} className="bg-white/5 rounded-lg px-3 py-2.5">
               <div className="text-base mb-0.5">{icon}</div>
@@ -560,16 +562,16 @@ export default function SectionPilotSim({
           disabled={running}
           className="w-full rounded-xl border-2 border-gray-200 bg-white py-3 text-sm font-semibold text-gray-600 transition hover:border-gray-400 disabled:opacity-40"
         >
-          {running ? "Simulation running…" : "↺ Run simulation again"}
+          {running ? t.s2c_running : t.s2c_replay}
         </button>
         <button
           onClick={onContinue}
           className="w-full rounded-xl bg-gray-900 py-4 text-base font-bold text-white shadow-lg transition hover:bg-gray-800 active:scale-[.98]"
         >
-          I want TradePilot working for me →
+          {t.s2c_cta}
         </button>
         <p className="text-center text-xs text-gray-400">
-          Free to access · Takes 60 seconds · No credit card needed
+          {t.s2c_cta_sub}
         </p>
       </div>
     </div>

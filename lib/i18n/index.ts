@@ -182,6 +182,127 @@ export type T = {
   err_rate_limit: string;
   err_generic: string;
   err_network: string;
+
+  // SocialProofTicker
+  ticker_joined: string;
+  ticker_trade: string;
+  ticker_on_page: string;
+  ticker_mins_ago: string;
+
+  // ExitIntentModal
+  exit_warning: string;
+  exit_headline: string;
+  exit_body_1: string;
+  exit_still_climbing: string;
+  exit_body_2: string;
+  exit_cta: string;
+  exit_or: string;
+  exit_soft_prompt: string;
+  exit_email_placeholder: string;
+  exit_send_btn: string;
+  exit_sent: string;
+  exit_no_thanks: string;
+
+  // RiskDisclaimer
+  risk_label: string;
+  risk_body: string;
+  risk_compact: string;
+  risk_regulated_by: string;
+
+  // SectionPainIntro (S2B)
+  s2b_step_label: string;
+  s2b_step_duration: string;
+  s2b_headline: string;
+  s2b_headline_em: string;
+  s2b_headline_end: string;
+  s2b_subtext: string;
+  s2b_counter_label: string;
+  s2b_counter_sub: string;
+  s2b_p1_title: string; s2b_p1_body: string; s2b_p1_stat: string;
+  s2b_p2_title: string; s2b_p2_body: string; s2b_p2_stat: string;
+  s2b_p3_title: string; s2b_p3_body: string; s2b_p3_stat: string;
+  s2b_p4_title: string; s2b_p4_body: string; s2b_p4_stat: string;
+  s2b_p5_title: string; s2b_p5_body: string; s2b_p5_stat: string;
+  s2b_p6_title: string; s2b_p6_body: string; s2b_p6_stat: string;
+  s2b_why_headline: string;
+  s2b_why_text1: string;
+  s2b_why_text2: string;
+  s2b_why_text3: string;
+  s2b_solution_label: string;
+  s2b_tp_headline: string;
+  s2b_tp_sub: string;
+  s2b_claude_title: string;
+  s2b_claude_body: string;
+  s2b_fact1_heading: string; s2b_fact1_detail: string;
+  s2b_fact2_heading: string; s2b_fact2_detail: string;
+  s2b_fact3_heading: string; s2b_fact3_detail: string;
+  s2b_advocates_label: string;
+  s2b_adv_disclaimer: string;
+  s2b_cta_box_p1: string;
+  s2b_cta_box_p2: string;
+  s2b_cta: string;
+  s2b_cta_sub: string;
+
+  // SectionPilotSim (S2C)
+  s2c_badge: string;
+  s2c_headline: string;
+  s2c_subtext: string;
+  s2c_win_rate: string;
+  s2c_how_works: string;
+  s2c_risk_label: string;
+  s2c_sl_title: string; s2c_sl_desc: string;
+  s2c_tp_title: string; s2c_tp_desc: string;
+  s2c_dl_title: string; s2c_dl_desc: string;
+  s2c_mt_title: string; s2c_mt_desc: string;
+  s2c_running: string;
+  s2c_replay: string;
+  s2c_cta: string;
+  s2c_cta_sub: string;
+  s2c_scanning: string;
+  s2c_complete: string;
+  s2c_idle: string;
+  s2c_buy_signal: string;
+  s2c_sell_signal: string;
+
+  // SectionLiveProof (S2D)
+  s2d_badge: string;
+  s2d_headline: string;
+  s2d_subtext: string;
+  s2d_balance_label: string;
+  s2d_status_initial: string;
+  s2d_status_scanning: string;
+  s2d_status_pattern: string;
+  s2d_status_trade1: string;
+  s2d_status_tp1: string;
+  s2d_status_trade2: string;
+  s2d_status_tp2: string;
+  s2d_status_done: string;
+  s2d_trade_open: string;
+  s2d_scanning: string;
+  s2d_complete: string;
+  s2d_standby: string;
+  s2d_milestone_activated: string;
+  s2d_milestone_activated_sub: string;
+  s2d_milestone_trade1: string;
+  s2d_milestone_trade1_sub: string;
+  s2d_milestone_tp1: string;
+  s2d_milestone_tp1_sub: string;
+  s2d_milestone_trade2: string;
+  s2d_milestone_trade2_sub: string;
+  s2d_milestone_tp2_sub: string;
+  s2d_watch_step1_title: string; s2d_watch_step1_desc: string;
+  s2d_watch_step2_title: string; s2d_watch_step2_desc: string;
+  s2d_watch_step3_title: string; s2d_watch_step3_desc: string;
+  s2d_sim_complete_label: string;
+  s2d_started_with: string;
+  s2d_ended_with: string;
+  s2d_trade1_label: string;
+  s2d_trade2_label: string;
+  s2d_result_box: string;
+  s2d_start_btn: string;
+  s2d_running_note: string;
+  s2d_cta: string;
+  s2d_watch_again: string;
 };
 
 // ── ENGLISH ───────────────────────────────────────────────────────────────────
@@ -351,6 +472,145 @@ const en: T = {
   err_rate_limit: "Too many attempts. Please wait a minute and try again.",
   err_generic: "Something went wrong. Please refresh the page and try again.",
   err_network: "Network issue. Please check your connection and try again.",
+
+  // ── SocialProofTicker ──────────────────────────────────────────────────────
+  ticker_joined: "{name} from {city} just joined",
+  ticker_trade: "{name} from {city} just closed a {amount} trade",
+  ticker_on_page: "{name} from {city} is on this page right now",
+  ticker_mins_ago: "{n}m ago",
+
+  // ── ExitIntentModal ────────────────────────────────────────────────────────
+  exit_warning: "Warning",
+  exit_headline: "Hold on — you were so close",
+  exit_body_1: "In the time since you opened this page, people on the same platform made:",
+  exit_still_climbing: "That number is still climbing right now.",
+  exit_body_2: "You don't have to commit to anything. Just finish the last step — it takes under 60 seconds and you can always decide later.",
+  exit_cta: "OK, I'll finish the last step →",
+  exit_or: "or",
+  exit_soft_prompt: "Not ready? Drop your email and we'll send you the free guide.",
+  exit_email_placeholder: "your@email.com",
+  exit_send_btn: "Send",
+  exit_sent: "✓ Got it! Check your inbox shortly.",
+  exit_no_thanks: "No thanks, I'm not interested",
+
+  // ── RiskDisclaimer ─────────────────────────────────────────────────────────
+  risk_label: "Risk Warning:",
+  risk_body: "Trading involves risk. Past performance is not indicative of future results. Capital at risk. The value of investments can go down as well as up. You should only trade with money you can afford to lose. Simulated and historical results do not guarantee future performance.",
+  risk_compact: "Capital at risk. Past performance is not indicative of future results.",
+  risk_regulated_by: "Regulated by",
+
+  // ── SectionPainIntro (S2B) ─────────────────────────────────────────────────
+  s2b_step_label: "Why this matters to you",
+  s2b_step_duration: "2 min read",
+  s2b_headline: "The system is designed to",
+  s2b_headline_em: "keep your money working for them",
+  s2b_headline_end: "not for you.",
+  s2b_subtext: "You go to work. You save. You try to do the right thing. And at every turn, rising costs, low interest, and taxes eat away at your progress. Here's what's actually happening to your money right now.",
+  s2b_counter_label: "Value lost to inflation since you opened this page",
+  s2b_counter_sub: "Globally, inflation destroys purchasing power every second. Your idle savings are part of that.",
+  s2b_p1_title: "Taxes take 20–45% of everything you earn",
+  s2b_p1_body: "Before you see a penny, governments take their slice. The average worker loses nearly a third of their income before it ever touches their bank account.",
+  s2b_p1_stat: "£12,570 lost annually on an average UK salary just to tax.",
+  s2b_p2_title: "Inflation is silently destroying your savings",
+  s2b_p2_body: "Your bank pays you 0.1%. Inflation runs at 4–6%. Every year your savings sit still, they lose real value. Saving harder doesn't fix this problem.",
+  s2b_p2_stat: "£10,000 saved today is worth £9,400 in real terms next year.",
+  s2b_p3_title: "Fuel, food, energy costs never stop rising",
+  s2b_p3_body: "The price of everything you need keeps climbing. Your income doesn't keep pace. The gap between what you earn and what you spend grows wider every year.",
+  s2b_p3_stat: "Average UK household bills rose by £1,800+ in a single year.",
+  s2b_p4_title: "Self-employed? You don't have time to trade",
+  s2b_p4_body: "Running your own business already consumes 60+ hours a week. Sitting in front of charts watching candles move isn't an option. Yet your money is still working against you.",
+  s2b_p4_stat: "67% of self-employed people have no active investment strategy.",
+  s2b_p5_title: "Your money in the bank is losing value every day",
+  s2b_p5_body: "Banks don't reward loyalty — they reward your deposits by paying you almost nothing. Meanwhile they lend that same money out at 8–25% interest. You're doing them a favour.",
+  s2b_p5_stat: "High street banks average 0.1–1.5% interest vs 5%+ inflation.",
+  s2b_p6_title: "Pension payouts barely cover the basics",
+  s2b_p6_body: "Decades of contributions. A lifetime of work. And a pension that barely covers rent, food, and heating. The retirement you were promised doesn't stretch as far as it should.",
+  s2b_p6_stat: "Average UK pension income: £13,000/year. Average living cost: £17,000.",
+  s2b_why_headline: "What they don't tell you",
+  s2b_why_text1: "The ultra-wealthy figured this out decades ago. They don't manage money manually. They deploy automated systems that work for them 24 hours a day — whether they're asleep, on holiday, or living their lives.",
+  s2b_why_text2: "Jim Simons' algorithms ran while he slept and made him a billionaire. Ray Dalio's machine never takes a day off. The difference is those systems weren't available to ordinary people.",
+  s2b_why_text3: "Until Trading Pilot.",
+  s2b_solution_label: "The solution",
+  s2b_tp_headline: "Meet Trading Pilot",
+  s2b_tp_sub: "The first autonomous trading intelligence engine that fuses real-time technical signals with Claude AI news sentiment — executing trades 24/7 with the discipline no human can sustain.",
+  s2b_claude_title: "Claude AI Sentiment Engine",
+  s2b_claude_body: "Before every trade, Pilot queries Claude AI for live news sentiment on that asset. A perfect crossover with negative headlines? Pilot waits. Confirmed signal with bullish sentiment? Pilot acts with full conviction.",
+  s2b_fact1_heading: "It watches the market so you don't have to",
+  s2b_fact1_detail: "Trading Pilot scans every price tick, every minute, across 20+ instruments — 24/7 with zero hesitation and sub-millisecond signal execution. The market never sleeps, and neither does Pilot.",
+  s2b_fact2_heading: "Four battle-tested strategies, not guesswork",
+  s2b_fact2_detail: "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Each engineered for a different market condition. You pick one — or run multiple pilots simultaneously across different assets.",
+  s2b_fact3_heading: "Six layers of institutional-grade risk protection",
+  s2b_fact3_detail: "Hard stop-loss on every trade. Take-profit locking. Max daily loss circuit-breaker. Max daily trades cap. Confirmation bar filtering. Real-time equity curve monitoring. Your capital is always protected.",
+  s2b_advocates_label: "Who has been doing this for decades",
+  s2b_adv_disclaimer: "These individuals are not affiliated with or endorsing Trading Pilot. Their publicly documented use of algorithmic and rules-based trading systems demonstrates the power of automation.",
+  s2b_cta_box_p1: "Now let's show you exactly how Trading Pilot would have acted on last week's market.",
+  s2b_cta_box_p2: "Real strategy logic. Real chart data. Claude AI sentiment live.",
+  s2b_cta: "Show me how it works →",
+  s2b_cta_sub: "Free to access · No credit card · Takes 60 seconds to set up",
+
+  // ── SectionPilotSim (S2C) ──────────────────────────────────────────────────
+  s2c_badge: "Live Simulation · Claude AI Active",
+  s2c_headline: "Watch Trading Pilot Think in Real-Time",
+  s2c_subtext: "Pick a strategy. See how the bot detects a signal, checks live news sentiment via Claude AI, then fires or suppresses the trade — automatically.",
+  s2c_win_rate: "{n}% win rate",
+  s2c_how_works: "How {name} works",
+  s2c_risk_label: "Built-in risk controls — every strategy",
+  s2c_sl_title: "Stop-Loss", s2c_sl_desc: "Hard stop on every trade",
+  s2c_tp_title: "Take-Profit", s2c_tp_desc: "Auto-exits at your target",
+  s2c_dl_title: "Daily loss cap", s2c_dl_desc: "Bot halts if limit hit",
+  s2c_mt_title: "Max daily trades", s2c_mt_desc: "No overtrading in noise",
+  s2c_running: "Simulation running…",
+  s2c_replay: "↺ Run simulation again",
+  s2c_cta: "I want TradePilot working for me →",
+  s2c_cta_sub: "Free to access · Takes 60 seconds · No credit card needed",
+  s2c_scanning: "SCANNING",
+  s2c_complete: "COMPLETE",
+  s2c_idle: "IDLE",
+  s2c_buy_signal: "BUY signal",
+  s2c_sell_signal: "SELL signal",
+
+  // ── SectionLiveProof (S2D) ─────────────────────────────────────────────────
+  s2d_badge: "Watch it trade live",
+  s2d_headline: "$250 account. Bot trading EUR/USD. Fully automated.",
+  s2d_subtext: "Watch TradePilot spot opportunities and make trades in real time while you do absolutely nothing.",
+  s2d_balance_label: "Account Balance",
+  s2d_status_initial: "TradePilot is watching the market...",
+  s2d_status_scanning: "Scanning every price tick. Looking for the right moment...",
+  s2d_status_pattern: "Spotted a pattern forming. Fast line crossing above slow line...",
+  s2d_status_trade1: "Trade #1 open — bot is in the market now.",
+  s2d_status_tp1: "Trade #1 closed with profit!",
+  s2d_status_trade2: "Second setup spotted — bot entering market again.",
+  s2d_status_tp2: "Second trade closed with profit!",
+  s2d_status_done: "Session complete. 2 trades. 2 wins. Zero effort from you.",
+  s2d_trade_open: "TRADE OPEN",
+  s2d_scanning: "SCANNING",
+  s2d_complete: "COMPLETE",
+  s2d_standby: "STANDBY",
+  s2d_milestone_activated: "Bot activated — watching market",
+  s2d_milestone_activated_sub: "Scanning every tick for a signal...",
+  s2d_milestone_trade1: "Trade #1 opened",
+  s2d_milestone_trade1_sub: "Bot entered at the right moment.",
+  s2d_milestone_tp1: "+${amount} profit locked",
+  s2d_milestone_tp1_sub: "First trade closed in the green.",
+  s2d_milestone_trade2: "Second trade opened",
+  s2d_milestone_trade2_sub: "Bot spotted another opportunity.",
+  s2d_milestone_tp2_sub: "Both trades closed in the green.",
+  s2d_watch_step1_title: "Bot watches",
+  s2d_watch_step1_desc: "Every price movement, 24/7",
+  s2d_watch_step2_title: "Spots opportunity",
+  s2d_watch_step2_desc: "Detects the right moment automatically",
+  s2d_watch_step3_title: "Locks profit",
+  s2d_watch_step3_desc: "Exits the trade at your target price",
+  s2d_sim_complete_label: "Simulation complete",
+  s2d_started_with: "Started with",
+  s2d_ended_with: "Ended with",
+  s2d_trade1_label: "Trade 1: EUR/USD",
+  s2d_trade2_label: "Trade 2: EUR/USD",
+  s2d_result_box: "You did nothing. The bot watched the chart, spotted two opportunities, entered both trades, and closed them at a profit. That's what TradePilot does for you every day.",
+  s2d_start_btn: "▶  Watch it trade live",
+  s2d_running_note: "Simulation running — watch the chart above...",
+  s2d_cta: "I want this running on my account →",
+  s2d_watch_again: "↺ Watch again",
 };
 
 // ── ITALIAN ───────────────────────────────────────────────────────────────────
@@ -520,6 +780,139 @@ const it: T = {
   err_rate_limit: "Troppi tentativi. Attendi un minuto e riprova.",
   err_generic: "Qualcosa è andato storto. Aggiorna la pagina e riprova.",
   err_network: "Problema di rete. Controlla la connessione e riprova.",
+
+  ticker_joined: "{name} da {city} si è appena iscritto",
+  ticker_trade: "{name} da {city} ha appena chiuso un trade da {amount}",
+  ticker_on_page: "{name} da {city} è su questa pagina adesso",
+  ticker_mins_ago: "{n} min fa",
+
+  exit_warning: "Attenzione",
+  exit_headline: "Aspetta — eri così vicino",
+  exit_body_1: "Dal momento in cui hai aperto questa pagina, le persone sulla stessa piattaforma hanno guadagnato:",
+  exit_still_climbing: "Quel numero sta ancora salendo adesso.",
+  exit_body_2: "Non devi impegnarti a nulla. Completa solo l'ultimo passaggio — richiede meno di 60 secondi e puoi sempre decidere dopo.",
+  exit_cta: "OK, completo l'ultimo passaggio →",
+  exit_or: "oppure",
+  exit_soft_prompt: "Non sei pronto? Lascia la tua email e ti mandiamo la guida gratuita.",
+  exit_email_placeholder: "tua@email.it",
+  exit_send_btn: "Invia",
+  exit_sent: "✓ Ricevuto! Controlla la tua casella a breve.",
+  exit_no_thanks: "No grazie, non sono interessato",
+
+  risk_label: "Avvertenza sul rischio:",
+  risk_body: "Il trading comporta rischi. Le performance passate non sono indicative dei risultati futuri. Capitale a rischio. Il valore degli investimenti può sia aumentare che diminuire. Dovresti fare trading solo con denaro che puoi permetterti di perdere. I risultati simulati e storici non garantiscono le performance future.",
+  risk_compact: "Capitale a rischio. Le performance passate non sono indicative dei risultati futuri.",
+  risk_regulated_by: "Regolamentato da",
+
+  s2b_step_label: "Perché questo ti riguarda",
+  s2b_step_duration: "2 min di lettura",
+  s2b_headline: "Il sistema è progettato per",
+  s2b_headline_em: "far lavorare i tuoi soldi per loro",
+  s2b_headline_end: "non per te.",
+  s2b_subtext: "Vai a lavorare. Risparmi. Cerchi di fare la cosa giusta. E ad ogni svolta, costi crescenti, bassi interessi e tasse erodono i tuoi progressi. Ecco cosa sta davvero succedendo ai tuoi soldi adesso.",
+  s2b_counter_label: "Valore perso per inflazione da quando hai aperto questa pagina",
+  s2b_counter_sub: "A livello globale, l'inflazione distrugge il potere d'acquisto ogni secondo. I tuoi risparmi fermi ne fanno parte.",
+  s2b_p1_title: "Le tasse prendono il 20–45% di tutto quello che guadagni",
+  s2b_p1_body: "Prima ancora che tu veda un centesimo, i governi si prendono la loro fetta. Il lavoratore medio perde quasi un terzo del reddito prima che arrivi sul conto.",
+  s2b_p1_stat: "£12.570 persi ogni anno su uno stipendio medio UK solo di tasse.",
+  s2b_p2_title: "L'inflazione sta silenziosamente distruggendo i tuoi risparmi",
+  s2b_p2_body: "La tua banca ti paga lo 0,1%. L'inflazione corre al 4–6%. Ogni anno i tuoi risparmi restano fermi, perdono valore reale. Risparmiare di più non risolve questo problema.",
+  s2b_p2_stat: "£10.000 risparmiati oggi valgono £9.400 in termini reali l'anno prossimo.",
+  s2b_p3_title: "Carburante, cibo, energia: i costi non smettono mai di salire",
+  s2b_p3_body: "Il prezzo di tutto quello di cui hai bisogno continua a crescere. Il tuo reddito non segue il passo. Il divario tra quanto guadagni e quanto spendi si allarga ogni anno.",
+  s2b_p3_stat: "Le bollette medie delle famiglie UK sono aumentate di £1.800+ in un solo anno.",
+  s2b_p4_title: "Lavori in proprio? Non hai tempo per fare trading",
+  s2b_p4_body: "Gestire la tua attività consuma già 60+ ore alla settimana. Stare davanti ai grafici a guardare le candele non è un'opzione. Eppure i tuoi soldi lavorano ancora contro di te.",
+  s2b_p4_stat: "Il 67% dei lavoratori autonomi non ha una strategia di investimento attiva.",
+  s2b_p5_title: "I tuoi soldi in banca perdono valore ogni giorno",
+  s2b_p5_body: "Le banche non premiano la fedeltà — premiano i tuoi depositi pagandoti quasi nulla. Nel frattempo prestano quei stessi soldi all'8–25% di interesse. Stai facendo loro un favore.",
+  s2b_p5_stat: "Le banche tradizionali pagano in media lo 0,1–1,5% contro un'inflazione del 5%+.",
+  s2b_p6_title: "La pensione copre a malapena l'essenziale",
+  s2b_p6_body: "Decenni di contributi. Una vita di lavoro. E una pensione che copre a malapena affitto, cibo e riscaldamento. Il pensionamento che ti era stato promesso non basta quanto dovrebbe.",
+  s2b_p6_stat: "Pensione media UK: £13.000/anno. Costo della vita medio: £17.000.",
+  s2b_why_headline: "Quello che non ti dicono",
+  s2b_why_text1: "I super-ricchi l'hanno capito decenni fa. Non gestiscono il denaro manualmente. Utilizzano sistemi automatizzati che lavorano per loro 24 ore al giorno — che dormano, siano in vacanza o vivano la loro vita.",
+  s2b_why_text2: "Gli algoritmi di Jim Simons giravano mentre dormiva e lo hanno reso miliardario. La macchina di Ray Dalio non si prende mai un giorno libero. La differenza è che quei sistemi non erano disponibili alle persone comuni.",
+  s2b_why_text3: "Fino a Trading Pilot.",
+  s2b_solution_label: "La soluzione",
+  s2b_tp_headline: "Ecco Trading Pilot",
+  s2b_tp_sub: "Il primo motore di intelligenza di trading autonoma che fonde segnali tecnici in tempo reale con il sentiment delle notizie di Claude AI — eseguendo trade 24/7 con la disciplina che nessun essere umano può mantenere.",
+  s2b_claude_title: "Motore di Sentiment Claude AI",
+  s2b_claude_body: "Prima di ogni trade, Pilot interroga Claude AI per il sentiment live delle notizie su quell'asset. Un crossover perfetto con titoli negativi? Pilot aspetta. Segnale confermato con sentiment rialzista? Pilot agisce con piena convinzione.",
+  s2b_fact1_heading: "Guarda il mercato al posto tuo",
+  s2b_fact1_detail: "Trading Pilot scansiona ogni tick di prezzo, ogni minuto, su 20+ strumenti — 24/7 senza esitazione ed esecuzione dei segnali in sub-millisecondi. Il mercato non dorme mai, e nemmeno Pilot.",
+  s2b_fact2_heading: "Quattro strategie collaudate, non congetture",
+  s2b_fact2_detail: "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Ognuna progettata per una diversa condizione di mercato. Ne scegli una — o fai girare più pilot contemporaneamente su asset diversi.",
+  s2b_fact3_heading: "Sei livelli di protezione del rischio di grado istituzionale",
+  s2b_fact3_detail: "Stop-loss fisso su ogni trade. Lock del take-profit. Interruttore automatico per la perdita giornaliera massima. Cap sul numero massimo di trade giornalieri. Filtraggio con barre di conferma. Monitoraggio in tempo reale della curva di equity. Il tuo capitale è sempre protetto.",
+  s2b_advocates_label: "Chi lo fa da decenni",
+  s2b_adv_disclaimer: "Questi individui non sono affiliati né approvano Trading Pilot. Il loro uso documentato pubblicamente di sistemi di trading algoritmico e basato su regole dimostra il potere dell'automazione.",
+  s2b_cta_box_p1: "Ora ti mostriamo esattamente come Trading Pilot si sarebbe comportato sul mercato della settimana scorsa.",
+  s2b_cta_box_p2: "Logica di strategia reale. Dati di grafico reali. Sentiment Claude AI live.",
+  s2b_cta: "Mostrami come funziona →",
+  s2b_cta_sub: "Accesso gratuito · Nessuna carta di credito · 60 secondi per configurare",
+
+  s2c_badge: "Simulazione Live · Claude AI Attivo",
+  s2c_headline: "Guarda Trading Pilot Pensare in Tempo Reale",
+  s2c_subtext: "Scegli una strategia. Guarda come il bot rileva un segnale, verifica il sentiment live delle notizie tramite Claude AI, poi esegue o sopprime il trade — automaticamente.",
+  s2c_win_rate: "{n}% win rate",
+  s2c_how_works: "Come funziona {name}",
+  s2c_risk_label: "Controlli di rischio integrati — ogni strategia",
+  s2c_sl_title: "Stop-Loss", s2c_sl_desc: "Stop fisso su ogni trade",
+  s2c_tp_title: "Take-Profit", s2c_tp_desc: "Uscita automatica al target",
+  s2c_dl_title: "Cap perdita giornaliera", s2c_dl_desc: "Il bot si ferma se raggiunto il limite",
+  s2c_mt_title: "Max trade giornalieri", s2c_mt_desc: "Nessun overtrading nel rumore",
+  s2c_running: "Simulazione in corso…",
+  s2c_replay: "↺ Riesegui la simulazione",
+  s2c_cta: "Voglio Trading Pilot che lavori per me →",
+  s2c_cta_sub: "Accesso gratuito · 60 secondi · Nessuna carta di credito",
+  s2c_scanning: "IN SCANSIONE",
+  s2c_complete: "COMPLETATO",
+  s2c_idle: "INATTIVO",
+  s2c_buy_signal: "Segnale BUY",
+  s2c_sell_signal: "Segnale SELL",
+
+  s2d_badge: "Guarda fare trading dal vivo",
+  s2d_headline: "Conto da $250. Bot che fa trading EUR/USD. Completamente automatico.",
+  s2d_subtext: "Guarda TradePilot individuare opportunità ed effettuare trade in tempo reale mentre tu non fai assolutamente nulla.",
+  s2d_balance_label: "Saldo del Conto",
+  s2d_status_initial: "TradePilot sta monitorando il mercato...",
+  s2d_status_scanning: "Scansione di ogni tick di prezzo. In attesa del momento giusto...",
+  s2d_status_pattern: "Individuato un pattern in formazione. La linea veloce incrocia quella lenta...",
+  s2d_status_trade1: "Trade #1 aperto — il bot è nel mercato adesso.",
+  s2d_status_tp1: "Trade #1 chiuso con profitto!",
+  s2d_status_trade2: "Secondo setup individuato — il bot entra di nuovo nel mercato.",
+  s2d_status_tp2: "Secondo trade chiuso con profitto!",
+  s2d_status_done: "Sessione completata. 2 trade. 2 vittorie. Zero sforzo da parte tua.",
+  s2d_trade_open: "TRADE APERTO",
+  s2d_scanning: "IN SCANSIONE",
+  s2d_complete: "COMPLETATO",
+  s2d_standby: "IN ATTESA",
+  s2d_milestone_activated: "Bot attivato — monitoraggio mercato",
+  s2d_milestone_activated_sub: "Scansione di ogni tick in cerca di un segnale...",
+  s2d_milestone_trade1: "Trade #1 aperto",
+  s2d_milestone_trade1_sub: "Il bot è entrato al momento giusto.",
+  s2d_milestone_tp1: "+${amount} profitto bloccato",
+  s2d_milestone_tp1_sub: "Primo trade chiuso in positivo.",
+  s2d_milestone_trade2: "Secondo trade aperto",
+  s2d_milestone_trade2_sub: "Il bot ha individuato un'altra opportunità.",
+  s2d_milestone_tp2_sub: "Entrambi i trade chiusi in positivo.",
+  s2d_watch_step1_title: "Il bot guarda",
+  s2d_watch_step1_desc: "Ogni movimento di prezzo, 24/7",
+  s2d_watch_step2_title: "Individua l'opportunità",
+  s2d_watch_step2_desc: "Rileva il momento giusto automaticamente",
+  s2d_watch_step3_title: "Blocca il profitto",
+  s2d_watch_step3_desc: "Chiude il trade al prezzo target",
+  s2d_sim_complete_label: "Simulazione completata",
+  s2d_started_with: "Iniziato con",
+  s2d_ended_with: "Terminato con",
+  s2d_trade1_label: "Trade 1: EUR/USD",
+  s2d_trade2_label: "Trade 2: EUR/USD",
+  s2d_result_box: "Non hai fatto nulla. Il bot ha monitorato il grafico, individuato due opportunità, aperto entrambi i trade e chiusi in profitto. Questo è quello che TradePilot fa per te ogni giorno.",
+  s2d_start_btn: "▶  Guarda fare trading dal vivo",
+  s2d_running_note: "Simulazione in corso — guarda il grafico sopra...",
+  s2d_cta: "Voglio questo attivo sul mio conto →",
+  s2d_watch_again: "↺ Guarda di nuovo",
 };
 
 // ── GERMAN ────────────────────────────────────────────────────────────────────
@@ -689,6 +1082,139 @@ const de: T = {
   err_rate_limit: "Zu viele Versuche. Bitte warte eine Minute und versuche es erneut.",
   err_generic: "Etwas ist schiefgelaufen. Bitte aktualisiere die Seite und versuche es erneut.",
   err_network: "Netzwerkproblem. Bitte überprüfe deine Verbindung und versuche es erneut.",
+
+  ticker_joined: "{name} aus {city} ist gerade beigetreten",
+  ticker_trade: "{name} aus {city} hat gerade einen {amount} Trade geschlossen",
+  ticker_on_page: "{name} aus {city} ist gerade auf dieser Seite",
+  ticker_mins_ago: "vor {n} Min.",
+
+  exit_warning: "Warnung",
+  exit_headline: "Warte — du warst so nah dran",
+  exit_body_1: "Seit du diese Seite geöffnet hast, haben Menschen auf derselben Plattform verdient:",
+  exit_still_climbing: "Diese Zahl steigt gerade noch weiter.",
+  exit_body_2: "Du musst dich zu nichts verpflichten. Schließ einfach den letzten Schritt ab — er dauert unter 60 Sekunden und du kannst danach immer noch entscheiden.",
+  exit_cta: "OK, ich mache den letzten Schritt →",
+  exit_or: "oder",
+  exit_soft_prompt: "Noch nicht bereit? Hinterlasse deine E-Mail und wir schicken dir den kostenlosen Leitfaden.",
+  exit_email_placeholder: "deine@email.de",
+  exit_send_btn: "Senden",
+  exit_sent: "✓ Erhalten! Schau bald in deinen Posteingang.",
+  exit_no_thanks: "Nein danke, ich bin nicht interessiert",
+
+  risk_label: "Risikohinweis:",
+  risk_body: "Trading ist mit Risiken verbunden. Vergangene Ergebnisse sind kein Indikator für zukünftige Resultate. Kapital ist gefährdet. Der Wert von Investitionen kann steigen und fallen. Du solltest nur mit Geld handeln, das du dir leisten kannst zu verlieren. Simulierte und historische Ergebnisse garantieren keine zukünftige Performance.",
+  risk_compact: "Kapital gefährdet. Vergangene Ergebnisse sind kein Indikator für zukünftige Resultate.",
+  risk_regulated_by: "Reguliert von",
+
+  s2b_step_label: "Warum das dich betrifft",
+  s2b_step_duration: "2 Min. Lesen",
+  s2b_headline: "Das System ist darauf ausgelegt,",
+  s2b_headline_em: "dein Geld für sie arbeiten zu lassen",
+  s2b_headline_end: "nicht für dich.",
+  s2b_subtext: "Du gehst arbeiten. Du sparst. Du versuchst, das Richtige zu tun. Und bei jedem Schritt fressen steigende Kosten, niedrige Zinsen und Steuern deinen Fortschritt auf. Hier ist, was gerade wirklich mit deinem Geld passiert.",
+  s2b_counter_label: "Wert seit Öffnung dieser Seite durch Inflation vernichtet",
+  s2b_counter_sub: "Weltweit zerstört Inflation die Kaufkraft jede Sekunde. Deine brachliegenden Ersparnisse sind ein Teil davon.",
+  s2b_p1_title: "Steuern nehmen 20–45% von allem, was du verdienst",
+  s2b_p1_body: "Bevor du einen Cent siehst, nehmen sich die Behörden ihren Anteil. Der durchschnittliche Arbeitnehmer verliert fast ein Drittel seines Einkommens, bevor es jemals sein Konto berührt.",
+  s2b_p1_stat: "£12.570 jährlich bei einem durchschnittlichen britischen Gehalt nur an Steuern verloren.",
+  s2b_p2_title: "Inflation zerstört schweigend deine Ersparnisse",
+  s2b_p2_body: "Deine Bank zahlt dir 0,1%. Die Inflation läuft bei 4–6%. Jedes Jahr, das deine Ersparnisse still stehen, verlieren sie realen Wert. Mehr zu sparen löst dieses Problem nicht.",
+  s2b_p2_stat: "Heute gesparte £10.000 sind im nächsten Jahr real nur noch £9.400 wert.",
+  s2b_p3_title: "Kraftstoff, Lebensmittel, Energie: Die Kosten steigen nie auf",
+  s2b_p3_body: "Der Preis für alles, was du brauchst, steigt weiter. Dein Einkommen hält nicht Schritt. Die Lücke zwischen dem, was du verdienst und ausgibst, wird jedes Jahr größer.",
+  s2b_p3_stat: "Durchschnittliche britische Haushaltsrechnungen stiegen in einem Jahr um £1.800+.",
+  s2b_p4_title: "Selbstständig? Du hast keine Zeit zum Traden",
+  s2b_p4_body: "Dein eigenes Unternehmen zu führen verbraucht bereits 60+ Stunden pro Woche. Vor Charts zu sitzen und Kerzen zu beobachten ist keine Option. Trotzdem arbeitet dein Geld noch gegen dich.",
+  s2b_p4_stat: "67% der Selbstständigen haben keine aktive Anlagestrategie.",
+  s2b_p5_title: "Dein Geld auf der Bank verliert jeden Tag an Wert",
+  s2b_p5_body: "Banken belohnen keine Treue — sie belohnen deine Einlagen, indem sie dir fast nichts zahlen. Gleichzeitig verleihen sie dasselbe Geld zu 8–25% Zinsen. Du tust ihnen einen Gefallen.",
+  s2b_p5_stat: "Direktbanken zahlen durchschnittlich 0,1–1,5% Zinsen vs. 5%+ Inflation.",
+  s2b_p6_title: "Rentenleistungen decken kaum das Nötigste",
+  s2b_p6_body: "Jahrzehnte an Beiträgen. Ein Leben voller Arbeit. Und eine Rente, die kaum Miete, Essen und Heizung abdeckt. Der Ruhestand, der dir versprochen wurde, reicht nicht so weit wie er sollte.",
+  s2b_p6_stat: "Durchschnittliches britisches Renteneinkommen: £13.000/Jahr. Durchschnittliche Lebenshaltungskosten: £17.000.",
+  s2b_why_headline: "Was sie dir verschweigen",
+  s2b_why_text1: "Die Superreichen haben das vor Jahrzehnten herausgefunden. Sie verwalten Geld nicht manuell. Sie setzen automatisierte Systeme ein, die 24 Stunden am Tag für sie arbeiten — ob sie schlafen, im Urlaub sind oder ihr Leben leben.",
+  s2b_why_text2: "Jim Simons' Algorithmen liefen während er schlief und machten ihn zum Milliardär. Ray Dalios Maschine nimmt nie einen freien Tag. Der Unterschied ist, dass diese Systeme für normale Menschen nicht verfügbar waren.",
+  s2b_why_text3: "Bis Trading Pilot.",
+  s2b_solution_label: "Die Lösung",
+  s2b_tp_headline: "Lerne Trading Pilot kennen",
+  s2b_tp_sub: "Die erste autonome Trading-Intelligence-Engine, die technische Echtzeitsignale mit Claude AI News-Sentiment verbindet — und Trades 24/7 mit einer Disziplin ausführt, die kein Mensch aufrechterhalten kann.",
+  s2b_claude_title: "Claude AI Sentiment Engine",
+  s2b_claude_body: "Vor jedem Trade fragt Pilot Claude AI nach dem Live-News-Sentiment für diesen Asset. Perfekter Crossover mit negativen Schlagzeilen? Pilot wartet. Bestätigtes Signal mit bullishem Sentiment? Pilot handelt mit voller Überzeugung.",
+  s2b_fact1_heading: "Es beobachtet den Markt für dich",
+  s2b_fact1_detail: "Trading Pilot scannt jeden Preistick, jede Minute, über 20+ Instrumenten — 24/7 ohne Zögern und mit Signalausführung in unter einer Millisekunde. Der Markt schläft nie, und Pilot auch nicht.",
+  s2b_fact2_heading: "Vier kampferprobte Strategien, kein Rätselraten",
+  s2b_fact2_detail: "MA Crossover (61% Win Rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Jede für eine andere Marktbedingung entwickelt. Du wählst eine — oder lässt mehrere Pilots gleichzeitig auf verschiedenen Assets laufen.",
+  s2b_fact3_heading: "Sechs Schichten institutionellem Risikoschutz",
+  s2b_fact3_detail: "Fester Stop-Loss bei jedem Trade. Take-Profit-Sperre. Tages-Verlust-Schutzschalter. Maximale Tages-Trade-Begrenzung. Bestätigungsbalken-Filterung. Echtzeit-Equity-Kurven-Überwachung. Dein Kapital ist immer geschützt.",
+  s2b_advocates_label: "Wer das seit Jahrzehnten macht",
+  s2b_adv_disclaimer: "Diese Personen sind nicht mit Trading Pilot verbunden und empfehlen es nicht. Ihr öffentlich dokumentierter Einsatz von algorithmischen und regelbasierten Handelssystemen zeigt die Kraft der Automatisierung.",
+  s2b_cta_box_p1: "Lass uns dir nun genau zeigen, wie Trading Pilot auf dem Markt der letzten Woche agiert hätte.",
+  s2b_cta_box_p2: "Echte Strategielogik. Echte Chartdaten. Claude AI Sentiment live.",
+  s2b_cta: "Zeig mir, wie es funktioniert →",
+  s2b_cta_sub: "Kostenloser Zugang · Keine Kreditkarte · 60 Sekunden zum Einrichten",
+
+  s2c_badge: "Live-Simulation · Claude AI Aktiv",
+  s2c_headline: "Sieh Trading Pilot in Echtzeit denken",
+  s2c_subtext: "Wähle eine Strategie. Sieh, wie der Bot ein Signal erkennt, das Live-News-Sentiment via Claude AI prüft, dann den Trade auslöst oder unterdrückt — automatisch.",
+  s2c_win_rate: "{n}% Win Rate",
+  s2c_how_works: "Wie {name} funktioniert",
+  s2c_risk_label: "Eingebaute Risikokontrollen — jede Strategie",
+  s2c_sl_title: "Stop-Loss", s2c_sl_desc: "Fester Stop bei jedem Trade",
+  s2c_tp_title: "Take-Profit", s2c_tp_desc: "Auto-Ausstieg bei deinem Ziel",
+  s2c_dl_title: "Tages-Verlust-Cap", s2c_dl_desc: "Bot hält an wenn Limit erreicht",
+  s2c_mt_title: "Max. Tages-Trades", s2c_mt_desc: "Kein Überhandeln in Rauschen",
+  s2c_running: "Simulation läuft…",
+  s2c_replay: "↺ Simulation erneut ausführen",
+  s2c_cta: "Ich will TradePilot für mich arbeiten lassen →",
+  s2c_cta_sub: "Kostenloser Zugang · 60 Sekunden · Keine Kreditkarte",
+  s2c_scanning: "SCANNT",
+  s2c_complete: "ABGESCHLOSSEN",
+  s2c_idle: "BEREIT",
+  s2c_buy_signal: "KAUF-Signal",
+  s2c_sell_signal: "VERKAUF-Signal",
+
+  s2d_badge: "Live traden zusehen",
+  s2d_headline: "$250-Konto. Bot handelt EUR/USD. Vollautomatisch.",
+  s2d_subtext: "Sieh zu, wie TradePilot Chancen entdeckt und Trades in Echtzeit ausführt, während du absolut nichts tust.",
+  s2d_balance_label: "Kontostand",
+  s2d_status_initial: "TradePilot beobachtet den Markt...",
+  s2d_status_scanning: "Scannt jeden Preistick. Sucht den richtigen Moment...",
+  s2d_status_pattern: "Muster entdeckt. Schnelle Linie kreuzt langsame Linie...",
+  s2d_status_trade1: "Trade #1 geöffnet — Bot ist jetzt im Markt.",
+  s2d_status_tp1: "Trade #1 mit Gewinn geschlossen!",
+  s2d_status_trade2: "Zweites Setup entdeckt — Bot tritt erneut in den Markt ein.",
+  s2d_status_tp2: "Zweiter Trade mit Gewinn geschlossen!",
+  s2d_status_done: "Sitzung abgeschlossen. 2 Trades. 2 Gewinne. Null Aufwand von dir.",
+  s2d_trade_open: "TRADE OFFEN",
+  s2d_scanning: "SCANNT",
+  s2d_complete: "ABGESCHLOSSEN",
+  s2d_standby: "BEREIT",
+  s2d_milestone_activated: "Bot aktiviert — Markt wird beobachtet",
+  s2d_milestone_activated_sub: "Scannt jeden Tick nach einem Signal...",
+  s2d_milestone_trade1: "Trade #1 geöffnet",
+  s2d_milestone_trade1_sub: "Bot ist zum richtigen Zeitpunkt eingetreten.",
+  s2d_milestone_tp1: "+${amount} Gewinn gesichert",
+  s2d_milestone_tp1_sub: "Erster Trade im Plus geschlossen.",
+  s2d_milestone_trade2: "Zweiter Trade geöffnet",
+  s2d_milestone_trade2_sub: "Bot hat eine weitere Chance entdeckt.",
+  s2d_milestone_tp2_sub: "Beide Trades im Plus geschlossen.",
+  s2d_watch_step1_title: "Bot beobachtet",
+  s2d_watch_step1_desc: "Jede Preisbewegung, 24/7",
+  s2d_watch_step2_title: "Entdeckt Chance",
+  s2d_watch_step2_desc: "Erkennt den richtigen Moment automatisch",
+  s2d_watch_step3_title: "Sichert Gewinn",
+  s2d_watch_step3_desc: "Schließt den Trade zu deinem Zielpreis",
+  s2d_sim_complete_label: "Simulation abgeschlossen",
+  s2d_started_with: "Gestartet mit",
+  s2d_ended_with: "Beendet mit",
+  s2d_trade1_label: "Trade 1: EUR/USD",
+  s2d_trade2_label: "Trade 2: EUR/USD",
+  s2d_result_box: "Du hast nichts getan. Der Bot hat den Chart beobachtet, zwei Chancen entdeckt, beide Trades eröffnet und sie mit Gewinn geschlossen. Das macht TradePilot jeden Tag für dich.",
+  s2d_start_btn: "▶  Live traden zusehen",
+  s2d_running_note: "Simulation läuft — beobachte den Chart oben...",
+  s2d_cta: "Ich will das auf meinem Konto laufen haben →",
+  s2d_watch_again: "↺ Nochmal ansehen",
 };
 
 // ── FRENCH ────────────────────────────────────────────────────────────────────
@@ -858,6 +1384,139 @@ const fr: T = {
   err_rate_limit: "Trop de tentatives. Veuillez attendre une minute et réessayer.",
   err_generic: "Une erreur s'est produite. Veuillez actualiser la page et réessayer.",
   err_network: "Problème de réseau. Veuillez vérifier ta connexion et réessayer.",
+
+  ticker_joined: "{name} de {city} vient de rejoindre",
+  ticker_trade: "{name} de {city} vient de clôturer un trade de {amount}",
+  ticker_on_page: "{name} de {city} est sur cette page en ce moment",
+  ticker_mins_ago: "il y a {n} min",
+
+  exit_warning: "Attention",
+  exit_headline: "Attends — tu étais si proche",
+  exit_body_1: "Depuis que tu as ouvert cette page, des gens sur la même plateforme ont gagné :",
+  exit_still_climbing: "Ce chiffre continue de grimper en ce moment.",
+  exit_body_2: "Tu n'as pas à t'engager à quoi que ce soit. Termine juste la dernière étape — ça prend moins de 60 secondes et tu peux toujours décider après.",
+  exit_cta: "OK, je termine la dernière étape →",
+  exit_or: "ou",
+  exit_soft_prompt: "Pas encore prêt ? Laisse ton e-mail et on t'envoie le guide gratuit.",
+  exit_email_placeholder: "ton@email.fr",
+  exit_send_btn: "Envoyer",
+  exit_sent: "✓ Reçu ! Vérifie ta boîte de réception sous peu.",
+  exit_no_thanks: "Non merci, je ne suis pas intéressé",
+
+  risk_label: "Avertissement sur les risques :",
+  risk_body: "Le trading comporte des risques. Les performances passées ne préjugent pas des résultats futurs. Capital à risque. La valeur des investissements peut monter ou baisser. Tu ne devrais trader qu'avec de l'argent que tu peux te permettre de perdre. Les résultats simulés et historiques ne garantissent pas les performances futures.",
+  risk_compact: "Capital à risque. Les performances passées ne préjugent pas des résultats futurs.",
+  risk_regulated_by: "Régulé par",
+
+  s2b_step_label: "Pourquoi cela te concerne",
+  s2b_step_duration: "2 min de lecture",
+  s2b_headline: "Le système est conçu pour",
+  s2b_headline_em: "faire travailler ton argent pour eux",
+  s2b_headline_end: "pas pour toi.",
+  s2b_subtext: "Tu vas travailler. Tu économises. Tu essaies de faire ce qu'il faut. Et à chaque tournant, la hausse des coûts, les faibles intérêts et les impôts grignotent tes progrès. Voici ce qui se passe vraiment avec ton argent en ce moment.",
+  s2b_counter_label: "Valeur perdue à cause de l'inflation depuis que tu as ouvert cette page",
+  s2b_counter_sub: "Dans le monde entier, l'inflation détruit le pouvoir d'achat chaque seconde. Tes économies inactives en font partie.",
+  s2b_p1_title: "Les impôts prennent 20–45% de tout ce que tu gagnes",
+  s2b_p1_body: "Avant que tu voies un centime, les gouvernements prennent leur part. Le travailleur moyen perd près d'un tiers de ses revenus avant qu'ils n'atteignent jamais son compte bancaire.",
+  s2b_p1_stat: "£12 570 perdus annuellement sur un salaire moyen britannique rien qu'en impôts.",
+  s2b_p2_title: "L'inflation détruit silencieusement tes économies",
+  s2b_p2_body: "Ta banque te verse 0,1%. L'inflation tourne à 4–6%. Chaque année où tes économies restent immobiles, elles perdent de la valeur réelle. Épargner davantage ne résout pas ce problème.",
+  s2b_p2_stat: "£10 000 épargnés aujourd'hui ne valent que £9 400 en termes réels l'année prochaine.",
+  s2b_p3_title: "Carburant, nourriture, énergie : les coûts ne cessent d'augmenter",
+  s2b_p3_body: "Le prix de tout ce dont tu as besoin continue de grimper. Ton revenu ne suit pas. L'écart entre ce que tu gagnes et ce que tu dépenses se creuse chaque année.",
+  s2b_p3_stat: "Les factures moyennes des ménages britanniques ont augmenté de £1 800+ en une seule année.",
+  s2b_p4_title: "Indépendant ? Tu n'as pas le temps de trader",
+  s2b_p4_body: "Gérer ta propre entreprise consomme déjà 60+ heures par semaine. Rester devant des graphiques à regarder les bougies bouger n'est pas une option. Pourtant ton argent travaille encore contre toi.",
+  s2b_p4_stat: "67% des indépendants n'ont pas de stratégie d'investissement active.",
+  s2b_p5_title: "Ton argent à la banque perd de la valeur chaque jour",
+  s2b_p5_body: "Les banques ne récompensent pas la fidélité — elles récompensent tes dépôts en te payant presque rien. Pendant ce temps, elles prêtent ce même argent à 8–25% d'intérêt. Tu leur rends service.",
+  s2b_p5_stat: "Les banques de réseau paient en moyenne 0,1–1,5% d'intérêt contre 5%+ d'inflation.",
+  s2b_p6_title: "Les retraites couvrent à peine l'essentiel",
+  s2b_p6_body: "Des décennies de cotisations. Une vie de travail. Et une retraite qui couvre à peine le loyer, la nourriture et le chauffage. La retraite qu'on t'avait promise ne va pas aussi loin qu'elle le devrait.",
+  s2b_p6_stat: "Retraite moyenne britannique : £13 000/an. Coût de la vie moyen : £17 000.",
+  s2b_why_headline: "Ce qu'on ne te dit pas",
+  s2b_why_text1: "Les ultra-riches ont compris ça il y a des décennies. Ils ne gèrent pas l'argent manuellement. Ils déploient des systèmes automatisés qui travaillent pour eux 24 heures sur 24 — qu'ils dorment, soient en vacances ou vivent leur vie.",
+  s2b_why_text2: "Les algorithmes de Jim Simons tournaient pendant qu'il dormait et ont fait de lui un milliardaire. La machine de Ray Dalio ne prend jamais un jour de congé. La différence c'est que ces systèmes n'étaient pas disponibles aux gens ordinaires.",
+  s2b_why_text3: "Jusqu'à Trading Pilot.",
+  s2b_solution_label: "La solution",
+  s2b_tp_headline: "Voici Trading Pilot",
+  s2b_tp_sub: "Le premier moteur d'intelligence de trading autonome qui fusionne des signaux techniques en temps réel avec le sentiment d'actualité de Claude AI — exécutant des trades 24h/7j avec une discipline qu'aucun humain ne peut maintenir.",
+  s2b_claude_title: "Moteur de Sentiment Claude AI",
+  s2b_claude_body: "Avant chaque trade, Pilot interroge Claude AI pour le sentiment d'actualité en direct sur cet actif. Un crossover parfait avec des titres négatifs ? Pilot attend. Signal confirmé avec sentiment haussier ? Pilot agit avec pleine conviction.",
+  s2b_fact1_heading: "Il surveille le marché à ta place",
+  s2b_fact1_detail: "Trading Pilot scanne chaque tick de prix, chaque minute, sur 20+ instruments — 24h/7j sans hésitation et avec une exécution des signaux en sous-milliseconde. Le marché ne dort jamais, et Pilot non plus.",
+  s2b_fact2_heading: "Quatre stratégies éprouvées, pas des suppositions",
+  s2b_fact2_detail: "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Chacune conçue pour une condition de marché différente. Tu en choisis une — ou tu fais tourner plusieurs pilots simultanément sur différents actifs.",
+  s2b_fact3_heading: "Six couches de protection du risque de niveau institutionnel",
+  s2b_fact3_detail: "Stop-loss fixe sur chaque trade. Verrouillage du take-profit. Disjoncteur de perte journalière maximale. Plafond de trades journaliers maximum. Filtrage par barre de confirmation. Surveillance en temps réel de la courbe d'équité. Ton capital est toujours protégé.",
+  s2b_advocates_label: "Qui fait ça depuis des décennies",
+  s2b_adv_disclaimer: "Ces personnes ne sont pas affiliées à Trading Pilot et ne l'approuvent pas. Leur utilisation documentée publiquement de systèmes de trading algorithmique et basé sur des règles démontre la puissance de l'automatisation.",
+  s2b_cta_box_p1: "Laisse-nous maintenant te montrer exactement comment Trading Pilot aurait agi sur le marché de la semaine dernière.",
+  s2b_cta_box_p2: "Logique de stratégie réelle. Données de graphique réelles. Sentiment Claude AI en direct.",
+  s2b_cta: "Montre-moi comment ça fonctionne →",
+  s2b_cta_sub: "Accès gratuit · Pas de carte de crédit · 60 secondes pour configurer",
+
+  s2c_badge: "Simulation Live · Claude AI Actif",
+  s2c_headline: "Regarde Trading Pilot Penser en Temps Réel",
+  s2c_subtext: "Choisis une stratégie. Vois comment le bot détecte un signal, vérifie le sentiment d'actualité en direct via Claude AI, puis déclenche ou supprime le trade — automatiquement.",
+  s2c_win_rate: "{n}% win rate",
+  s2c_how_works: "Comment {name} fonctionne",
+  s2c_risk_label: "Contrôles de risque intégrés — chaque stratégie",
+  s2c_sl_title: "Stop-Loss", s2c_sl_desc: "Stop fixe sur chaque trade",
+  s2c_tp_title: "Take-Profit", s2c_tp_desc: "Sortie automatique à ton objectif",
+  s2c_dl_title: "Cap perte journalière", s2c_dl_desc: "Le bot s'arrête si le limite est atteinte",
+  s2c_mt_title: "Max trades journaliers", s2c_mt_desc: "Pas de surtrading dans le bruit",
+  s2c_running: "Simulation en cours…",
+  s2c_replay: "↺ Relancer la simulation",
+  s2c_cta: "Je veux TradePilot qui travaille pour moi →",
+  s2c_cta_sub: "Accès gratuit · 60 secondes · Pas de carte de crédit",
+  s2c_scanning: "EN COURS",
+  s2c_complete: "TERMINÉ",
+  s2c_idle: "EN ATTENTE",
+  s2c_buy_signal: "Signal ACHAT",
+  s2c_sell_signal: "Signal VENTE",
+
+  s2d_badge: "Regarder trader en direct",
+  s2d_headline: "Compte de 250$. Bot tradant EUR/USD. Entièrement automatisé.",
+  s2d_subtext: "Regarde TradePilot repérer des opportunités et effectuer des trades en temps réel pendant que tu ne fais absolument rien.",
+  s2d_balance_label: "Solde du Compte",
+  s2d_status_initial: "TradePilot surveille le marché...",
+  s2d_status_scanning: "Scan de chaque tick de prix. En attente du bon moment...",
+  s2d_status_pattern: "Motif repéré. La ligne rapide croise la ligne lente...",
+  s2d_status_trade1: "Trade #1 ouvert — le bot est dans le marché maintenant.",
+  s2d_status_tp1: "Trade #1 fermé avec profit !",
+  s2d_status_trade2: "Deuxième configuration repérée — le bot entre à nouveau sur le marché.",
+  s2d_status_tp2: "Deuxième trade fermé avec profit !",
+  s2d_status_done: "Session terminée. 2 trades. 2 victoires. Zéro effort de ta part.",
+  s2d_trade_open: "TRADE OUVERT",
+  s2d_scanning: "EN COURS",
+  s2d_complete: "TERMINÉ",
+  s2d_standby: "EN ATTENTE",
+  s2d_milestone_activated: "Bot activé — surveillance du marché",
+  s2d_milestone_activated_sub: "Scan de chaque tick en recherche d'un signal...",
+  s2d_milestone_trade1: "Trade #1 ouvert",
+  s2d_milestone_trade1_sub: "Le bot est entré au bon moment.",
+  s2d_milestone_tp1: "+${amount} profit sécurisé",
+  s2d_milestone_tp1_sub: "Premier trade fermé en positif.",
+  s2d_milestone_trade2: "Deuxième trade ouvert",
+  s2d_milestone_trade2_sub: "Le bot a repéré une autre opportunité.",
+  s2d_milestone_tp2_sub: "Les deux trades fermés en positif.",
+  s2d_watch_step1_title: "Le bot surveille",
+  s2d_watch_step1_desc: "Chaque mouvement de prix, 24h/7j",
+  s2d_watch_step2_title: "Repère l'opportunité",
+  s2d_watch_step2_desc: "Détecte le bon moment automatiquement",
+  s2d_watch_step3_title: "Sécurise le profit",
+  s2d_watch_step3_desc: "Ferme le trade à ton prix cible",
+  s2d_sim_complete_label: "Simulation terminée",
+  s2d_started_with: "Commencé avec",
+  s2d_ended_with: "Terminé avec",
+  s2d_trade1_label: "Trade 1 : EUR/USD",
+  s2d_trade2_label: "Trade 2 : EUR/USD",
+  s2d_result_box: "Tu n'as rien fait. Le bot a surveillé le graphique, repéré deux opportunités, ouvert les deux trades et les a fermés avec profit. C'est ce que TradePilot fait pour toi chaque jour.",
+  s2d_start_btn: "▶  Regarder trader en direct",
+  s2d_running_note: "Simulation en cours — regarde le graphique ci-dessus...",
+  s2d_cta: "Je veux ça sur mon compte →",
+  s2d_watch_again: "↺ Regarder à nouveau",
 };
 
 // ── SPANISH ───────────────────────────────────────────────────────────────────
@@ -1027,7 +1686,143 @@ const es: T = {
   err_rate_limit: "Demasiados intentos. Por favor espera un minuto e inténtalo de nuevo.",
   err_generic: "Algo salió mal. Por favor recarga la página e inténtalo de nuevo.",
   err_network: "Problema de red. Por favor comprueba tu conexión e inténtalo de nuevo.",
+
+  ticker_joined: "{name} de {city} acaba de unirse",
+  ticker_trade: "{name} de {city} acaba de cerrar un trade de {amount}",
+  ticker_on_page: "{name} de {city} está en esta página ahora mismo",
+  ticker_mins_ago: "hace {n} min",
+
+  exit_warning: "Advertencia",
+  exit_headline: "Espera — estabas tan cerca",
+  exit_body_1: "Desde que abriste esta página, personas en la misma plataforma han ganado:",
+  exit_still_climbing: "Ese número sigue subiendo ahora mismo.",
+  exit_body_2: "No tienes que comprometerte a nada. Solo completa el último paso — tarda menos de 60 segundos y siempre puedes decidir después.",
+  exit_cta: "OK, termino el último paso →",
+  exit_or: "o",
+  exit_soft_prompt: "¿No estás listo? Deja tu email y te enviamos la guía gratuita.",
+  exit_email_placeholder: "tu@email.com",
+  exit_send_btn: "Enviar",
+  exit_sent: "✓ ¡Recibido! Revisa tu bandeja de entrada pronto.",
+  exit_no_thanks: "No gracias, no estoy interesado",
+
+  risk_label: "Advertencia de riesgo:",
+  risk_body: "El trading conlleva riesgos. El rendimiento pasado no es indicativo de resultados futuros. Capital en riesgo. El valor de las inversiones puede subir y bajar. Solo deberías operar con dinero que puedas permitirte perder. Los resultados simulados e históricos no garantizan el rendimiento futuro.",
+  risk_compact: "Capital en riesgo. El rendimiento pasado no es indicativo de resultados futuros.",
+  risk_regulated_by: "Regulado por",
+
+  s2b_step_label: "Por qué esto te importa",
+  s2b_step_duration: "2 min de lectura",
+  s2b_headline: "El sistema está diseñado para",
+  s2b_headline_em: "hacer trabajar tu dinero para ellos",
+  s2b_headline_end: "no para ti.",
+  s2b_subtext: "Vas a trabajar. Ahorras. Intentas hacer lo correcto. Y en cada paso, los costes crecientes, los bajos intereses y los impuestos erosionan tu progreso. Esto es lo que está pasando realmente con tu dinero ahora mismo.",
+  s2b_counter_label: "Valor perdido por la inflación desde que abriste esta página",
+  s2b_counter_sub: "En todo el mundo, la inflación destruye el poder adquisitivo cada segundo. Tus ahorros inactivos son parte de eso.",
+  s2b_p1_title: "Los impuestos se llevan el 20–45% de todo lo que ganas",
+  s2b_p1_body: "Antes de ver un céntimo, los gobiernos se llevan su parte. El trabajador medio pierde casi un tercio de sus ingresos antes de que lleguen a su cuenta.",
+  s2b_p1_stat: "£12.570 perdidos al año en un salario medio del Reino Unido solo en impuestos.",
+  s2b_p2_title: "La inflación está destruyendo silenciosamente tus ahorros",
+  s2b_p2_body: "Tu banco te paga el 0,1%. La inflación corre al 4–6%. Cada año que tus ahorros permanecen quietos, pierden valor real. Ahorrar más no soluciona este problema.",
+  s2b_p2_stat: "£10.000 ahorrados hoy valen solo £9.400 en términos reales el año que viene.",
+  s2b_p3_title: "Combustible, comida, energía: los costes no dejan de subir",
+  s2b_p3_body: "El precio de todo lo que necesitas sigue subiendo. Tus ingresos no siguen el ritmo. La brecha entre lo que ganas y lo que gastas se amplía cada año.",
+  s2b_p3_stat: "Las facturas medias de los hogares del Reino Unido subieron £1.800+ en un solo año.",
+  s2b_p4_title: "¿Autónomo? No tienes tiempo para hacer trading",
+  s2b_p4_body: "Gestionar tu propio negocio ya consume 60+ horas a la semana. Sentarse frente a gráficos mirando cómo se mueven las velas no es una opción. Sin embargo tu dinero sigue trabajando en tu contra.",
+  s2b_p4_stat: "El 67% de los autónomos no tiene una estrategia de inversión activa.",
+  s2b_p5_title: "Tu dinero en el banco pierde valor cada día",
+  s2b_p5_body: "Los bancos no premian la fidelidad — premian tus depósitos pagándote casi nada. Mientras tanto prestan ese mismo dinero al 8–25% de interés. Les estás haciendo un favor.",
+  s2b_p5_stat: "Los bancos de calle pagan de media el 0,1–1,5% de interés frente al 5%+ de inflación.",
+  s2b_p6_title: "Las pensiones apenas cubren lo básico",
+  s2b_p6_body: "Décadas de cotizaciones. Una vida de trabajo. Y una pensión que apenas cubre el alquiler, la comida y la calefacción. La jubilación que te prometieron no llega tan lejos como debería.",
+  s2b_p6_stat: "Pensión media del Reino Unido: £13.000/año. Coste de vida medio: £17.000.",
+  s2b_why_headline: "Lo que no te cuentan",
+  s2b_why_text1: "Los ultra-ricos lo descubrieron hace décadas. No gestionan el dinero manualmente. Despliegan sistemas automatizados que trabajan para ellos 24 horas al día — estén durmiendo, de vacaciones o viviendo su vida.",
+  s2b_why_text2: "Los algoritmos de Jim Simons funcionaban mientras dormía y lo hicieron millonario. La máquina de Ray Dalio nunca se toma un día libre. La diferencia es que esos sistemas no estaban disponibles para la gente común.",
+  s2b_why_text3: "Hasta Trading Pilot.",
+  s2b_solution_label: "La solución",
+  s2b_tp_headline: "Conoce a Trading Pilot",
+  s2b_tp_sub: "El primer motor de inteligencia de trading autónomo que fusiona señales técnicas en tiempo real con el sentimiento de noticias de Claude AI — ejecutando trades 24/7 con una disciplina que ningún ser humano puede mantener.",
+  s2b_claude_title: "Motor de Sentimiento Claude AI",
+  s2b_claude_body: "Antes de cada trade, Pilot consulta a Claude AI el sentimiento live de noticias sobre ese activo. ¿Un cruce perfecto con titulares negativos? Pilot espera. ¿Señal confirmada con sentimiento alcista? Pilot actúa con plena convicción.",
+  s2b_fact1_heading: "Vigila el mercado por ti",
+  s2b_fact1_detail: "Trading Pilot escanea cada tick de precio, cada minuto, en más de 20 instrumentos — 24/7 sin dudas y con ejecución de señales en sub-milisegundos. El mercado nunca duerme, y tampoco Pilot.",
+  s2b_fact2_heading: "Cuatro estrategias probadas en batalla, no suposiciones",
+  s2b_fact2_detail: "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Cada una diseñada para una condición de mercado diferente. Eliges una — o corres varios pilots simultáneamente en diferentes activos.",
+  s2b_fact3_heading: "Seis capas de protección de riesgo de grado institucional",
+  s2b_fact3_detail: "Stop-loss fijo en cada trade. Bloqueo del take-profit. Disyuntor de pérdida diaria máxima. Límite de trades diarios máximos. Filtrado de barra de confirmación. Monitorización en tiempo real de la curva de equity. Tu capital siempre está protegido.",
+  s2b_advocates_label: "Quién lleva décadas haciéndolo",
+  s2b_adv_disclaimer: "Estas personas no están afiliadas ni respaldan a Trading Pilot. Su uso documentado públicamente de sistemas de trading algorítmico y basado en reglas demuestra el poder de la automatización.",
+  s2b_cta_box_p1: "Ahora te mostraremos exactamente cómo habría actuado Trading Pilot en el mercado de la semana pasada.",
+  s2b_cta_box_p2: "Lógica de estrategia real. Datos de gráfico reales. Sentimiento Claude AI en vivo.",
+  s2b_cta: "Muéstrame cómo funciona →",
+  s2b_cta_sub: "Acceso gratuito · Sin tarjeta de crédito · 60 segundos para configurar",
+
+  s2c_badge: "Simulación en Vivo · Claude AI Activo",
+  s2c_headline: "Ve a Trading Pilot Pensar en Tiempo Real",
+  s2c_subtext: "Elige una estrategia. Ve cómo el bot detecta una señal, comprueba el sentimiento de noticias en vivo a través de Claude AI, luego dispara o suprime el trade — automáticamente.",
+  s2c_win_rate: "{n}% win rate",
+  s2c_how_works: "Cómo funciona {name}",
+  s2c_risk_label: "Controles de riesgo integrados — cada estrategia",
+  s2c_sl_title: "Stop-Loss", s2c_sl_desc: "Stop fijo en cada trade",
+  s2c_tp_title: "Take-Profit", s2c_tp_desc: "Salida automática en tu objetivo",
+  s2c_dl_title: "Cap pérdida diaria", s2c_dl_desc: "El bot se para si se alcanza el límite",
+  s2c_mt_title: "Máx. trades diarios", s2c_mt_desc: "Sin overtrading en el ruido",
+  s2c_running: "Simulación en curso…",
+  s2c_replay: "↺ Ejecutar simulación de nuevo",
+  s2c_cta: "Quiero que TradePilot trabaje para mí →",
+  s2c_cta_sub: "Acceso gratuito · 60 segundos · Sin tarjeta de crédito",
+  s2c_scanning: "ESCANEANDO",
+  s2c_complete: "COMPLETADO",
+  s2c_idle: "EN ESPERA",
+  s2c_buy_signal: "Señal COMPRA",
+  s2c_sell_signal: "Señal VENTA",
+
+  s2d_badge: "Ver trading en vivo",
+  s2d_headline: "Cuenta de $250. Bot operando EUR/USD. Completamente automatizado.",
+  s2d_subtext: "Mira a TradePilot detectar oportunidades y realizar trades en tiempo real mientras tú no haces absolutamente nada.",
+  s2d_balance_label: "Saldo de la Cuenta",
+  s2d_status_initial: "TradePilot está monitorizando el mercado...",
+  s2d_status_scanning: "Escaneando cada tick de precio. Buscando el momento adecuado...",
+  s2d_status_pattern: "Patrón detectado. La línea rápida cruzando la línea lenta...",
+  s2d_status_trade1: "Trade #1 abierto — el bot está en el mercado ahora.",
+  s2d_status_tp1: "¡Trade #1 cerrado con beneficio!",
+  s2d_status_trade2: "Segunda configuración detectada — el bot vuelve a entrar al mercado.",
+  s2d_status_tp2: "¡Segundo trade cerrado con beneficio!",
+  s2d_status_done: "Sesión completada. 2 trades. 2 victorias. Cero esfuerzo de tu parte.",
+  s2d_trade_open: "TRADE ABIERTO",
+  s2d_scanning: "ESCANEANDO",
+  s2d_complete: "COMPLETADO",
+  s2d_standby: "EN ESPERA",
+  s2d_milestone_activated: "Bot activado — vigilando el mercado",
+  s2d_milestone_activated_sub: "Escaneando cada tick en busca de una señal...",
+  s2d_milestone_trade1: "Trade #1 abierto",
+  s2d_milestone_trade1_sub: "El bot entró en el momento correcto.",
+  s2d_milestone_tp1: "+${amount} beneficio asegurado",
+  s2d_milestone_tp1_sub: "Primer trade cerrado en positivo.",
+  s2d_milestone_trade2: "Segundo trade abierto",
+  s2d_milestone_trade2_sub: "El bot detectó otra oportunidad.",
+  s2d_milestone_tp2_sub: "Ambos trades cerrados en positivo.",
+  s2d_watch_step1_title: "El bot vigila",
+  s2d_watch_step1_desc: "Cada movimiento de precio, 24/7",
+  s2d_watch_step2_title: "Detecta oportunidad",
+  s2d_watch_step2_desc: "Detecta el momento correcto automáticamente",
+  s2d_watch_step3_title: "Asegura el beneficio",
+  s2d_watch_step3_desc: "Cierra el trade a tu precio objetivo",
+  s2d_sim_complete_label: "Simulación completada",
+  s2d_started_with: "Empezado con",
+  s2d_ended_with: "Terminado con",
+  s2d_trade1_label: "Trade 1: EUR/USD",
+  s2d_trade2_label: "Trade 2: EUR/USD",
+  s2d_result_box: "No hiciste nada. El bot monitorizó el gráfico, detectó dos oportunidades, abrió ambos trades y los cerró con beneficio. Eso es lo que TradePilot hace por ti cada día.",
+  s2d_start_btn: "▶  Ver trading en vivo",
+  s2d_running_note: "Simulación en curso — mira el gráfico de arriba...",
+  s2d_cta: "Quiero esto funcionando en mi cuenta →",
+  s2d_watch_again: "↺ Ver de nuevo",
 };
 
 // ── Export ────────────────────────────────────────────────────────────────────
 export const locales: Record<Locale, T> = { en, it, de, fr, es };
+
+
+

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import RiskDisclaimer from "@/components/funnel/RiskDisclaimer";
+import { useT } from "@/components/LocaleProvider";
 
 // ── Scripted candle data: 60 candles ~ 1 minute of price action ──────────────
 // Each candle: [open, high, low, close]
@@ -106,6 +107,7 @@ type Milestone = {
 };
 
 export default function SectionLiveProof({ onContinue }: { onContinue: () => void }) {
+  const t = useT();
   const [phase, setPhase]           = useState<Phase>("idle");
   const [visibleCount, setVisible]  = useState(0);
   const [balance, setBalance]       = useState(START_BAL);
@@ -116,7 +118,7 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
   const [unrealized, setUnrealized] = useState(0);
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [tradeCount, setTradeCount] = useState(0);
-  const [statusText, setStatusText] = useState("TradePilot is watching the market...");
+  const [statusText, setStatusText] = useState(t.s2d_status_initial);
 
   const balRef       = useRef(START_BAL);
   const profitRef    = useRef(0);
@@ -175,7 +177,7 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
     setUnrealized(0);
     setMilestones([]);
     setTradeCount(0);
-    setStatusText("TradePilot is watching the market...");
+    setStatusText(t.s2d_status_initial);
     balRef.current = START_BAL;
     profitRef.current = 0;
 
@@ -206,8 +208,8 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
         setInTrade(true);
         setEntryPrice(c.o);
         setUnrealized(0);
-        setStatusText("Bot detected a signal. Buying EUR/USD automatically...");
-        addMilestone("TradePilot bought EUR/USD", "Automated entry. No action needed from you.", "#10b981");
+        setStatusText(t.s2d_status_trade1);
+        addMilestone(t.s2d_milestone_trade1, t.s2d_milestone_trade1_sub, "#10b981");
       }
 
       // TP1 hit -> profit flash
@@ -222,8 +224,8 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
         setFlash(true);
         setTradeCount(1);
         animateBalance(START_BAL + newProfit, 1200);
-        setStatusText("Profit target hit! Closed automatically.");
-        addMilestone(`+$${TP1_PROFIT.toFixed(2)} profit locked`, "Take-profit triggered. No action needed.", "#10b981");
+        setStatusText(t.s2d_status_tp1);
+        addMilestone(t.s2d_milestone_tp1.replace("{amount}", TP1_PROFIT.toFixed(2)), t.s2d_milestone_tp1_sub, "#10b981");
         setTimeout(() => setFlash(false), 1000);
       }
 
@@ -234,8 +236,8 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
         setInTrade(true);
         setEntryPrice(c.o);
         setUnrealized(0);
-        setStatusText("Second signal detected. Bot entered a new trade...");
-        addMilestone("Second trade opened", "EUR/USD again. Bot never sleeps.", "#3b82f6");
+        setStatusText(t.s2d_status_trade2);
+        addMilestone(t.s2d_milestone_trade2, t.s2d_milestone_trade2_sub, "#3b82f6");
       }
 
       // TP2 hit -> second profit
@@ -250,23 +252,23 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
         setFlash(true);
         setTradeCount(2);
         animateBalance(START_BAL + newProfit, 1200);
-        setStatusText("Second trade closed with profit!");
-        addMilestone(`+$${TP2_PROFIT.toFixed(2)} more profit`, "Both trades closed in the green.", "#10b981");
+        setStatusText(t.s2d_status_tp2);
+        addMilestone(t.s2d_milestone_tp1.replace("{amount}", TP2_PROFIT.toFixed(2)), t.s2d_milestone_tp2_sub, "#10b981");
         setTimeout(() => setFlash(false), 1000);
       }
 
       if (current >= CANDLES.length) {
         clearInterval(ticker);
         setPhase("done");
-        setStatusText("Session complete. 2 trades. 2 wins. Zero effort from you.");
+        setStatusText(t.s2d_status_done);
       }
     }, INTERVAL);
 
     intervalRefs.current.push(ticker);
 
-    at(2000, () => setStatusText("Scanning every price tick. Looking for the right moment..."));
-    at(8000, () => setStatusText("Spotted a pattern forming. Fast line crossing above slow line..."));
-  }, [cleanup, animateBalance, addMilestone, at]);
+    at(2000, () => setStatusText(t.s2d_status_scanning));
+    at(8000, () => setStatusText(t.s2d_status_pattern));
+  }, [cleanup, animateBalance, addMilestone, at, t]);
 
   // Build SVG chart data
   const totalCandles = CANDLES.length;
@@ -315,12 +317,10 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
           Watch it trade live
         </div>
         <h2 className="text-2xl font-bold text-gray-900 leading-tight">
-          $250 account. Bot trading<br />
-          EUR/USD. Fully automated.
+          {t.s2d_headline}
         </h2>
         <p className="text-gray-500 text-sm max-w-xs mx-auto">
-          Watch TradePilot spot opportunities and make trades in real time
-          while you do absolutely nothing.
+          {t.s2d_subtext}
         </p>
       </div>
 
@@ -386,7 +386,7 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
                 inTrade ? "bg-emerald-400 animate-pulse" : phase === "running" ? "bg-yellow-400 animate-pulse" : "bg-gray-600",
               ].join(" ")}
             />
-            {inTrade ? "TRADE OPEN" : phase === "running" ? "SCANNING" : phase === "done" ? "COMPLETE" : "STANDBY"}
+            {inTrade ? t.s2d_trade_open : phase === "running" ? t.s2d_scanning : phase === "done" ? t.s2d_complete : t.s2d_standby}
           </div>
           {tradeCount > 0 && (
             <div className="text-xs text-gray-400">
@@ -654,12 +654,12 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
           </div>
           <div className="flex items-end justify-between">
             <div>
-              <div className="text-xs text-gray-400 mb-0.5">Started with</div>
+              <div className="text-xs text-gray-400 mb-0.5">{t.s2d_started_with}</div>
               <div className="text-3xl font-extrabold text-gray-500 font-mono">$250.00</div>
             </div>
             <div className="text-2xl text-gray-400">→</div>
             <div className="text-right">
-              <div className="text-xs text-gray-400 mb-0.5">Ended with</div>
+              <div className="text-xs text-gray-400 mb-0.5">{t.s2d_ended_with}</div>
               <div className="text-3xl font-extrabold text-emerald-700 font-mono">
                 ${(START_BAL + TOTAL_PROFIT).toFixed(2)}
               </div>
@@ -668,17 +668,17 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
           <div className="flex items-center justify-between border-t border-emerald-200 pt-3 text-sm">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-gray-600">
-                <span className="text-emerald-500 font-bold">✓</span> Trade 1: EUR/USD
+                <span className="text-emerald-500 font-bold">✓</span> {t.s2d_trade1_label}
                 <span className="ml-auto font-bold text-emerald-700">+${TP1_PROFIT.toFixed(2)}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
-                <span className="text-emerald-500 font-bold">✓</span> Trade 2: EUR/USD
+                <span className="text-emerald-500 font-bold">✓</span> {t.s2d_trade2_label}
                 <span className="ml-auto font-bold text-emerald-700">+${TP2_PROFIT.toFixed(2)}</span>
               </div>
             </div>
           </div>
           <div className="rounded-lg bg-emerald-100 px-3 py-2.5 text-xs text-emerald-700 leading-relaxed">
-            You did nothing. The bot watched the chart, spotted two opportunities, entered both trades, and closed them at a profit. That's what TradePilot does for you every day.
+            {t.s2d_result_box}
           </div>
         </div>
       )}
@@ -689,13 +689,13 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
           onClick={startSim}
           className="w-full rounded-xl bg-gray-900 py-4 text-base font-bold text-white shadow-lg transition hover:bg-gray-800 active:scale-[.98]"
         >
-          ▶ &nbsp; Watch it trade live
+          {t.s2d_start_btn}
         </button>
       )}
 
       {phase === "running" && (
         <div className="rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-center text-xs text-gray-500">
-          Simulation running  watch the chart above...
+          {t.s2d_running_note}
         </div>
       )}
 
@@ -705,7 +705,7 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
             onClick={onContinue}
             className="w-full rounded-xl bg-gray-900 py-4 text-base font-bold text-white shadow-lg transition hover:bg-gray-800 active:scale-[.98]"
           >
-            I want this running on my account →
+            {t.s2d_cta}
           </button>
           <button
             onClick={() => {
@@ -718,13 +718,13 @@ export default function SectionLiveProof({ onContinue }: { onContinue: () => voi
               setUnrealized(0);
               setMilestones([]);
               setTradeCount(0);
-              setStatusText("TradePilot is watching the market...");
+              setStatusText(t.s2d_status_initial);
               balRef.current = START_BAL;
               profitRef.current = 0;
             }}
             className="w-full rounded-xl border border-gray-200 bg-white py-3 text-sm text-gray-500 transition hover:border-gray-400"
           >
-            ↺ Watch again
+            {t.s2d_watch_again}
           </button>
         </div>
       )}

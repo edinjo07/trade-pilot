@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import RiskDisclaimer from "@/components/funnel/RiskDisclaimer";
+import { useT } from "@/components/LocaleProvider";
 
 // ── Pain point data ───────────────────────────────────────────────────────────
 
@@ -87,6 +88,15 @@ export default function SectionPainIntro({
 }: {
   onContinue: () => void;
 }) {
+  const t = useT();
+  const PAIN_POINTS = [
+    { icon: "💸", title: t.s2b_p1_title, body: t.s2b_p1_body, stat: t.s2b_p1_stat },
+    { icon: "📈", title: t.s2b_p2_title, body: t.s2b_p2_body, stat: t.s2b_p2_stat },
+    { icon: "⛽", title: t.s2b_p3_title, body: t.s2b_p3_body, stat: t.s2b_p3_stat },
+    { icon: "⏰", title: t.s2b_p4_title, body: t.s2b_p4_body, stat: t.s2b_p4_stat },
+    { icon: "🏦", title: t.s2b_p5_title, body: t.s2b_p5_body, stat: t.s2b_p5_stat },
+    { icon: "👴", title: t.s2b_p6_title, body: t.s2b_p6_body, stat: t.s2b_p6_stat },
+  ];
   const [revealed, setRevealed] = useState(false);
   const [counter, setCounter] = useState(0);
 
@@ -115,36 +125,33 @@ export default function SectionPainIntro({
       {/* ── Step indicator ── */}
       <div className="flex items-center gap-2 text-xs text-gray-400">
         <span className="bg-gray-900 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0">2</span>
-        <span>Why this matters to you</span>
+        <span>{t.s2b_step_label}</span>
         <span className="flex-1 border-t border-gray-200" />
-        <span className="bg-gray-100 rounded-full px-2 py-0.5">2 min read</span>
+        <span className="bg-gray-100 rounded-full px-2 py-0.5">{t.s2b_step_duration}</span>
       </div>
 
       {/* ── Opening headline ── */}
       <div className="space-y-3">
         <h2 className="text-2xl font-extrabold text-gray-900 leading-tight">
-          The system is designed to<br />
-          <span className="text-red-500">keep your money working for them</span>,<br />
-          not for you.
+          {t.s2b_headline}<br />
+          <span className="text-red-500">{t.s2b_headline_em}</span>,<br />
+          {t.s2b_headline_end}
         </h2>
         <p className="text-gray-500 text-sm leading-relaxed">
-          You go to work. You save. You try to do the right thing. And at every
-          turn, rising costs, low interest, and taxes eat away at your progress.
-          Here's what's actually happening to your money right now.
+          {t.s2b_subtext}
         </p>
       </div>
 
       {/* ── Live counter ── */}
       <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-4">
         <div className="text-xs text-red-400 uppercase tracking-widest font-semibold mb-1">
-          Value lost to inflation since you opened this page
+          {t.s2b_counter_label}
         </div>
         <div className="text-3xl font-extrabold text-red-600 font-mono tabular-nums">
           £{counter.toLocaleString()}
         </div>
         <div className="text-xs text-red-400 mt-1">
-          Globally, inflation destroys purchasing power every second. Your idle
-          savings are part of that.
+          {t.s2b_counter_sub}
         </div>
       </div>
 
@@ -174,36 +181,24 @@ export default function SectionPainIntro({
       {/* ── The pivot ── */}
       <div className="rounded-2xl bg-gray-900 text-white px-5 py-6 space-y-4">
         <div className="text-xs text-gray-400 uppercase tracking-widest font-semibold">
-          The dirty secret
+          {t.s2b_why_headline}
         </div>
-        <p className="text-base font-semibold leading-relaxed">
-          The ultra-wealthy figured this out decades ago. They don't manage money
- manually. They deploy{" "}
- <span className="text-yellow-400">automated systems</span> that work
- for them 24 hours a day whether they're asleep, on holiday, or living
-          their lives.
+                <p className="text-base font-semibold leading-relaxed">
+          {t.s2b_why_text1}
         </p>
-        <p className="text-sm text-gray-400">
-          Jim Simons' algorithms ran while he slept and made him a billionaire.
- Ray Dalio's machine never takes a day off. The difference is those
-          systems weren't available to ordinary people.
- </p>
- <p className="text-sm font-bold text-white">Until Trading Pilot.</p>
+                <p className="text-sm text-gray-400">
+          {t.s2b_why_text2}
+        </p>
+         <p className="text-sm font-bold text-white">{t.s2b_why_text3}</p>
  </div>
 
  {/* ── TradePilot intro ── */}
  <div className="space-y-4">
  <div className="text-center space-y-1">
- <div className="inline-block rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-gray-500">
- The solution
- </div>
- <h3 className="text-xl font-extrabold text-gray-900">
- Meet Trading Pilot
- </h3>
+ <div className="inline-block rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-gray-500">{t.s2b_solution_label}</div>
+ <h3 className="text-xl font-extrabold text-gray-900">{t.s2b_tp_headline}</h3>
  <p className="text-gray-500 text-sm">
- The first autonomous trading intelligence engine that fuses real-time
- technical signals with Claude AI news sentiment executing trades
- 24/7 with the discipline no human can sustain.
+ {t.s2b_tp_sub}
  </p>
  </div>
 
@@ -211,11 +206,9 @@ export default function SectionPainIntro({
  <div className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 flex items-start gap-3">
  <span className="text-2xl shrink-0">🧠</span>
  <div>
- <div className="font-bold text-violet-800 text-sm">Claude AI Sentiment Engine</div>
+ <div className="font-bold text-violet-800 text-sm">{t.s2b_claude_title}</div>
  <p className="text-violet-600 text-xs leading-relaxed mt-0.5">
- Before every trade, Pilot queries Claude AI for live news sentiment on that asset.
- A perfect crossover with negative headlines? Pilot waits. Confirmed signal with
- bullish sentiment? Pilot acts with full conviction.
+ {t.s2b_claude_body}
  </p>
  </div>
  </div>
@@ -223,25 +216,10 @@ export default function SectionPainIntro({
  {/* Three simple facts */}
  <div className="space-y-3">
  {[
- {
- num: "01",
- heading: "It watches the market so you don't have to",
- detail:
- "Trading Pilot scans every price tick, every minute, across 20+ instruments  24/7 with zero hesitation and sub-millisecond signal execution. The market never sleeps, and neither does Pilot.",
- },
- {
- num: "02",
- heading: "Four battle-tested strategies, not guesswork",
- detail:
- "MA Crossover (61% win rate), RSI Reversal (58%), MACD Momentum (63%), Pure Momentum (55%). Each engineered for a different market condition. You pick one  or run multiple pilots simultaneously across different assets.",
- },
- {
- num: "03",
- heading: "Six layers of institutional-grade risk protection",
- detail:
- "Hard stop-loss on every trade. Take-profit locking. Max daily loss circuit-breaker. Max daily trades cap. Confirmation bar filtering. Real-time equity curve monitoring. Your capital is always protected.",
- },
- ].map((item) => (
+            { num: "01", heading: t.s2b_fact1_heading, detail: t.s2b_fact1_detail },
+            { num: "02", heading: t.s2b_fact2_heading, detail: t.s2b_fact2_detail },
+            { num: "03", heading: t.s2b_fact3_heading, detail: t.s2b_fact3_detail },
+          ].map((item) => (
  <div
  key={item.num}
  className="flex items-start gap-4 rounded-xl border border-gray-200 bg-white px-4 py-4"
@@ -264,9 +242,7 @@ export default function SectionPainIntro({
 
  {/* ── Famous advocates ── */}
  <div className="space-y-3">
- <div className="text-xs text-gray-400 uppercase tracking-widest font-semibold text-center">
- Who has been doing this for decades
- </div>
+ <div className="text-xs text-gray-400 uppercase tracking-widest font-semibold text-center">{t.s2b_advocates_label}</div>
  <div className="space-y-3">
  {ADVOCATES.map((a) => (
  <div
@@ -290,9 +266,7 @@ export default function SectionPainIntro({
  ))}
  </div>
  <p className="text-center text-xs text-gray-400 leading-relaxed">
- These individuals are not affiliated with or endorsing Trading Pilot. Their
- publicly documented use of algorithmic and rules-based trading systems
- demonstrates the power of automation.
+ {t.s2b_adv_disclaimer}
  </p>
  </div>
 
@@ -300,21 +274,20 @@ export default function SectionPainIntro({
  <div className="space-y-3 pb-4">
  <div className="rounded-xl bg-gray-50 border border-gray-200 px-4 py-4 text-center space-y-1">
  <p className="text-sm font-bold text-gray-900">
- Now let's show you exactly how Trading Pilot would have acted on last
- week's market.
+ {t.s2b_cta_box_p1}
  </p>
  <p className="text-xs text-gray-500">
- Real strategy logic. Real chart data. Claude AI sentiment live.
+ {t.s2b_cta_box_p2}
  </p>
  </div>
  <button
  onClick={onContinue}
  className="w-full rounded-xl bg-gray-900 py-4 text-base font-bold text-white shadow-lg transition hover:bg-gray-800 active:scale-[.98]"
  >
- Show me how it works →
- </button>
+          {t.s2b_cta}
+        </button>
  <p className="text-center text-xs text-gray-400">
-          Free to access · No credit card · Takes 60 seconds to set up
+          {t.s2b_cta_sub}
         </p>
       </div>
 
