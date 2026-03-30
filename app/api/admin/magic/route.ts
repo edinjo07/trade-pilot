@@ -14,11 +14,12 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const key = searchParams.get("key") ?? "";
 
-  const magicKey = process.env.ADMIN_MAGIC_KEY ?? "";
+  // Strip surrounding quotes and whitespace in case they were accidentally included in the Vercel env var
+  const magicKey = (process.env.ADMIN_MAGIC_KEY ?? "").trim().replace(/^["']|["']$/g, "");
   const token    = getAdminToken();
 
   // Reject if either secret is not configured or key doesn't match
-  if (!magicKey || !token || !safeEqual(key, magicKey)) {
+  if (!magicKey || !token || !safeEqual(key.trim(), magicKey)) {
     return NextResponse.json({ error: "Not found." }, { status: 404 });
   }
 
