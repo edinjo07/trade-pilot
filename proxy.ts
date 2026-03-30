@@ -171,11 +171,20 @@ export function proxy(req: NextRequest) {
     const hasVerifiedCookie = req.cookies.get("_ad_verified")?.value === "1";
     const sp = req.nextUrl.searchParams;
     const utmToken = process.env.UTM_SOURCE_TOKEN;
+    // Safari ITP strips fbclid/gclid/ttclid from URLs — so we also accept any
+    // non-empty utm_source or utm_medium (UTM params are NOT stripped by ITP).
+    // Real ad campaigns always have utm_source set; this still blocks cold direct traffic.
+    const utmSource = sp.get("utm_source")?.trim() ?? "";
+    const utmMedium = sp.get("utm_medium")?.trim().toLowerCase() ?? "";
     const hasAdParams =
       sp.has("fbclid") ||
       sp.has("gclid") ||
       sp.has("ttclid") ||
       sp.has("twclid") ||
+      sp.has("msclkid") ||
+      sp.has("ref") ||
+      utmSource !== "" ||
+      ["cpc", "paid", "paidsocial", "ppc", "display", "cpm", "social_paid"].includes(utmMedium) ||
       (utmToken ? sp.get("utm_source") === utmToken : false);
 
     if (path === "/") {

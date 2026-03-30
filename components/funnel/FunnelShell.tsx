@@ -172,9 +172,9 @@ export default function FunnelShell() {
         {/* Global ticker - shown after bot gate */}
         {step !== "BOT_GATE" && <SocialProofTicker />}
 
-        {/* Exit-intent modal: clicking "finish last step" jumps directly to lead form */}
+        {/* Exit-intent modal: closes and lets user continue wherever they are in the funnel */}
         <ExitIntentModal
-          onStay={() => { if (step !== "S6_LEAD" && step !== "DONE") advance("S6_LEAD"); }}
+          onStay={() => {}}
           onLeave={() => {}}
         />
 

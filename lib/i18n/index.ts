@@ -31,7 +31,12 @@ export function detectLocale(acceptLang: string, cfCountry?: string | null): Loc
     if (mapped) return mapped;
   }
 
-  // Switzerland and all unmapped countries: use Accept-Language
+  // Switzerland: use Accept-Language, fall back to German (≈65 % of Swiss population)
+  if (cfCountry?.toUpperCase() === "CH") {
+    return langMap[primary ?? ""] ?? "de";
+  }
+
+  // All other unmapped countries: use Accept-Language, fall back to English
   return langMap[primary ?? ""] ?? "en";
 }
 
@@ -485,7 +490,7 @@ const en: T = {
   exit_body_1: "In the time since you opened this page, people on the same platform made:",
   exit_still_climbing: "That number is still climbing right now.",
   exit_body_2: "You don't have to commit to anything. Just finish the last step — it takes under 60 seconds and you can always decide later.",
-  exit_cta: "OK, I'll finish the last step →",
+  exit_cta: "Continue where I left off →",
   exit_or: "or",
   exit_soft_prompt: "Not ready? Drop your email and we'll send you the free guide.",
   exit_email_placeholder: "your@email.com",
@@ -791,7 +796,7 @@ const it: T = {
   exit_body_1: "Dal momento in cui hai aperto questa pagina, le persone sulla stessa piattaforma hanno guadagnato:",
   exit_still_climbing: "Quel numero sta ancora salendo adesso.",
   exit_body_2: "Non devi impegnarti a nulla. Completa solo l'ultimo passaggio — richiede meno di 60 secondi e puoi sempre decidere dopo.",
-  exit_cta: "OK, completo l'ultimo passaggio →",
+  exit_cta: "Continua da dove ero →",
   exit_or: "oppure",
   exit_soft_prompt: "Non sei pronto? Lascia la tua email e ti mandiamo la guida gratuita.",
   exit_email_placeholder: "tua@email.it",
@@ -1093,7 +1098,7 @@ const de: T = {
   exit_body_1: "Seit du diese Seite geöffnet hast, haben Menschen auf derselben Plattform verdient:",
   exit_still_climbing: "Diese Zahl steigt gerade noch weiter.",
   exit_body_2: "Du musst dich zu nichts verpflichten. Schließ einfach den letzten Schritt ab — er dauert unter 60 Sekunden und du kannst danach immer noch entscheiden.",
-  exit_cta: "OK, ich mache den letzten Schritt →",
+  exit_cta: "Weiter, wo ich aufgehört habe →",
   exit_or: "oder",
   exit_soft_prompt: "Noch nicht bereit? Hinterlasse deine E-Mail und wir schicken dir den kostenlosen Leitfaden.",
   exit_email_placeholder: "deine@email.de",
@@ -1395,7 +1400,7 @@ const fr: T = {
   exit_body_1: "Depuis que tu as ouvert cette page, des gens sur la même plateforme ont gagné :",
   exit_still_climbing: "Ce chiffre continue de grimper en ce moment.",
   exit_body_2: "Tu n'as pas à t'engager à quoi que ce soit. Termine juste la dernière étape — ça prend moins de 60 secondes et tu peux toujours décider après.",
-  exit_cta: "OK, je termine la dernière étape →",
+  exit_cta: "Continuer là où j'en étais →",
   exit_or: "ou",
   exit_soft_prompt: "Pas encore prêt ? Laisse ton e-mail et on t'envoie le guide gratuit.",
   exit_email_placeholder: "ton@email.fr",
@@ -1697,7 +1702,7 @@ const es: T = {
   exit_body_1: "Desde que abriste esta página, personas en la misma plataforma han ganado:",
   exit_still_climbing: "Ese número sigue subiendo ahora mismo.",
   exit_body_2: "No tienes que comprometerte a nada. Solo completa el último paso — tarda menos de 60 segundos y siempre puedes decidir después.",
-  exit_cta: "OK, termino el último paso →",
+  exit_cta: "Continuar donde lo dejé →",
   exit_or: "o",
   exit_soft_prompt: "¿No estás listo? Deja tu email y te enviamos la guía gratuita.",
   exit_email_placeholder: "tu@email.com",
