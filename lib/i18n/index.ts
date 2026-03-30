@@ -5,22 +5,9 @@ export const SUPPORTED_LOCALES: Locale[] = ["en", "it", "de", "fr", "es"];
 
 /** Detect locale from Accept-Language header string. */
 export function detectLocale(acceptLang: string, cfCountry?: string | null): Locale {
-  // Cloudflare IP-country header takes priority (exact country match)
-  if (cfCountry) {
-    const countryMap: Record<string, Locale> = {
-      IT: "it",
-      DE: "de", AT: "de", // Austria → German
-      CH: "de",           // Switzerland → German (primary)
-      FR: "fr",
-      BE: "fr",           // Belgium → French
-      LU: "fr",           // Luxembourg → French
-      ES: "es",
-    };
-    const mapped = countryMap[cfCountry.toUpperCase()];
-    if (mapped) return mapped;
-  }
-
-  // Parse Accept-Language: "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7"
+  // Accept-Language takes priority for Switzerland (4 official languages) —
+  // country header alone can't distinguish de/fr/it Swiss users.
+  // For all other mapped countries, country header wins.
   const primary = acceptLang.split(",")[0]?.split(";")[0]?.split("-")[0]?.toLowerCase();
   const langMap: Record<string, Locale> = {
     it: "it",
@@ -29,6 +16,22 @@ export function detectLocale(acceptLang: string, cfCountry?: string | null): Loc
     es: "es",
     ca: "es", // Catalan → Spanish
   };
+
+  if (cfCountry && cfCountry.toUpperCase() !== "CH") {
+    const countryMap: Record<string, Locale> = {
+      IT: "it",
+      DE: "de", AT: "de", // Austria → German
+      FR: "fr",
+      BE: "fr",           // Belgium → French
+      LU: "fr",           // Luxembourg → French
+      ES: "es",
+      MX: "es", AR: "es", CO: "es", CL: "es", // LATAM → Spanish
+    };
+    const mapped = countryMap[cfCountry.toUpperCase()];
+    if (mapped) return mapped;
+  }
+
+  // Switzerland and all unmapped countries: use Accept-Language
   return langMap[primary ?? ""] ?? "en";
 }
 

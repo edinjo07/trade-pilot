@@ -232,6 +232,18 @@ export function proxy(req: NextRequest) {
         sameSite: "lax",
         httpOnly: true,
       });
+      const refreshCountry =
+        req.headers.get("x-vercel-ip-country") ||
+        req.headers.get("cf-ipcountry");
+      const refreshLocale = detectLocale(
+        req.headers.get("accept-language") ?? "",
+        refreshCountry,
+      );
+      refreshRes.cookies.set("NEXT_LOCALE", refreshLocale, {
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
+        sameSite: "lax",
+      });
       return refreshRes;
     }
   }
