@@ -378,6 +378,14 @@ export default function SectionPilotSim({
         </p>
       </div>
 
+      {/* Scroll hint */}
+      <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
+        <svg className="w-3.5 h-3.5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+        <span>{t.s2c_scroll_hint}</span>
+      </div>
+
       {/* Strategy selector */}
       <div className="grid grid-cols-2 gap-2">
         {PILOT_MODES.map((m) => {
@@ -423,6 +431,11 @@ export default function SectionPilotSim({
           );
         })}
       </div>
+
+      {/* Strategy switch hint */}
+      <p className="text-center text-xs text-gray-400 -mt-1">
+        💡 {t.s2c_strategy_hint}
+      </p>
 
       {/* Chart + Log */}
       <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
@@ -489,6 +502,7 @@ export default function SectionPilotSim({
         <div
           ref={logRef}
           className="bg-[#0a0a0a] h-32 overflow-y-auto px-4 py-3 space-y-0.5 font-mono text-[11px] border-t border-[#1a1a1a]"
+          aria-label="strategy hint"
         >
           {logs.map((log, i) => (
             <div key={i} className={LOG_COLORS[log.level]}>

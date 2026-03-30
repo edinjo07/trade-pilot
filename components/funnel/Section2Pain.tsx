@@ -116,6 +116,11 @@ export default function Section2Pain({ onChoice }: Props) {
         </p>
       </div>
 
+      {/* ── Guidance hint ──────────────────────────────────────────────── */}
+      <div className="flex items-center justify-center gap-2 text-xs text-amber-600 font-medium animate-pulse">
+        <span>{t.s2_hint}</span>
+      </div>
+
       <div className="grid gap-4">
         {options.map((o) => (
           <button

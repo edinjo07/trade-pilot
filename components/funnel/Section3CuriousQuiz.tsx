@@ -127,6 +127,11 @@ export default function Section3CuriousQuiz({ onDone }: Props) {
         <h2 className="mt-2 text-xl md:text-2xl font-extrabold text-gray-900 leading-snug">
           {q.text}
         </h2>
+        {/* Guidance hint */}
+        <p className="mt-2 text-xs text-emerald-600 font-medium flex items-center gap-1">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          {t.s3_hint}
+        </p>
       </div>
 
       <div className="grid gap-3">

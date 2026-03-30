@@ -99,6 +99,10 @@ export type T = {
   s2_opt2_head: string; s2_opt2_sub: string;
   s2_opt3_head: string; s2_opt3_sub: string;
   s2_footer: string;
+  s2_hint: string;        // "Tap the option that describes you best"
+  s3_hint: string;        // "Select one answer to continue"
+  s2c_scroll_hint: string; // "Scroll down to watch the simulation"
+  s2c_strategy_hint: string; // "Tap a strategy above to switch it"
 
   // Section 3 – Quiz
   s3_progress_label: string;
@@ -368,6 +372,10 @@ const en: T = {
   s2_opt3_head: "I don't have time to watch charts all day. I have a job, a family, a life",
   s2_opt3_sub: "If there's a way to do this without it becoming a second job, I'm interested",
   s2_footer: "Your answer helps us tailor what you see next",
+  s2_hint: "👆 Tap the option that describes you best",
+  s3_hint: "Select one answer to continue",
+  s2c_scroll_hint: "Scroll down to watch the simulation run live",
+  s2c_strategy_hint: "Tap a strategy above to switch and replay",
 
   s3_progress_label: "Putting together your profile…",
   s3_question_label: "Question {q} of {total}",
@@ -676,6 +684,10 @@ const it: T = {
   s2_opt3_head: "Non ho tempo di stare tutto il giorno davanti ai grafici ho un lavoro, una famiglia, una vita",
   s2_opt3_sub: "Se c'è un modo per farlo senza che diventi un secondo lavoro, sono interessato",
   s2_footer: "La tua risposta ci aiuta a personalizzare quello che vedrai",
+  s2_hint: "👆 Tocca l'opzione che ti descrive meglio",
+  s3_hint: "Seleziona una risposta per continuare",
+  s2c_scroll_hint: "Scorri in basso per guardare la simulazione in tempo reale",
+  s2c_strategy_hint: "Tocca una strategia in alto per cambiarla e riprodurla",
 
   s3_progress_label: "Stiamo costruendo il tuo profilo…",
   s3_question_label: "Domanda {q} di {total}",
@@ -978,6 +990,10 @@ const de: T = {
   s2_opt3_head: "Ich habe keine Zeit, den ganzen Tag auf Charts zu starren ich habe einen Job, eine Familie, ein Leben",
   s2_opt3_sub: "Wenn es einen Weg gibt, das zu tun, ohne es zum Zweitjob zu machen, bin ich dabei",
   s2_footer: "Deine Antwort hilft uns, das anzupassen, was du als nächstes siehst",
+  s2_hint: "👆 Tippe auf die Option, die dich am besten beschreibt",
+  s3_hint: "Wähle eine Antwort, um fortzufahren",
+  s2c_scroll_hint: "Scrolle nach unten, um die Simulation live zu sehen",
+  s2c_strategy_hint: "Tippe oben auf eine Strategie, um sie zu wechseln und abzuspielen",
 
   s3_progress_label: "Dein Profil wird erstellt…",
   s3_question_label: "Frage {q} von {total}",
@@ -1280,6 +1296,10 @@ const fr: T = {
   s2_opt3_head: "Je n'ai pas le temps de passer mes journées à regarder des graphiques j'ai un travail, une famille, une vie",
   s2_opt3_sub: "S'il y a un moyen de le faire sans que ça devienne un second emploi, je suis intéressé",
   s2_footer: "Ta réponse nous aide à personnaliser ce que tu verras ensuite",
+  s2_hint: "👆 Appuie sur l'option qui te décrit le mieux",
+  s3_hint: "Sélectionne une réponse pour continuer",
+  s2c_scroll_hint: "Fais défiler pour regarder la simulation en direct",
+  s2c_strategy_hint: "Appuie sur une stratégie ci-dessus pour la changer et rejouer",
 
   s3_progress_label: "Création de ton profil en cours…",
   s3_question_label: "Question {q} sur {total}",
@@ -1582,6 +1602,10 @@ const es: T = {
   s2_opt3_head: "No tengo tiempo para estar todo el día mirando gráficos tengo trabajo, familia, vida",
   s2_opt3_sub: "Si hay una forma de hacerlo sin que se convierta en un segundo trabajo, me interesa",
   s2_footer: "Tu respuesta nos ayuda a personalizar lo que verás a continuación",
+  s2_hint: "👆 Toca la opción que mejor te describe",
+  s3_hint: "Selecciona una respuesta para continuar",
+  s2c_scroll_hint: "Desplázate hacia abajo para ver la simulación en vivo",
+  s2c_strategy_hint: "Toca una estrategia de arriba para cambiarla y reproducirla",
 
   s3_progress_label: "Creando tu perfil…",
   s3_question_label: "Pregunta {q} de {total}",
