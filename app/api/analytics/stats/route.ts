@@ -33,6 +33,8 @@ export async function GET(req: Request) {
 
   const [
     totalVisitors,
+    realVisitors,
+    botVisitors,
     todayVisitors,
     activeVisitors,
     weekVisitors,
@@ -43,6 +45,7 @@ export async function GET(req: Request) {
     byBrowser,
     byStep,
     bySource,
+    byBotType,
     recent,
     hourlyRaw,
     dailyRaw,
@@ -50,33 +53,45 @@ export async function GET(req: Request) {
     monthlyRaw,
   ] = await Promise.all([
     prisma.visitor.count(),
-    prisma.visitor.count({ where: { createdAt: { gte: oneDayAgo } } }),
-    prisma.visitor.count({ where: { lastSeenAt: { gte: fiveMinAgo } } }),
-    prisma.visitor.count({ where: { createdAt: { gte: sevenDayAgo } } }),
-    prisma.visitor.count({ where: { createdAt: { gte: thirtyDayAgo } } }),
+    prisma.visitor.count({ where: { isBot: false } }),
+    prisma.visitor.count({ where: { isBot: true } }),
+    prisma.visitor.count({ where: { createdAt: { gte: oneDayAgo }, isBot: false } }),
+    prisma.visitor.count({ where: { lastSeenAt: { gte: fiveMinAgo }, isBot: false } }),
+    prisma.visitor.count({ where: { createdAt: { gte: sevenDayAgo }, isBot: false } }),
+    prisma.visitor.count({ where: { createdAt: { gte: thirtyDayAgo }, isBot: false } }),
 
     prisma.visitor.count({ where: { convertedAt: { not: null } } }),
 
-    // all countries with counts
+    // all countries — real visitors only
     prisma.visitor.groupBy({
       by: ["country"],
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
+      where: { isBot: false },
     }),
-    prisma.visitor.groupBy({ by: ["device"],  _count: { id: true }, orderBy: { _count: { id: "desc" } } }),
-    prisma.visitor.groupBy({ by: ["browser"], _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 8 }),
-    prisma.visitor.groupBy({ by: ["currentStep"], _count: { id: true }, orderBy: { _count: { id: "desc" } } }),
+    prisma.visitor.groupBy({ by: ["device"],  _count: { id: true }, orderBy: { _count: { id: "desc" } }, where: { isBot: false } }),
+    prisma.visitor.groupBy({ by: ["browser"], _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 8, where: { isBot: false } }),
+    prisma.visitor.groupBy({ by: ["currentStep"], _count: { id: true }, orderBy: { _count: { id: "desc" } }, where: { isBot: false } }),
     prisma.visitor.groupBy({
       by: ["utmSource"],
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
       take: 10,
-      where: { utmSource: { not: null } },
+      where: { utmSource: { not: null }, isBot: false },
+    }),
+
+    // bot types breakdown
+    prisma.visitor.groupBy({
+      by: ["botType"],
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      where: { isBot: true },
     }),
 
     prisma.visitor.findMany({
       orderBy: { lastSeenAt: "desc" },
       take: 50,
+      where: { isBot: false },
       select: {
         id: true, createdAt: true, lastSeenAt: true, country: true,
         city: true, region: true, device: true, os: true, browser: true,
@@ -85,27 +100,27 @@ export async function GET(req: Request) {
       },
     }),
 
-    // hourly (last 24 h)
+    // hourly (last 24 h) — real only
     prisma.visitor.findMany({
-      where: { createdAt: { gte: oneDayAgo } },
+      where: { createdAt: { gte: oneDayAgo }, isBot: false },
       select: { createdAt: true },
     }),
 
-    // daily (last 30 days)
+    // daily (last 30 days) — real only
     prisma.visitor.findMany({
-      where: { createdAt: { gte: thirtyDayAgo } },
+      where: { createdAt: { gte: thirtyDayAgo }, isBot: false },
       select: { createdAt: true },
     }),
 
-    // weekly (last ~13 weeks)
+    // weekly (last ~13 weeks) — real only
     prisma.visitor.findMany({
-      where: { createdAt: { gte: ninetyDayAgo } },
+      where: { createdAt: { gte: ninetyDayAgo }, isBot: false },
       select: { createdAt: true },
     }),
 
-    // monthly (last 12 months)
+    // monthly (last 12 months) — real only
     prisma.visitor.findMany({
-      where: { createdAt: { gte: oneYearAgo } },
+      where: { createdAt: { gte: oneYearAgo }, isBot: false },
       select: { createdAt: true },
     }),
   ]);
@@ -159,11 +174,13 @@ export async function GET(req: Request) {
   }));
 
   const conversionRate =
-    totalVisitors > 0 ? ((conversions / totalVisitors) * 100).toFixed(1) : "0.0";
+    realVisitors > 0 ? ((conversions / realVisitors) * 100).toFixed(1) : "0.0";
 
   return NextResponse.json({
     meta: {
       totalVisitors,
+      realVisitors,
+      botVisitors,
       todayVisitors,
       weekVisitors,
       monthVisitors,
@@ -171,12 +188,13 @@ export async function GET(req: Request) {
       conversions,
       conversionRate,
     },
-    byCountry:  byCountryAll.slice(0, 10).map((r) => ({ label: r.country || "Unknown", count: r._count.id })),
+    byCountry:    byCountryAll.slice(0, 10).map((r) => ({ label: r.country || "Unknown", count: r._count.id })),
     byCountryAll: byCountryAll.map((r) => ({ label: r.country || "Unknown", count: r._count.id })),
-    byDevice:   byDevice.map(  (r) => ({ label: r.device   || "Unknown", count: r._count.id })),
-    byBrowser:  byBrowser.map( (r) => ({ label: r.browser  || "Unknown", count: r._count.id })),
-    byStep:     byStep.map(    (r) => ({ label: r.currentStep || "Unknown", count: r._count.id })),
-    bySource:   bySource.map(  (r) => ({ label: r.utmSource  || "direct",  count: r._count.id })),
+    byDevice:     byDevice.map(  (r) => ({ label: r.device   || "Unknown", count: r._count.id })),
+    byBrowser:    byBrowser.map( (r) => ({ label: r.browser  || "Unknown", count: r._count.id })),
+    byStep:       byStep.map(    (r) => ({ label: r.currentStep || "Unknown", count: r._count.id })),
+    bySource:     bySource.map(  (r) => ({ label: r.utmSource  || "direct",  count: r._count.id })),
+    byBotType:    byBotType.map( (r) => ({ label: r.botType    || "Bot Unknown", count: r._count.id })),
     hourly,
     daily,
     weekly,

@@ -9,8 +9,11 @@
  *  - Deploying as static: force-static so it is pre-rendered at build time.
  */
 import type { Metadata } from "next";
+import BotTracker from "./BotTracker";
 
 export const dynamic = "force-static";
+// BotTracker is a client component but uses no dynamic server data —
+// the page itself stays statically pre-rendered; only the tracker runs client-side.
 
 export const metadata: Metadata = {
   title: "TradePilot — Algorithmic Trading Platform",
@@ -98,6 +101,8 @@ export default function PlatformPage() {
   return (
     <html lang="en">
       <body style={{ margin: 0, fontFamily: "'Segoe UI', system-ui, sans-serif", background: "#0a0f1a", color: "#e2e8f0" }}>
+        {/* ── Bot analytics tracker ── */}
+        <BotTracker />
 
         {/* ── Nav ── */}
         <header style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 1100, margin: "0 auto" }}>

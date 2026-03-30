@@ -113,9 +113,14 @@ model Visitor {
   currentStep String   @default("S1_HOOK")
   convertedAt DateTime?
 
+  // Bot tracking
+  isBot    Boolean @default(false)
+  botType  String? // e.g. "Bot Google", "Bot Facebook", "Bot Headless"
+
   @@index([createdAt])
   @@index([country])
   @@index([ipHash])
+  @@index([isBot])
 }
 
 model Click {

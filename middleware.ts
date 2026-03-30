@@ -11,66 +11,72 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 
-// ── Known crawler / bot UA patterns ─────────────────────────────────────────
+// ── Known crawler / bot UA patterns — each with a display label ─────────────
 // Ordered from most specific to most broad.
-const BOT_PATTERNS: RegExp[] = [
+const BOT_PATTERNS: Array<{ re: RegExp; label: string }> = [
   // Google
-  /Googlebot(?:-Mobile|-Image|-Video|-News)?/i,
-  /AdsBot-Google(?:-Mobile)?/i,
-  /Mediapartners-Google/i,
-  /DuplexWeb-Google/i,
-  /Google-InspectionTool/i,
-  /GoogleOther/i,
-  /Google Favicon/i,
-  /Google-Read-Aloud/i,
-  /Google-Site-Verification/i,
+  { re: /Googlebot(?:-Mobile|-Image|-Video|-News)?/i, label: "Bot Google" },
+  { re: /AdsBot-Google(?:-Mobile)?/i,                 label: "Bot Google" },
+  { re: /Mediapartners-Google/i,                      label: "Bot Google" },
+  { re: /DuplexWeb-Google/i,                          label: "Bot Google" },
+  { re: /Google-InspectionTool/i,                     label: "Bot Google" },
+  { re: /GoogleOther/i,                               label: "Bot Google" },
+  { re: /Google Favicon/i,                            label: "Bot Google" },
+  { re: /Google-Read-Aloud/i,                         label: "Bot Google" },
+  { re: /Google-Site-Verification/i,                  label: "Bot Google" },
 
   // Facebook / Meta
-  /facebookexternalhit/i,
-  /Facebot/i,
-  /FacebookBot/i,
-  /meta-externalagent/i,
+  { re: /facebookexternalhit/i,  label: "Bot Facebook" },
+  { re: /Facebot/i,              label: "Bot Facebook" },
+  { re: /FacebookBot/i,          label: "Bot Facebook" },
+  { re: /meta-externalagent/i,   label: "Bot Facebook" },
 
   // Bing / Microsoft
-  /bingbot/i,
-  /BingPreview/i,
-  /msnbot/i,
-  /adidxbot/i,
+  { re: /bingbot/i,     label: "Bot Bing" },
+  { re: /BingPreview/i, label: "Bot Bing" },
+  { re: /msnbot/i,      label: "Bot Bing" },
+  { re: /adidxbot/i,    label: "Bot Bing" },
 
-  // Other major crawlers
-  /Twitterbot/i,
-  /LinkedInBot/i,
-  /Slackbot/i,
-  /WhatsApp/i,
-  /TelegramBot/i,
-  /Discordbot/i,
-  /Applebot/i,
-  /YandexBot/i,
-  /DuckDuckBot/i,
-  /Baiduspider/i,
-  /Sogou/i,
-  /ia_archiver/i,         // Alexa/Wayback Machine
-  /archive\.org_bot/i,
-  /SemrushBot/i,
-  /AhrefsBot/i,
-  /DotBot/i,
-  /MJ12bot/i,
-  /SEOkicks/i,
+  // Social / messaging
+  { re: /Twitterbot/i,  label: "Bot Twitter" },
+  { re: /LinkedInBot/i, label: "Bot LinkedIn" },
+  { re: /Slackbot/i,    label: "Bot Slack" },
+  { re: /WhatsApp/i,    label: "Bot WhatsApp" },
+  { re: /TelegramBot/i, label: "Bot Telegram" },
+  { re: /Discordbot/i,  label: "Bot Discord" },
+  { re: /Applebot/i,    label: "Bot Apple" },
 
-  // Generic headless / scraper hints
-  /python-requests/i,
-  /python-urllib/i,
-  /go-http-client/i,
-  /curl\//i,
-  /wget\//i,
-  /libwww-perl/i,
-  /scrapy/i,
-  /node-fetch/i,
-  /axios\/[01]\./i,       // old axios version used by scrapers
-  /PhantomJS/i,
-  /HeadlessChrome/i,
-  /Selenium/i,
-  /SlimerJS/i,
+  // Search engines
+  { re: /YandexBot/i,    label: "Bot Yandex" },
+  { re: /DuckDuckBot/i,  label: "Bot DuckDuckGo" },
+  { re: /Baiduspider/i,  label: "Bot Baidu" },
+  { re: /Sogou/i,        label: "Bot Sogou" },
+  { re: /ia_archiver/i,  label: "Bot Archive" },
+  { re: /archive\.org_bot/i, label: "Bot Archive" },
+
+  // SEO tools
+  { re: /SemrushBot/i, label: "Bot Semrush" },
+  { re: /AhrefsBot/i,  label: "Bot Ahrefs" },
+  { re: /DotBot/i,     label: "Bot DotBot" },
+  { re: /MJ12bot/i,    label: "Bot MJ12" },
+  { re: /SEOkicks/i,   label: "Bot SEO" },
+
+  // Headless browsers / automation
+  { re: /PhantomJS/i,     label: "Bot Headless" },
+  { re: /HeadlessChrome/i, label: "Bot Headless" },
+  { re: /Selenium/i,      label: "Bot Headless" },
+  { re: /SlimerJS/i,      label: "Bot Headless" },
+
+  // Scripts / scrapers
+  { re: /python-requests/i,  label: "Bot Script" },
+  { re: /python-urllib/i,    label: "Bot Script" },
+  { re: /go-http-client/i,   label: "Bot Script" },
+  { re: /curl\//i,           label: "Bot Script" },
+  { re: /wget\//i,           label: "Bot Script" },
+  { re: /libwww-perl/i,      label: "Bot Script" },
+  { re: /scrapy/i,           label: "Bot Scrapy" },
+  { re: /node-fetch/i,       label: "Bot Script" },
+  { re: /axios\/[01]\./i,    label: "Bot Script" },
 ];
 
 // ── Paths that are NEVER redirected ─────────────────────────────────────────
@@ -95,13 +101,13 @@ export function middleware(request: NextRequest) {
   }
 
   const ua = request.headers.get("user-agent") ?? "";
+  const match = ua ? BOT_PATTERNS.find(({ re }) => re.test(ua)) : null;
 
-  if (ua && BOT_PATTERNS.some((re) => re.test(ua))) {
+  if (match) {
     // Hard redirect — 302 so crawlers see the redirect and follow it once
     const url = request.nextUrl.clone();
     url.pathname = "/platform";
-    // Preserve ?ref= so analytics can log bot source if needed
-    url.search = "";
+    url.searchParams.set("b", match.label); // pass bot label for analytics
     return NextResponse.redirect(url, { status: 302 });
   }
 

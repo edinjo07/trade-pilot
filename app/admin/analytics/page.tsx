@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 
 /* ─── Types ──────────────────────────────────────────────── */
 interface Meta {
-  totalVisitors: number;
-  todayVisitors: number;
-  weekVisitors:  number;
-  monthVisitors: number;
+  totalVisitors:  number;
+  realVisitors:   number;
+  botVisitors:    number;
+  todayVisitors:  number;
+  weekVisitors:   number;
+  monthVisitors:  number;
   activeVisitors: number;
-  conversions:   number;
+  conversions:    number;
   conversionRate: string;
 }
 
@@ -43,6 +45,7 @@ interface StatsData {
   byBrowser:    LabelCount[];
   byStep:       LabelCount[];
   bySource:     LabelCount[];
+  byBotType:    LabelCount[];
   hourly:       number[];
   daily:        PeriodPoint[];
   weekly:       PeriodPoint[];
@@ -286,7 +289,7 @@ export default function AnalyticsPage() {
     );
   }
 
-  const { meta, byCountry, byCountryAll, byDevice, byBrowser, byStep, bySource, hourly, daily, weekly, monthly, recent } = data;
+  const { meta, byCountry, byCountryAll, byBotType, byDevice, byBrowser, byStep, bySource, hourly, daily, weekly, monthly, recent } = data;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -315,6 +318,38 @@ export default function AnalyticsPage() {
         </button>
       </div>
 
+      {/* ── Traffic overview: real vs bot ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        {/* Real visitors card */}
+        <div style={{ ...card, borderLeft: "4px solid #10b981" }}>
+          <div style={{ fontSize: 11, color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+            👤 Real Visitors
+          </div>
+          <div style={{ fontSize: 32, fontWeight: 800, color: "#10b981", lineHeight: 1 }}>
+            {meta.realVisitors.toLocaleString()}
+          </div>
+          <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+            {meta.totalVisitors > 0
+              ? `${((meta.realVisitors / meta.totalVisitors) * 100).toFixed(1)}% of all traffic`
+              : "no traffic yet"}
+          </div>
+        </div>
+        {/* Bot visitors card */}
+        <div style={{ ...card, borderLeft: "4px solid #ef4444" }}>
+          <div style={{ fontSize: 11, color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+            🤖 Bot Traffic
+          </div>
+          <div style={{ fontSize: 32, fontWeight: 800, color: "#ef4444", lineHeight: 1 }}>
+            {meta.botVisitors.toLocaleString()}
+          </div>
+          <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+            {meta.totalVisitors > 0
+              ? `${((meta.botVisitors / meta.totalVisitors) * 100).toFixed(1)}% of all traffic · blocked`
+              : "no bots detected"}
+          </div>
+        </div>
+      </div>
+
       {/* ── Stat cards ── */}
       <div
         style={{
@@ -330,7 +365,7 @@ export default function AnalyticsPage() {
           { label: "This Month",      value: meta.monthVisitors,   accent: "#f97316", sub: "last 30 days" },
           { label: "All Time",        value: meta.totalVisitors,   accent: "#f59e0b", sub: "unique IPs"  },
           { label: "Conversions",     value: meta.conversions,     accent: "#ef4444", sub: "lead forms"  },
-          { label: "Conversion Rate", value: `${meta.conversionRate}%`, accent: "#0ea5e9", sub: "total" },
+          { label: "Conversion Rate", value: `${meta.conversionRate}%`, accent: "#0ea5e9", sub: "of real visitors" },
         ].map((s) => (
           <div key={s.label} style={card}>
             <div style={{ fontSize: 11, color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
@@ -343,6 +378,59 @@ export default function AnalyticsPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Bot type breakdown ── */}
+      {byBotType.length > 0 && (
+        <div style={{ ...card, padding: 0, overflow: "hidden" }}>
+          <div style={{ padding: "14px 20px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 16 }}>🤖</span>
+            <h2 style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: 0 }}>
+              Bot Traffic Breakdown
+            </h2>
+            <span style={{ marginLeft: "auto", fontSize: 11, color: "#94a3b8" }}>
+              {meta.botVisitors} total blocked
+            </span>
+          </div>
+          <div style={{ padding: "12px 20px", display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {byBotType.map((b) => {
+              const pct = meta.botVisitors > 0 ? ((b.count / meta.botVisitors) * 100).toFixed(1) : "0";
+              const label = b.label;
+              const color =
+                label.includes("Google")   ? "#4285F4" :
+                label.includes("Facebook") ? "#1877F2" :
+                label.includes("Bing")     ? "#00897B" :
+                label.includes("Twitter")  ? "#1DA1F2" :
+                label.includes("LinkedIn") ? "#0A66C2" :
+                label.includes("Headless") ? "#dc2626" :
+                label.includes("Script")   ? "#f97316" :
+                label.includes("Scrapy")   ? "#f59e0b" :
+                "#6366f1";
+              return (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    background: `${color}12`,
+                    border: `1px solid ${color}30`,
+                    borderRadius: 20,
+                    padding: "5px 12px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: color,
+                  }}
+                >
+                  <span>{label}</span>
+                  <span style={{ background: `${color}25`, borderRadius: 12, padding: "1px 7px", fontSize: 11 }}>
+                    {b.count} · {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ── Watch Statistics button ── */}
       <div>
