@@ -4,73 +4,99 @@ import { detectLocale } from "@/lib/i18n";
 
 const EDUCATION_PATH = "/education";
 
-// ── Bot / crawler User-Agent detection ───────────────────────────────────────
-// These are common crawler bot strings. Matching is case-insensitive substring.
-// Applies to funnel landing page (/) AND the /continue confirmation page.
-const BOT_UA_PATTERNS = [
-  // ── Google ──────────────────────────────────────────────────────────────────
-  "googlebot",            // main web crawler
-  "adsbot-google",        // Google Ads landing-page verification (CRITICAL)
-  "mediapartners-google", // Google AdSense content crawler
-  "google-inspection",    // Google Search Console inspection tool
-  "googleweblight",       // Google Web Light proxy
-  "bingbot",
-  "slurp",                // Yahoo
-  "duckduckbot",
-  "baiduspider",
-  "yandexbot",
-  "sogou",
-  "exabot",
-  "ia_archiver",          // Wayback Machine
-  "applebot",
-  "seznambot",
-  "bytespider",           // TikTok / ByteDance
-  "petalbot",             // Huawei/Petal Search
-  // ── Facebook / Meta ─────────────────────────────────────────────────────────
-  "facebookexternalhit",  // PRIMARY Facebook link-preview & ad-policy crawler
-  "facebot",              // Facebook OpenGraph bot
-  "meta-externalagent",   // newer Meta crawler
-  "meta-externalfetcher", // newer Meta fetcher
-  // ── Taboola / Outbrain ──────────────────────────────────────────────────────
-  "taboolabot",
-  "taboola",
-  "outbrainbot",
-  "outbrain",
-  // ── SEO / audit bots ────────────────────────────────────────────────────────
-  "semrushbot",
-  "ahrefsbot",
-  "mj12bot",
-  "dotbot",
-  // ── Headless / automation tools ─────────────────────────────────────────────
-  "headlesschrome",
-  "phantomjs",
-  "selenium",
-  "puppeteer",
-  "playwright",
-  // ── Generic HTTP clients (non-browser) ──────────────────────────────────────
-  "python-requests",
-  "python-urllib",
-  "wget",
-  "curl/",
-  "scrapy",
-  "httpclient",
-  "java/",
-  "axios/",
-  "node-fetch",
+// ── Known crawler / bot UA patterns — each with a display label ─────────────
+const BOT_PATTERNS: Array<{ re: RegExp; label: string }> = [
+  // Google
+  { re: /Googlebot(?:-Mobile|-Image|-Video|-News)?/i, label: "Bot Google" },
+  { re: /AdsBot-Google(?:-Mobile)?/i,                 label: "Bot Google" },
+  { re: /Mediapartners-Google/i,                      label: "Bot Google" },
+  { re: /DuplexWeb-Google/i,                          label: "Bot Google" },
+  { re: /Google-InspectionTool/i,                     label: "Bot Google" },
+  { re: /GoogleOther/i,                               label: "Bot Google" },
+  { re: /Google Favicon/i,                            label: "Bot Google" },
+  { re: /Google-Read-Aloud/i,                         label: "Bot Google" },
+  { re: /Google-Site-Verification/i,                  label: "Bot Google" },
+  // Facebook / Meta
+  { re: /facebookexternalhit/i,  label: "Bot Facebook" },
+  { re: /Facebot/i,              label: "Bot Facebook" },
+  { re: /FacebookBot/i,          label: "Bot Facebook" },
+  { re: /meta-externalagent/i,   label: "Bot Facebook" },
+  // Bing / Microsoft
+  { re: /bingbot/i,     label: "Bot Bing" },
+  { re: /BingPreview/i, label: "Bot Bing" },
+  { re: /msnbot/i,      label: "Bot Bing" },
+  { re: /adidxbot/i,    label: "Bot Bing" },
+  // Social / messaging
+  { re: /Twitterbot/i,  label: "Bot Twitter" },
+  { re: /LinkedInBot/i, label: "Bot LinkedIn" },
+  { re: /Slackbot/i,    label: "Bot Slack" },
+  { re: /WhatsApp/i,    label: "Bot WhatsApp" },
+  { re: /TelegramBot/i, label: "Bot Telegram" },
+  { re: /Discordbot/i,  label: "Bot Discord" },
+  { re: /Applebot/i,    label: "Bot Apple" },
+  // Search engines
+  { re: /YandexBot/i,        label: "Bot Yandex" },
+  { re: /DuckDuckBot/i,      label: "Bot DuckDuckGo" },
+  { re: /Baiduspider/i,      label: "Bot Baidu" },
+  { re: /Sogou/i,            label: "Bot Sogou" },
+  { re: /ia_archiver/i,      label: "Bot Archive" },
+  { re: /archive\.org_bot/i, label: "Bot Archive" },
+  // SEO tools
+  { re: /SemrushBot/i, label: "Bot Semrush" },
+  { re: /AhrefsBot/i,  label: "Bot Ahrefs" },
+  { re: /DotBot/i,     label: "Bot DotBot" },
+  { re: /MJ12bot/i,    label: "Bot MJ12" },
+  { re: /SEOkicks/i,   label: "Bot SEO" },
+  // Headless browsers / automation
+  { re: /PhantomJS/i,      label: "Bot Headless" },
+  { re: /HeadlessChrome/i, label: "Bot Headless" },
+  { re: /Selenium/i,       label: "Bot Headless" },
+  { re: /SlimerJS/i,       label: "Bot Headless" },
+  // Scripts / scrapers
+  { re: /python-requests/i, label: "Bot Script" },
+  { re: /python-urllib/i,   label: "Bot Script" },
+  { re: /go-http-client/i,  label: "Bot Script" },
+  { re: /curl\//i,          label: "Bot Script" },
+  { re: /wget\//i,          label: "Bot Script" },
+  { re: /libwww-perl/i,     label: "Bot Script" },
+  { re: /scrapy/i,          label: "Bot Scrapy" },
+  { re: /node-fetch/i,      label: "Bot Script" },
+  { re: /axios\/[01]\./i,   label: "Bot Script" },
 ];
 
-function isBotUA(ua: string | null): boolean {
-  if (!ua) return true; // no UA → treat as bot
-  const lower = ua.toLowerCase();
-  return BOT_UA_PATTERNS.some((p) => lower.includes(p));
-}
+// ── Paths that skip bot + geo checks ─────────────────────────────────────────
+const EXEMPT_PREFIXES = [
+  "/platform",
+  "/restricted",
+  "/education",
+  "/api/",
+  "/admin/",
+  "/_next/",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/favicon.ico",
+  "/images/",
+  "/public/",
+];
 
-// ── Serve a benign "safe page" to bots ───────────────────────────────────────
-// Real users see the funnel; crawlers see a plain editorial page.
-function serveSafePage(req: NextRequest): NextResponse {
-  const url = req.nextUrl.clone();
-  url.pathname = EDUCATION_PATH;
-  return NextResponse.rewrite(url);
+// ── Geo config — module-level cache (per edge worker instance, 60 s TTL) ─────
+type GeoConfigData = { mode: string; countries: string[] };
+let _geoCache: { data: GeoConfigData; expiresAt: number } | null = null;
+
+async function getGeoConfig(origin: string): Promise<GeoConfigData> {
+  const now = Date.now();
+  if (_geoCache && now < _geoCache.expiresAt) return _geoCache.data;
+  try {
+    const res = await fetch(`${origin}/api/internal/geo-config`, {
+      next: { revalidate: 60 },
+    });
+    if (res.ok) {
+      const data = await res.json() as GeoConfigData;
+      _geoCache = { data, expiresAt: now + 60_000 };
+      return data;
+    }
+  } catch { /* network error — fail open */ }
+  return { mode: "all", countries: [] };
 }
 
 function getClientIp(req: NextRequest) {
@@ -112,40 +138,61 @@ function shouldShowEducation(ip: string | null) {
   return ranges.some((range) => isIpInRange(ip, range));
 }
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isAdmin = path.startsWith("/admin");
 
-  if (isAdmin) {
-    // Login + logout bypass auth
+  // ── Admin auth ────────────────────────────────────────────────────────────
+  if (path.startsWith("/admin")) {
     if (path === "/admin/login" || path === "/admin/logout") {
       return NextResponse.next();
     }
-
-    // Validate session cookie
     const token = getAdminToken();
     const cookieVal = req.cookies.get(ADMIN_COOKIE)?.value ?? "";
     if (token && safeEqual(cookieVal, token)) {
       return NextResponse.next();
     }
-
-    // No valid session → redirect to login
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     loginUrl.searchParams.set("next", path);
     return NextResponse.redirect(loginUrl);
   }
 
-  // ── Bot cloaking: landing page + continue page ────────────────────────────
-  // Serve the safe editorial page to any recognised bot/crawler/headless UA.
-  // Real human visitors receive the full funnel and confirmation page.
-  const isCloakedPage = path === "/" || path === "" || path === "/continue";
-  if (isCloakedPage && isBotUA(req.headers.get("user-agent"))) {
-    return serveSafePage(req);
-  }
+  // ── Skip bot/geo checks for exempt paths ─────────────────────────────────
+  const isExempt = EXEMPT_PREFIXES.some((p) => path === p || path.startsWith(p));
+  if (!isExempt) {
+    // ── Bot detection → redirect to /platform with label ─────────────────
+    const ua = req.headers.get("user-agent") ?? "";
+    const match = ua ? BOT_PATTERNS.find(({ re }) => re.test(ua)) : null;
+    if (match) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/platform";
+      url.searchParams.set("b", match.label);
+      return NextResponse.redirect(url, { status: 302 });
+    }
 
-  // ── IP-based geo routing ──────────────────────────────────────────────────
-  if (!path.startsWith(EDUCATION_PATH)) {
+    // ── Geo restriction check ─────────────────────────────────────────────
+    const geoConfig = await getGeoConfig(req.nextUrl.origin);
+    if (geoConfig.mode !== "all" && geoConfig.countries.length > 0) {
+      const country = (
+        req.headers.get("x-vercel-ip-country") ||
+        req.headers.get("cf-ipcountry") ||
+        ""
+      ).toUpperCase().trim();
+      if (country) {
+        const inList = geoConfig.countries.includes(country);
+        const blocked =
+          (geoConfig.mode === "whitelist" && !inList) ||
+          (geoConfig.mode === "blacklist" && inList);
+        if (blocked) {
+          const url = req.nextUrl.clone();
+          url.pathname = "/restricted";
+          url.search = "";
+          return NextResponse.redirect(url, { status: 302 });
+        }
+      }
+    }
+
+    // ── IP-based education routing ────────────────────────────────────────
     const ip = getClientIp(req);
     if (shouldShowEducation(ip)) {
       const url = req.nextUrl.clone();
@@ -154,7 +201,7 @@ export function proxy(req: NextRequest) {
     }
   }
 
-  // ── Locale detection  set NEXT_LOCALE cookie once per visitor ───────────
+  // ── Locale detection — set NEXT_LOCALE cookie once per visitor ───────────
   const res = NextResponse.next();
   if (!req.cookies.get("NEXT_LOCALE")?.value) {
     const locale = detectLocale(
