@@ -100,6 +100,7 @@ export default function BotGate({ onPass }: Props) {
   const [score, setScore] = useState(0);
   const [passed, setPassed] = useState(false);
   const [blocked, setBlocked] = useState(false);
+  const [showGate, setShowGate] = useState(true);
   const [showSlider, setShowSlider] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderDone, setSliderDone] = useState(false);
@@ -110,6 +111,7 @@ export default function BotGate({ onPass }: Props) {
   const interactionTimesRef = useRef<number[]>([]);
   const sliderDragStartedRef = useRef(false); // must physically drag, not just set programmatically
   const passCalledRef = useRef(false);
+  const gatePassedRef = useRef(false);
 
   // ── Instant redirect for hard bot signals ──────────────────────────────
   useEffect(() => {
@@ -121,15 +123,26 @@ export default function BotGate({ onPass }: Props) {
     }
   }, []);
 
-  // ── Timeout fallback: if nothing passes in 12s, redirect to clean page ──
+  // ── Gate timeout: 9s to tap the gate CTA or be redirected ─────────────
   useEffect(() => {
+    const id = window.setTimeout(() => {
+      if (!gatePassedRef.current) {
+        window.location.replace(BOT_REDIRECT);
+      }
+    }, 9_000);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  // ── Post-gate timeout: 12s after gate dismissed to accumulate signals ──
+  useEffect(() => {
+    if (showGate) return;
     const id = window.setTimeout(() => {
       if (!passCalledRef.current) {
         window.location.replace(BOT_REDIRECT);
       }
     }, 12_000);
     return () => window.clearTimeout(id);
-  }, []);
+  }, [showGate]);
 
   // ── Safe one-shot pass helper ─────────────────────────────────────────
   const tryPass = useCallback(() => {
@@ -138,6 +151,29 @@ export default function BotGate({ onPass }: Props) {
     setPassed(true);
     onPass();
   }, [blocked, onPass]);
+
+  // ── Gate dismissal — counts as two confirmed human intent signals ─────
+  const dismissGate = useCallback(() => {
+    if (gatePassedRef.current || blocked) return;
+    gatePassedRef.current = true;
+    const now = Date.now();
+    // Credit the tap as click + scroll (two distinct signal types with jitter)
+    if (!seenRef.current.click) {
+      seenRef.current.click = true;
+      interactionTimesRef.current.push(now);
+      scoreRef.current += 1;
+      setScore((p) => p + 1);
+    }
+    if (!seenRef.current.scroll) {
+      seenRef.current.scroll = true;
+      interactionTimesRef.current.push(now + 100);
+      scoreRef.current += 1;
+      setScore((p) => p + 1);
+    }
+    // Reset 4s slider countdown from the moment the gate is dismissed
+    startRef.current = Date.now();
+    setShowGate(false);
+  }, [blocked]);
 
   // ── Behavioural signal listeners ──────────────────────────────────────
   const bump = useCallback((type: "move" | "scroll" | "click" | "touch") => {
@@ -169,7 +205,7 @@ export default function BotGate({ onPass }: Props) {
 
   // ── Timer-based pass / show-slider logic ─────────────────────────────
   useEffect(() => {
-    if (blocked) return;
+    if (blocked || showGate) return;
 
     const id = setInterval(() => {
       if (passCalledRef.current) { clearInterval(id); return; }
@@ -197,7 +233,7 @@ export default function BotGate({ onPass }: Props) {
     }, 200);
 
     return () => clearInterval(id);
-  }, [blocked, sliderDone, tryPass]);
+  }, [blocked, showGate, sliderDone, tryPass]);
 
   // ── Slider done → pass (uses real clock, not stale state) ────────────
   useEffect(() => {
@@ -220,6 +256,67 @@ export default function BotGate({ onPass }: Props) {
 
   if (passed) return null;
 
+  // ── Layer 1: full-screen gate — must be tapped before funnel is visible ─
+  if (showGate) {
+    return (
+      <div
+        className="pointer-events-auto fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+        style={{ background: "linear-gradient(160deg,#020d07 0%,#030f09 50%,#01080d 100%)" }}
+      >
+        {/* Ambient glow */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 50% 65%, rgba(5,150,105,0.09) 0%, transparent 70%)",
+          }}
+        />
+        {/* Chart icon */}
+        <div
+          className="relative z-10 mb-8 flex h-[72px] w-[72px] items-center justify-center rounded-full"
+          style={{
+            background: "rgba(52,211,153,0.07)",
+            border: "1px solid rgba(52,211,153,0.18)",
+            boxShadow: "0 0 48px rgba(52,211,153,0.1)",
+          }}
+        >
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+            <path
+              d="M3 22L10 13l6.5 7.5 5-6L30 22"
+              stroke="#34d399"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="28" cy="7" r="3.5" fill="rgba(52,211,153,0.25)" stroke="#34d399" strokeWidth="1.4" />
+          </svg>
+        </div>
+        <h2 className="relative z-10 mb-2 text-xl font-bold tracking-tight text-white">
+          Confirm Access
+        </h2>
+        <p className="relative z-10 mb-10 max-w-xs text-center text-sm text-neutral-500">
+          Tap the button below to verify you&apos;re a real person and unlock the platform.
+        </p>
+        <button
+          type="button"
+          onClick={dismissGate}
+          onTouchEnd={(e) => { e.preventDefault(); dismissGate(); }}
+          className="relative z-10 overflow-hidden rounded-full px-10 py-4 text-sm font-semibold text-white transition-transform active:scale-95 focus:outline-none"
+          style={{
+            background: "linear-gradient(135deg,#059669 0%,#34d399 100%)",
+            boxShadow: "0 4px 32px rgba(52,211,153,0.35), 0 0 0 1px rgba(52,211,153,0.2)",
+          }}
+        >
+          Tap to Access Platform
+        </button>
+        <p className="relative z-10 mt-8 text-xs text-neutral-700">
+          Session verification in progress
+        </p>
+      </div>
+    );
+  }
+
+  // ── Layer 2: invisible layer housing the slider puzzle ───────────────
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[9999]">
       {showSlider && !sliderDone && (
