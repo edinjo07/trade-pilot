@@ -51,6 +51,8 @@ tsconfig.tsbuildinfo
 
 # env files (can opt-in for committing if needed)
 .env*
+# allow the template to be committed
+!.env.example
 
 # vercel
 .vercel
